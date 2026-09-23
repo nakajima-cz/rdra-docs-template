@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# docs-scaffold: pre-push — 実装変更に対し docs 未更新を警告（ブロックはしない）
+set -euo pipefail
+
+range="origin/HEAD..HEAD"
+git rev-parse --verify -q origin/HEAD >/dev/null 2>&1 || range="HEAD~1..HEAD"
+
+changed=$(git diff --name-only "$range" 2>/dev/null || true)
+[ -z "$changed" ] && exit 0
+
+# ソース変更（src/, app/, lib/, api/ 等）があるか
+code_changed=$(echo "$changed" | grep -Ei '^(src|app|lib|api|server|packages)/' || true)
+docs_changed=$(echo "$changed" | grep -E '^docs/' || true)
+
+if [ -n "$code_changed" ] && [ -z "$docs_changed" ]; then
+  echo "──────────────────────────────────────────────"
+  echo "docs-scaffold WARNING: コード変更に対し docs/ が未更新です"
+  echo "  対象: SCR-/API-/traceability の該当設計書を確認してください"
+  echo "  自動同期: Claude 対話中に /sync-docs、または scripts/docs-sync/sync-docs.sh"
+  echo "  （このpushはブロックしていません）"
+  echo "──────────────────────────────────────────────"
+fi
+exit 0

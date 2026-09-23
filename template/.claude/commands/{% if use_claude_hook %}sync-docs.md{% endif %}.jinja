@@ -1,0 +1,9 @@
+# sync-docs
+直近のコード差分から docs の What/How を同期する。
+
+手順:
+1. `git diff` で直近のソース変更を確認する
+2. docs/specs/screens・docs/specs/apis・docs/traceability の該当ファイルの What/How のみ更新する
+3. Why(なぜその設計か)は創作しない。必要なら `TODO(Why): ADR-xxxx?` のスタブだけ残す
+4. docs/ 配下以外は変更しない
+5. 変更は `docs: sync from <sha>` として独立コミットする

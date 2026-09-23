@@ -1,0 +1,37 @@
+# copier テンプレート設定
+_min_copier_version: "9.0.0"
+
+# テンプレート本体を template/ サブディレクトリに置く（copier.yml等と分離）
+_subdirectory: template
+
+# 既存ファイルがあれば上書きしない（新規/既存どちらのリポジトリでも競合ゼロ）
+_skip_if_exists:
+  - "README.md"
+  - "CLAUDE.md"
+  - "docs/**"
+  - ".claude/settings.json"
+
+# 生成後に実行（gitフックを .git/hooks ではなく .githooks に向ける）
+_tasks:
+  - "git config core.hooksPath .githooks || true"
+  - "chmod +x .githooks/* 2>/dev/null || true"
+
+# ---- 質問 ----
+project_name:
+  type: str
+  help: プロジェクト名（ルートREADMEの見出しに使う）
+  default: "My Project"
+
+use_claude_hook:
+  type: bool
+  help: Claude Code の Stop フックで docs 自動メンテを有効にするか
+  default: true
+
+hook_manager:
+  type: str
+  help: 既存の git フック管理
+  choices:
+    素の core.hooksPath を使う: none
+    husky を使っている: husky
+    lefthook を使っている: lefthook
+  default: none

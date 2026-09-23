@@ -1,0 +1,20 @@
+# {{ project_name }}
+
+RDRA 2.0（要件定義）+ ADR（設計判断）ベースのドキュメント。要件→設計→実装のトレーサビリティ（なぜ→何を→どう）を保つ。
+
+## 入口
+まず [`docs/README.md`](docs/README.md) を読む（ドキュメント全体の地図）。
+
+## 全体像
+- **なぜ / Why** … [`docs/adr/`](docs/adr/) 設計判断（ADR）
+- **何を / What** … [`docs/rdra/`](docs/rdra/) 要件定義（RDRA 4レイヤー）
+- **どう / How** … [`docs/specs/`](docs/specs/) 設計書（common / screens / apis）
+- **対応関係** … [`docs/traceability/screen-uc-api.md`](docs/traceability/screen-uc-api.md)
+- **用語** … [`docs/glossary.md`](docs/glossary.md)
+
+## docs 自動メンテ
+- `.githooks/pre-push` … SCR-/API- 関連ソースが変わったのに docs 未更新なら警告
+{% if use_claude_hook %}- `.claude/` … Claude Code の Stop フックで作業完了後に docs の What/How を同期（Why は生成せず ADR スタブ止まり）
+- 手動同期: Claude 対話中に `/sync-docs`
+{% endif %}
+このドキュメント機構は copier テンプレート `rdra-docs-template` から展開。更新は `copier update`。

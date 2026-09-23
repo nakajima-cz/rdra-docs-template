@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash scripts/docs-sync/sync-docs.sh >> .docs-scaffold/sync.log 2>&1 || true" }
+        ]
+      }
+    ]
+  }
+}
