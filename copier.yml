@@ -8,15 +8,15 @@ _subdirectory: template
 # - 保護する = 利用者が埋める実体（画面/API個票、ADR本体、対応表、用語集）
 # - 保護しない = 骨組み（各README・_template・common規約）→ テンプレ改善が copier update で伝播
 _skip_if_exists:
-  - "README.md"
-  - "CLAUDE.md"
+  - "/README.md"
+  - "/CLAUDE.md"
   - "docs/specs/screens/SCR-*.md"
   - "docs/specs/apis/API-*.md"
   - "docs/adr/[0-9]*.md"
   - "docs/traceability/screen-uc-api.md"
   - "docs/glossary.md"
   - "docs/LOG.md"
-  - ".claude/settings.json"
+  - "/.claude/settings.json"
 
 # 生成後に実行（gitフックを .git/hooks ではなく .githooks に向ける）
 # copier update の内部再生成は非gitのtempで走るため、git repo内でのみ実行するようガード
