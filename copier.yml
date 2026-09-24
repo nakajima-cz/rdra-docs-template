@@ -4,11 +4,18 @@ _min_copier_version: "9.0.0"
 # テンプレート本体を template/ サブディレクトリに置く（copier.yml等と分離）
 _subdirectory: template
 
-# 既存ファイルがあれば上書きしない（新規/既存どちらのリポジトリでも競合ゼロ）
+# 上書き保護（方針A: 骨組みは copier のマージに任せて更新伝播、中身の実体だけ保護）
+# - 保護する = 利用者が埋める実体（画面/API個票、ADR本体、対応表、用語集）
+# - 保護しない = 骨組み（各README・_template・common規約）→ テンプレ改善が copier update で伝播
 _skip_if_exists:
   - "README.md"
   - "CLAUDE.md"
-  - "docs/**"
+  - "docs/specs/screens/SCR-*.md"
+  - "docs/specs/apis/API-*.md"
+  - "docs/adr/[0-9]*.md"
+  - "docs/traceability/screen-uc-api.md"
+  - "docs/glossary.md"
+  - "docs/LOG.md"
   - ".claude/settings.json"
 
 # 生成後に実行（gitフックを .git/hooks ではなく .githooks に向ける）
