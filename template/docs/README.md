@@ -23,5 +23,3 @@
 - 要求: `REQ-xxx` / ユースケース: `UC-xxx` / 情報: `INFO-xxx`
 - 画面: `SCR-xxx` / API: `API-xxx` / 状態: `ST-xxx`
 - 意思決定: `ADR-xxxx`
-
-## テンプレv0.2.1で追加した骨組み改善行
