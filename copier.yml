@@ -19,8 +19,9 @@ _skip_if_exists:
   - ".claude/settings.json"
 
 # 生成後に実行（gitフックを .git/hooks ではなく .githooks に向ける）
+# copier update の内部再生成は非gitのtempで走るため、git repo内でのみ実行するようガード
 _tasks:
-  - "git config core.hooksPath .githooks || true"
+  - "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true"
   - "chmod +x .githooks/* 2>/dev/null || true"
 
 # ---- 質問 ----
