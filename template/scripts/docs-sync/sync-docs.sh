@@ -29,10 +29,12 @@ fi
 
 prompt='あなたはこのリポジトリの docs メンテナです。直近のコード差分(git diff)を読み、
 docs/specs/screens・docs/specs/apis・docs/traceability の該当ファイルの What/How のみ更新してください。
+更新対象の見つけ方: 各 spec の frontmatter の source: が指すソースパスが差分に含まれるものを更新する。
 制約:
 - Why(なぜその設計か)は絶対に創作しない。必要なら本文に TODO(Why): ADR-xxxx? のスタブだけ残す。
 - docs/ 配下以外は変更しない。common/ の重複記述は作らず参照に留める。
-- 変更は最小限、既存の書式・ID規約(SCR-/API-/UC-)に従う。'
+- 変更は最小限、既存の節構成・書式・ID規約(SCR-/API-/UC-)に従う。
+- 更新した spec は frontmatter の updated: を今日の日付に、画面specは source_commit: を現行HEADのSHAに更新する。'
 
 echo "docs-sync: claude をヘッドレス起動して docs を更新します..."
 git --no-pager diff "$base..HEAD" -- 'src/**' 'app/**' 'lib/**' 'api/**' | \
