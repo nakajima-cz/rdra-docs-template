@@ -10,7 +10,7 @@ last=$(cat "$marker" 2>/dev/null || echo "")
 head=$(git rev-parse HEAD)
 
 if [ "$last" = "$head" ]; then
-  echo "docs-sync: 既に最新（$head）。スキップ。"
+  echo "docs-sync: 既に最新 (${head})。スキップ。"
   exit 0
 fi
 
