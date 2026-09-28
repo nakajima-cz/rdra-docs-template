@@ -41,6 +41,33 @@
 注: 本テンプレでは design_status はマージ条件に**絡めない**（情報として持つだけ）。
 運用が固まったら pre-push 警告や CI ガードへ格上げ可能。
 
+## デザイン作成フェーズの認証境界（重要）
+
+Figmaへの「作成・編集（アートボード生成）」は REST API/個人アクセストークン(PAT)ではできない。
+PATは**読み取り専用**（画像export・コメント・変数read程度）。キャンバスへ書けるのは次の2経路のみ:
+- Plugin API（Figma Desktop内・単一ユーザー・ヘッドレス不可）
+- Figma MCP server の `generate_figma_design` / `use_figma`（allowlist済みMCPクライアント限定・アカウント単位の対話OAuth・Dev/Fullシート・将来有料）
+
+このため役割ごとに操作を分ける（認証境界を崩さないため）:
+
+| 役割 | Figma認証 | やること |
+|------|-----------|---------|
+| Designer（共通プロファイル） | **持たない** | HTMLモック案(claude-design/sketch)＋画面specの作成まで。Figmaは触らない |
+| 実装エージェント層（Claude Code / Codex） | **Figma MCP(OAuth)を接続** | モックFIX後、HTML+specからFigmaアートボードを生成・編集 |
+| PM（案件別プロファイル） | PAT(read) | 実装エージェントにFigma起こしを指示・駆動。export.shで画像取得 |
+
+- Figma MCPのOAuthは**案件ごとのFigmaアカウント**で行う。共通Designerには絶対に載せない（1アカウント固定で案件別分離が壊れる）。
+- OAuthは初回にブラウザ同意が1回必要（完全ヘッドレスにはならない）。
+
+## デザイン作成の流れ（モックFIX → agentがFigma化）
+
+1. Designer が HTMLモック案（claude-design / sketch）＋画面spec を作成 → 客先レビュー → **モックFIX**
+2. PM が実装エージェント層（Claude Code / Codex）に「このHTMLモック＋specでFigmaに起こして」と指示
+3. 実装エージェントが Figma MCP `generate_figma_design`（HTML→編集可能レイヤー変換）→ 必要なら `use_figma`（デザインシステムのcomponent/variableで調整）でアートボード生成
+4. 生成後 `design_status: approved`、`export.sh`（PAT read）で確定画像を screenshots/ に取得 → 画面設計書9節へ
+
+補足: HTMLモック起点にしているため `generate_figma_design` への変換コストが低い。逆順（先にFigmaを作る）にしないのが肝。
+
 ## Why の扱い
 
 設計判断の「なぜ」は各specに書かず `adr/` に集約し、spec からは `ADR-xxxx` で参照する。
