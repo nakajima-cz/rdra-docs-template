@@ -5,6 +5,10 @@ tags:
 source: <path/to/component.tsx>
 updated: YYYY-MM-DD
 source_commit: <このドキュメントが基づくソースのgit SHA>
+figma_url: <FigmaファイルのURL。未定なら空>
+figma_node_id: <書き出し対象フレームのnode-id（例: 123:456）。画像自動取得に使用>
+design_status: draft   # draft | in-review | approved
+design_version: <Figma側のバージョン名/日付。レビュー反映のたびに更新>
 ---
 
 # 画面機能仕様書 - <画面名>
@@ -103,6 +107,17 @@ flowchart LR
 
 ## 9. 画面レイアウト
 
-各表示パターンのスクリーンショット。リンク切れ検出と目視確認のための節。
+確定デザインのスクリーンショット。リンク切れ検出と目視確認のための節。
+画像は `screenshots/` 配下に置く（配置規約は screens/README.md 参照）。
+Figma連携時は `scripts/figma-export/export.sh` で frontmatter の figma_node_id から自動取得できる。
 
-- <パターン名> — ![alt](screenshots/xxx.png)
+- <パターン名> — ![alt](screenshots/<SCR-ID>_<状態>.png)
+
+## 10. デザインレビュー履歴
+
+Figma上の客先フィードバックの「結論」だけをここに転記する（やり取り自体はFigmaに残す）。
+frontmatter の design_status（draft→in-review→approved）はここの最新状況と一致させる。
+
+| 日付 | 指摘元 | 指摘内容 | 対応 | 反映後 design_version |
+|------|--------|---------|------|----------------------|
+| YYYY-MM-DD | 客先/社内 | | 反映 / 見送り(理由) / 要確認 | |

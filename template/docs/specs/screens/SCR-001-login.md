@@ -6,6 +6,10 @@ tags:
 source: src/pages/login/index.tsx
 updated: YYYY-MM-DD
 source_commit: <git SHA>
+figma_url:
+figma_node_id:
+design_status: draft
+design_version:
 ---
 
 # 画面機能仕様書 - ログイン
@@ -96,4 +100,12 @@ flowchart LR
 
 ## 9. 画面レイアウト
 
-- 初期表示 — ![login](screenshots/login.png)
+確定デザインのスクリーンショット。`scripts/figma-export/export.sh` で自動取得可。
+
+- 初期表示 — ![login](screenshots/SCR-001_default.png)
+
+## 10. デザインレビュー履歴
+
+| 日付 | 指摘元 | 指摘内容 | 対応 | 反映後 design_version |
+|------|--------|---------|------|----------------------|
+| YYYY-MM-DD | 客先 | （例）ログインボタンの色をブランドカラーに | 反映 | |

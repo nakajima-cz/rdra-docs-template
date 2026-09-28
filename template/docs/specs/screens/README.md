@@ -13,10 +13,17 @@ RDRA の画面一覧（rdra/03-boundary）と 1対1 で対応させる。
 7. 状態管理（ローカルstate/グローバルstore/URLパラメータ）
 8. 備考・要確認事項（デッドコード・未使用・要確認）
 9. 画面レイアウト（screenshotリンク。リンク切れ検出用）
+10. デザインレビュー履歴（Figma客先FBの結論・対応を記録）
 
 ## frontmatter
 `source`（対応ソースパス）と `source_commit`（基づくgit SHA）を必須にする。
 doc-sync はこの `source_commit` と現行HEADの差分を見て更新要否を判定する。
+
+## デザイン(Figma)連携
+- frontmatter に `figma_url` / `figma_node_id` / `design_status`(draft|in-review|approved) / `design_version` を持つ。
+- 客先フィードバックは Figma に残し、結論だけを「10. デザインレビュー履歴」に転記。
+- 確定画像は `scripts/figma-export/export.sh` で screenshots/ に取得（要 FIGMA_TOKEN）。
+- design_status はマージをブロックしない（記録のみ）。ワークフロー全体は docs/WORKFLOW.md 参照。
 
 ## 原則
 - Why はここに書かず ADR に集約し `ADR-xxxx` で参照。
