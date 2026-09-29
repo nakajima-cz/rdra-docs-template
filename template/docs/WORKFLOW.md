@@ -68,6 +68,37 @@ PATは**読み取り専用**（画像export・コメント・変数read程度）
 
 補足: HTMLモック起点にしているため `generate_figma_design` への変換コストが低い。逆順（先にFigmaを作る）にしないのが肝。
 
+## 認証・コンテキストのレイヤリング（プロファイルを増やさず案件差を載せる）
+
+コーダーは実装時にFigmaを**参照（読み）**したい（`get_design_context`＝選択フレームのReact/Tailwind表現、`get_variable_defs`＝トークン）。
+かといって案件ごとに designer/coder を分けると `5 × N案件` のプロファイル乱立になり、共通ルールの多重管理が発生する。これは避ける。
+
+原則: **ロールプロファイルは共通で薄く保ち、案件差は別レイヤーで載せる**。
+
+- ロールプロファイルは共通4つ（architect / designer / coder / tester）＋ 案件ごとの PM のみ = **4 + N**（`5 × N` の直積にしない）。
+- 案件差は3レイヤーで吸収する:
+  1. **コンテキスト分離** → 案件ごとの Group Session（会話文脈だけ分離。同じ共通ロールが案件ごとに独立セッションを持つ）
+  2. **案件固有のクセ・規約** → リポジトリ内の project-local skill（`<repo>/.hermes/skills/`）＋ 薄い `AGENTS.md`。そのrepoのセッションでだけオンデマンドにロード。共通ルールは共通プロファイルに1回だけ書く（多重管理なし）、案件固有はrepoに重ねる。
+  3. **認証（Figma読み/書き）** → プロファイルのenvに固定トークンを焼かない。PMがspawnするCLIの**案件別 config dir** に載せる。共通コーダーが案件Aを触るときは案件AのCLI configで起動＝案件AのFigma読み。
+
+### Figma認証の持たせ方（読み/書きで分ける）
+
+| 役割 | Figma 読み(get_design_context等) | Figma 書き(use_figma) | 認証の置き場所 |
+|------|--------------------------------|----------------------|----------------|
+| Designer（共通） | 任意（基本モック+specなので不要。要れば注入） | 持たない | — / 案件別CLI config |
+| Coder（共通） | **必要**（実装でFigma参照） | 持たない | **案件別CLI config**（共通envに焼かない） |
+| PM（案件別） | あり | **あり**（PM専用config） | PM専用 config dir |
+
+- コーダーのFigma読みは、共通プロファイルに固定トークンを持たせず、**PM駆動のspawn時に案件別CLI configで注入**する。これでプロファイルを増やさず認証を案件別に隔離できる。
+- 書き（アートボード生成）は前節どおり **PM専用config** に限定。共通 coder/Orca の CLI config に Figma MCP(書き) を入れると「PMだけが書ける」が崩れる（唯一の落とし穴）。
+
+### プロファイルを本当に分けるべき例外
+- 人格・判断基準が案件で本質的に違う（顧客別に口調・レビュー観点が別）。
+- config dir スコープでは認証を隔離しきれない。
+- 上記に当たらない限り、案件差は Group Session ＋ repo の project-local skill ＋ 案件別CLI config の3点で吸収する。
+
+図: `docs-assets/figma-auth-boundary.png`（認証境界とコーダーの読み経路）
+
 ## Why の扱い
 
 設計判断の「なぜ」は各specに書かず `adr/` に集約し、spec からは `ADR-xxxx` で参照する。
