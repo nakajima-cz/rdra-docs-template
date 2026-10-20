@@ -97,8 +97,6 @@ PATは**読み取り専用**（画像export・コメント・変数read程度）
 - config dir スコープでは認証を隔離しきれない。
 - 上記に当たらない限り、案件差は Group Session ＋ repo の project-local skill ＋ 案件別CLI config の3点で吸収する。
 
-図: `docs-assets/figma-auth-boundary.png`（認証境界とコーダーの読み経路）
-
 ## Why の扱い
 
 設計判断の「なぜ」は各specに書かず `adr/` に集約し、spec からは `ADR-xxxx` で参照する。
