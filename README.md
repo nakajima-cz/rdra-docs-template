@@ -96,6 +96,11 @@ python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
 - pre-push から自動実行される。一時回避は `DOCS_VALIDATE_SOFT=1 git push` または `git push --no-verify`
 - 依存は python3 のみ（未検出なら検査をスキップして push を通す）
 
+## リポジトリ構成
+- `template/` … 利用者へ展開される本体（copier の `_subdirectory`）
+- `copier.yml` … 質問・`_tasks`・上書き保護の定義
+- `meta/` … **テンプレート自体の資料**（ライフサイクルのシーケンス図など）。展開先には配布されない。詳細は [`meta/README.md`](meta/README.md)
+
 ## 特徴
 - `scripts/docs-validate/validate-docs.py` で docs の構造整合を機械検査（pre-push でブロック）
 - 既存ファイルは `_skip_if_exists` で上書きしない（docs/, README, CLAUDE, .claude/settings.json）
