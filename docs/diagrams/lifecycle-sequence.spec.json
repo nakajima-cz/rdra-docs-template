@@ -1,0 +1,409 @@
+{
+ "name": "rdra-docs-template ライフサイクル",
+ "title": "rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）",
+ "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.6.0 時点）",
+ "font": "Hiragino Sans",
+ "participants": [
+  {
+   "id": "user",
+   "label": "中嶋<br>(Slack)"
+  },
+  {
+   "id": "hermes",
+   "label": "Hermes<br>PMプロファイル"
+  },
+  {
+   "id": "tmpl",
+   "label": "rdra-docs-template<br>(copier テンプレ)"
+  },
+  {
+   "id": "figma",
+   "label": "Figma"
+  },
+  {
+   "id": "coder",
+   "label": "実装エージェント<br>Claude Code / Codex / Orca"
+  },
+  {
+   "id": "repo",
+   "label": "案件リポジトリ<br>docs/ · src/"
+  },
+  {
+   "id": "hook",
+   "label": "pre-push hook<br>docs-validate"
+  },
+  {
+   "id": "remote",
+   "label": "GitHub remote"
+  }
+ ],
+ "steps": [
+  {
+   "kind": "separator",
+   "label": "① 展開 — copier copy",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "call",
+   "from": "user",
+   "to": "hermes",
+   "label": "Slack: 案件を立ち上げて",
+   "num": "①"
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "tmpl",
+   "label": "copier copy --trust --vcs-ref v1.6.0",
+   "num": "②"
+  },
+  {
+   "kind": "call",
+   "from": "tmpl",
+   "to": "repo",
+   "label": "docs/ · scripts/ · .githooks/ を生成",
+   "num": "③"
+  },
+  {
+   "kind": "note",
+   "color": "blue",
+   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 既存 README/CLAUDE/個票は上書きしない",
+   "align": "left",
+   "span": [
+    "tmpl",
+    "repo"
+   ],
+   "width": 330
+  },
+  {
+   "kind": "call",
+   "from": "tmpl",
+   "to": "hook",
+   "label": "scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線",
+   "num": "④"
+  },
+  {
+   "kind": "note",
+   "color": "green",
+   "align": "left",
+   "span": [
+    "tmpl",
+    "hook"
+   ],
+   "width": 430,
+   "text": "v1.6.0: hook_manager の回答で配線先が決まる（冪等）<br>none → core.hooksPath=.githooks<br>husky → .husky/pre-push へ1行追記（core.hooksPath は奪わない）<br>lefthook → lefthook.yml を作成して配線<br>既存の core.hooksPath / lefthook 設定がある場合は上書きせず手順表示のみ"
+  },
+  {
+   "kind": "return",
+   "from": "repo",
+   "to": "hermes",
+   "label": "展開直後から validate-docs は ERROR 0",
+   "num": "⑤"
+  },
+  {
+   "kind": "separator",
+   "label": "② 要件定義 — RDRA 4レイヤー",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "call",
+   "from": "user",
+   "to": "hermes",
+   "label": "Slackで壁打ち（要求・業務フロー・制約）",
+   "num": "⑥"
+  },
+  {
+   "kind": "note",
+   "color": "green",
+   "text": "Slackのやり取りが意思決定の一次ソース。<br>結論だけを ADR-xxxx / rdra 配下へ転記し、<br>spec 本文には Why を書かず ID 参照に留める",
+   "align": "left",
+   "span": [
+    "user",
+    "hermes"
+   ],
+   "width": 330
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "repo",
+   "label": "rdra/01-system-value: REQ-xxx・システムコンテキスト図",
+   "num": "⑦"
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "repo",
+   "label": "rdra/03-boundary: UC-xxx / 画面一覧 SCR-xxx を採番",
+   "num": "⑧"
+  },
+  {
+   "kind": "separator",
+   "label": "③ デザイン — Figma 往復",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "call",
+   "from": "user",
+   "to": "hermes",
+   "label": "デザイン方針・客先要望",
+   "num": "⑨"
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "coder",
+   "label": "HTMLモック＋画面spec から Figma 起こしを指示",
+   "num": "⑩"
+  },
+  {
+   "kind": "call",
+   "from": "coder",
+   "to": "figma",
+   "label": "generate_figma_design / use_figma（OAuth）",
+   "num": "⑪"
+  },
+  {
+   "kind": "return",
+   "from": "figma",
+   "to": "hermes",
+   "label": "客先レビュー指摘（やり取りは Figma に残す）",
+   "num": "⑫"
+  },
+  {
+   "kind": "note",
+   "color": "yellow",
+   "text": "design_status: draft → in-review → approved<br>結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記<br>合意後 export.sh(PAT read) で確定PNGを screenshots/ へ",
+   "align": "left",
+   "span": [
+    "figma",
+    "repo"
+   ],
+   "width": 330
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "repo",
+   "label": "確定PNG取り込み・design_status: approved",
+   "num": "⑬"
+  },
+  {
+   "kind": "separator",
+   "label": "④ 設計書 — specs / traceability / ADR",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "repo",
+   "label": "specs/screens/SCR-xxx.md ・ specs/apis/API-xxx.md",
+   "num": "⑭"
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "repo",
+   "label": "traceability に行追加 ／ Why は ADR-xxxx へ集約",
+   "num": "⑮"
+  },
+  {
+   "kind": "separator",
+   "label": "⑤ 実装 → docs 同期",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "call",
+   "from": "user",
+   "to": "hermes",
+   "label": "実装フェーズへ移行を指示",
+   "num": "⑯"
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "coder",
+   "label": "タスク委譲（Orca / Claude Code / Codex）",
+   "num": "⑰"
+  },
+  {
+   "kind": "call",
+   "from": "coder",
+   "to": "repo",
+   "label": "src/ app/ lib/ api/ を変更",
+   "num": "⑱"
+  },
+  {
+   "kind": "call",
+   "from": "coder",
+   "to": "repo",
+   "label": "/sync-docs ／ scripts/docs-sync/sync-docs.sh",
+   "num": "⑲"
+  },
+  {
+   "kind": "note",
+   "color": "blue",
+   "text": "git diff を claude -p に投入し、frontmatter の source: が<br>差分に含まれる spec の What/How のみ更新する。<br>※ sync-docs.sh と .claude/ は現状 Claude Code 前提（要抽象化）",
+   "align": "left",
+   "span": [
+    "coder",
+    "repo"
+   ],
+   "width": 340
+  },
+  {
+   "kind": "separator",
+   "label": "⑥ push — docs-validate ゲート",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "call",
+   "from": "coder",
+   "to": "hook",
+   "label": "git push（none=.githooks / husky=.husky / lefthook=lefthook から同一スクリプト起動）",
+   "num": "⑳"
+  },
+  {
+   "kind": "call",
+   "from": "hook",
+   "to": "repo",
+   "label": "validate-docs.py: frontmatter / ID参照 / 対応表の双方向突合",
+   "num": "㉑"
+  },
+  {
+   "kind": "fail",
+   "from": "repo",
+   "to": "hook",
+   "label": "ERROR: dangling ADR-xxxx・対応表と個票の不一致",
+   "num": "㉒"
+  },
+  {
+   "kind": "fail",
+   "from": "hook",
+   "to": "coder",
+   "label": "push 中止（exit 1）",
+   "num": "㉓"
+  },
+  {
+   "kind": "note",
+   "color": "red",
+   "text": "ERROR のみブロック。WARN（プレースホルダ・画像リンク切れ・<br>未定義UC）は表示のみ。緊急回避は DOCS_VALIDATE_SOFT=1 git push<br>／ git push --no-verify。python3 のみに依存しエージェント非依存",
+   "align": "left",
+   "span": [
+    "hermes",
+    "hook"
+   ],
+   "width": 340
+  },
+  {
+   "kind": "call",
+   "from": "coder",
+   "to": "repo",
+   "label": "/validate-docs で ERROR を修正しコミット",
+   "num": "㉔"
+  },
+  {
+   "kind": "call",
+   "from": "hook",
+   "to": "remote",
+   "label": "ERROR 0 → push 実行",
+   "num": "㉕"
+  },
+  {
+   "kind": "return",
+   "from": "remote",
+   "to": "hermes",
+   "label": "リモート反映",
+   "num": "㉖"
+  },
+  {
+   "kind": "return",
+   "from": "hermes",
+   "to": "user",
+   "label": "Slackへ完了報告（差分・残WARN）",
+   "num": "㉗"
+  },
+  {
+   "kind": "separator",
+   "label": "⑦ テンプレ更新の追従",
+   "span": [
+    "user",
+    "remote"
+   ]
+  },
+  {
+   "kind": "note",
+   "color": "green",
+   "text": "テンプレ側を改善し新タグを切る（最新: v1.6.0 = hook_manager 実装）<br>検証: none / husky導入済 / husky未導入 / lefthook設定無 / 設定有 / 他hooksPath の6ケースを実 scaffold",
+   "align": "left",
+   "at": "tmpl",
+   "width": 470
+  },
+  {
+   "kind": "call",
+   "from": "hermes",
+   "to": "tmpl",
+   "label": "copier update --trust",
+   "num": "㉘"
+  },
+  {
+   "kind": "call",
+   "from": "tmpl",
+   "to": "repo",
+   "label": "骨組みのみ3-wayマージ（個票・ADR・用語集は保護）",
+   "num": "㉙"
+  },
+  {
+   "kind": "return",
+   "from": "repo",
+   "to": "hermes",
+   "label": "validate-docs を再実行して整合を確認",
+   "num": "㉚"
+  }
+ ],
+ "frames": [
+  {
+   "label": "loop [ERROR 0 になるまで]",
+   "from_step": 30,
+   "to_step": 35,
+   "left": "hermes",
+   "right": "hook"
+  }
+ ],
+ "legend": [
+  {
+   "color": "green",
+   "text": "リポジトリ内の実ファイル・実コマンドで確認済み"
+  },
+  {
+   "color": "blue",
+   "text": "設定/スクリプト由来（copier.yml・sync-docs.sh）"
+  },
+  {
+   "color": "yellow",
+   "text": "WORKFLOW.md の運用規約（人手の運用）"
+  },
+  {
+   "color": "red",
+   "text": "検証 ERROR・push ブロック"
+  }
+ ]
+}
