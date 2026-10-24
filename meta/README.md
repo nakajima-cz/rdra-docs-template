@@ -12,6 +12,8 @@
 - `diagrams/lifecycle-sequence.png` — 上記のレンダリング結果（閲覧・貼り付け用）
 - `diagrams/lifecycle-sequence.spec.json` — 図の生成元 spec（図の正本はこちら。手で座標を触らない）
 
+テンプレートの仕様（質問・配線・検証）を変えたら、この図も同じコミットで更新する。
+
 ## 図の更新手順
 
 1. `meta/diagrams/lifecycle-sequence.spec.json` を編集する（participants / steps / frames / legend）

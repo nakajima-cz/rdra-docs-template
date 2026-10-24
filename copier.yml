@@ -17,6 +17,7 @@ _skip_if_exists:
   - "docs/glossary.md"
   - "docs/LOG.md"
   - "/.claude/settings.json"
+  - "/.docs-scaffold/config.sh"
 
 # 生成後に実行
 # - pre-push ゲートの配線は hook_manager の回答に応じて install.sh が行う
@@ -32,6 +33,11 @@ project_name:
   type: str
   help: プロジェクト名（ルートREADMEの見出しに使う）
   default: "My Project"
+
+source_dirs:
+  type: str
+  help: 実装ソースのディレクトリ（スペース区切り。docs 未更新警告と docs-sync の対象範囲）
+  default: "src app lib api server packages"
 
 use_claude_hook:
   type: bool

@@ -6,6 +6,19 @@ cd "$(git rev-parse --show-toplevel)"
 
 marker=".docs-scaffold/last-sync-sha"
 mkdir -p .docs-scaffold
+
+# 対象ソースディレクトリ（.docs-scaffold/config.sh が無ければ既定値）
+DOCS_SOURCE_DIRS="src app lib api server packages"
+if [ -f .docs-scaffold/config.sh ]; then
+  # shellcheck disable=SC1091
+  . .docs-scaffold/config.sh
+fi
+pathspec=()
+for d in $DOCS_SOURCE_DIRS; do pathspec+=("${d}/**"); done
+if [ "${#pathspec[@]}" -eq 0 ]; then
+  echo "docs-sync: DOCS_SOURCE_DIRS が空です（.docs-scaffold/config.sh を確認）。スキップ。"
+  exit 0
+fi
 last=$(cat "$marker" 2>/dev/null || echo "")
 head=$(git rev-parse HEAD)
 
@@ -15,9 +28,9 @@ if [ "$last" = "$head" ]; then
 fi
 
 base=${last:-HEAD~1}
-diff=$(git diff "$base..HEAD" -- 'src/**' 'app/**' 'lib/**' 'api/**' 2>/dev/null || true)
+diff=$(git diff "$base..HEAD" -- "${pathspec[@]}" 2>/dev/null || true)
 if [ -z "$diff" ]; then
-  echo "docs-sync: 対象ソース変更なし。スキップ。"
+  echo "docs-sync: 対象ソース変更なし（対象: ${DOCS_SOURCE_DIRS}）。スキップ。"
   echo "$head" > "$marker"
   exit 0
 fi
@@ -37,7 +50,7 @@ docs/specs/screens・docs/specs/apis・docs/traceability の該当ファイル�
 - 更新した spec は frontmatter の updated: を今日の日付に、画面specは source_commit: を現行HEADのSHAに更新する。'
 
 echo "docs-sync: claude をヘッドレス起動して docs を更新します..."
-git --no-pager diff "$base..HEAD" -- 'src/**' 'app/**' 'lib/**' 'api/**' | \
+git --no-pager diff "$base..HEAD" -- "${pathspec[@]}" | \
   claude -p "$prompt" --allowedTools 'Read,Edit,Bash(git diff*)' --max-turns 20 || true
 
 echo "$head" > "$marker"

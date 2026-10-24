@@ -41,8 +41,15 @@ git status   # 追加されたファイルを確認してからコミット
 | 質問 | 内容 | デフォルト |
 |---|---|---|
 | `project_name` | ルート README の見出しに使うプロジェクト名 | `My Project` |
+| `source_dirs` | 実装ソースのディレクトリ（スペース区切り）。docs 未更新警告と docs-sync の対象範囲 | `src app lib api server packages` |
 | `use_claude_hook` | Claude Code の Stop フックで docs 自動メンテを有効にするか | `true` |
 | `hook_manager` | pre-push ゲートの配線先（none / husky / lefthook） | `none` |
+
+`source_dirs` の回答は `.docs-scaffold/config.sh` の `DOCS_SOURCE_DIRS` に書き出され、
+`.githooks/pre-push`（docs 未更新警告）と `scripts/docs-sync/sync-docs.sh`（同期対象の git diff）が参照する。
+Go なら `cmd internal pkg`、monorepo なら `apps packages` のように案件の構成へ合わせる。
+このファイルは `_skip_if_exists` で保護されるので、展開後に手で書き換えてよい（`copier update` で戻らない）。
+ファイルが無い旧リポジトリでは既定値にフォールバックする。
 
 `hook_manager` の挙動（`scripts/docs-hooks/install.sh` が実施。何度実行しても同じ結果）:
 

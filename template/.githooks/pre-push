@@ -9,16 +9,28 @@ git rev-parse --verify -q origin/HEAD >/dev/null 2>&1 || range="HEAD~1..HEAD"
 
 changed=$(git diff --name-only "$range" 2>/dev/null || true)
 
+# 対象ソースディレクトリ（.docs-scaffold/config.sh が無ければ既定値）
+DOCS_SOURCE_DIRS="src app lib api server packages"
+if [ -f .docs-scaffold/config.sh ]; then
+  # shellcheck disable=SC1091
+  . .docs-scaffold/config.sh
+fi
+src_re=$(printf '%s' "$DOCS_SOURCE_DIRS" | tr -s ' ' '|' | sed -E 's/^\|//; s/\|$//')
+
 # --- 1) docs 未更新の警告 ---------------------------------------------------
 if [ -n "$changed" ]; then
   # ソース変更（src/, app/, lib/, api/ 等）があるか
-  code_changed=$(echo "$changed" | grep -Ei '^(src|app|lib|api|server|packages)/' || true)
+  code_changed=""
+  if [ -n "$src_re" ]; then
+    code_changed=$(echo "$changed" | grep -Ei "^(${src_re})/" || true)
+  fi
   docs_changed=$(echo "$changed" | grep -E '^docs/' || true)
 
   if [ -n "$code_changed" ] && [ -z "$docs_changed" ]; then
     echo "──────────────────────────────────────────────"
     echo "docs-scaffold WARNING: コード変更に対し docs/ が未更新です"
-    echo "  対象: SCR-/API-/traceability の該当設計書を確認してください"
+    echo "  対象ソース: ${DOCS_SOURCE_DIRS}"
+    echo "  SCR-/API-/traceability の該当設計書を確認してください"
     echo "  自動同期: Claude 対話中に /sync-docs、または scripts/docs-sync/sync-docs.sh"
     echo "  （このpushはブロックしていません）"
     echo "──────────────────────────────────────────────"

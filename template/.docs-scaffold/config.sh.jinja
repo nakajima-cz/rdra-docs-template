@@ -1,0 +1,10 @@
+# docs-scaffold: 共通設定
+#
+# このファイルは copier の source_dirs 回答から生成される。後から手で編集してよい
+# （_skip_if_exists で保護されているので copier update では上書きされない）。
+#
+# DOCS_SOURCE_DIRS: 実装ソースのディレクトリ（スペース区切り、リポジトリルートからの相対）
+#   - .githooks/pre-push: ここが変わったのに docs/ が未更新なら警告
+#   - scripts/docs-sync/sync-docs.sh: ここの差分だけを docs 同期の入力にする
+# 例) Go: "cmd internal pkg" / monorepo: "apps packages" / Rails: "app lib"
+DOCS_SOURCE_DIRS="{{ source_dirs }}"

@@ -7,7 +7,7 @@
         <mxCell id="v1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontFamily=Hiragino Sans;" value="&lt;b&gt;rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）&lt;/b&gt;" vertex="1">
           <mxGeometry height="32" width="1990" x="30" y="16" as="geometry" />
         </mxCell>
-        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.6.0 時点）" vertex="1">
+        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.7.0 時点）" vertex="1">
           <mxGeometry height="24" width="1990" x="30" y="50" as="geometry" />
         </mxCell>
         <mxCell id="user" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="中嶋&lt;br&gt;(Slack)" vertex="1">
@@ -55,7 +55,7 @@
             <mxPoint x="400" y="316" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.6.0" vertex="1">
+        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.7.0" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="359" as="geometry" />
         </mxCell>
         <mxCell id="e9" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -73,7 +73,7 @@
             <mxPoint x="1400" y="522" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 既存 README/CLAUDE/個票は上書きしない" vertex="1">
+        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs → .docs-scaffold/config.sh (DOCS_SOURCE_DIRS)&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない" vertex="1">
           <mxGeometry height="41" width="970" x="540" y="565" as="geometry" />
         </mxCell>
         <mxCell id="v13" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="④ scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線" vertex="1">
@@ -247,7 +247,7 @@
             <mxPoint x="1150" y="2432" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v52" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑱ src/ app/ lib/ api/ を変更" vertex="1">
+        <mxCell id="v52" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑱ DOCS_SOURCE_DIRS のディレクトリを変更（既定: src app lib api server packages）" vertex="1">
           <mxGeometry height="56" width="230" x="1140" y="2475" as="geometry" />
         </mxCell>
         <mxCell id="e53" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -265,7 +265,7 @@
             <mxPoint x="1400" y="2638" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v56" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="git diff を claude -p に投入し、frontmatter の source: が&lt;br&gt;差分に含まれる spec の What/How のみ更新する。&lt;br&gt;※ sync-docs.sh と .claude/ は現状 Claude Code 前提（要抽象化）" vertex="1">
+        <mxCell id="v56" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="git diff を claude -p に投入し、frontmatter の source: が&lt;br&gt;差分に含まれる spec の What/How のみ更新する。&lt;br&gt;v1.7.0: 対象 pathspec は .docs-scaffold/config.sh の DOCS_SOURCE_DIRS から生成&lt;br&gt;（Go: cmd internal pkg / monorepo: apps packages などへ変更可。手編集は copier update で保護）&lt;br&gt;※ sync-docs.sh と .claude/ は現状 Claude Code 前提（要抽象化）" vertex="1">
           <mxGeometry height="41" width="470" x="1040" y="2681" as="geometry" />
         </mxCell>
         <mxCell id="e57" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
@@ -361,8 +361,8 @@
         <mxCell id="v77" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑦ テンプレ更新の追従&lt;/b&gt;" vertex="1">
           <mxGeometry height="22" width="200" x="48" y="3707" as="geometry" />
         </mxCell>
-        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.6.0 = hook_manager 実装）&lt;br&gt;検証: none / husky導入済 / husky未導入 / lefthook設定無 / 設定有 / 他hooksPath の6ケースを実 scaffold" vertex="1">
-          <mxGeometry height="41" width="470" x="605" y="3739" as="geometry" />
+        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.7.0 = source_dirs 質問化）&lt;br&gt;v1.6.0: hook_manager 実装 ／ v1.7.0: ソースパス決め打ちを解消&lt;br&gt;検証: 既定 / Go構成 / 対象外ディレクトリ / config.sh 無し / copier update 保護 を実 scaffold" vertex="1">
+          <mxGeometry height="41" width="520" x="605" y="3739" as="geometry" />
         </mxCell>
         <mxCell id="v79" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉘ copier update --trust" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="3816" as="geometry" />
