@@ -1,23 +1,52 @@
 #!/usr/bin/env bash
-# docs-scaffold: pre-push — 実装変更に対し docs 未更新を警告（ブロックはしない）
-set -euo pipefail
+# docs-scaffold: pre-push
+#  1) 実装変更に対し docs 未更新を警告（ブロックしない）
+#  2) docs/ の構造整合を検査（ERROR があればブロック）
+set -uo pipefail
 
 range="origin/HEAD..HEAD"
 git rev-parse --verify -q origin/HEAD >/dev/null 2>&1 || range="HEAD~1..HEAD"
 
 changed=$(git diff --name-only "$range" 2>/dev/null || true)
-[ -z "$changed" ] && exit 0
 
-# ソース変更（src/, app/, lib/, api/ 等）があるか
-code_changed=$(echo "$changed" | grep -Ei '^(src|app|lib|api|server|packages)/' || true)
-docs_changed=$(echo "$changed" | grep -E '^docs/' || true)
+# --- 1) docs 未更新の警告 ---------------------------------------------------
+if [ -n "$changed" ]; then
+  # ソース変更（src/, app/, lib/, api/ 等）があるか
+  code_changed=$(echo "$changed" | grep -Ei '^(src|app|lib|api|server|packages)/' || true)
+  docs_changed=$(echo "$changed" | grep -E '^docs/' || true)
 
-if [ -n "$code_changed" ] && [ -z "$docs_changed" ]; then
-  echo "──────────────────────────────────────────────"
-  echo "docs-scaffold WARNING: コード変更に対し docs/ が未更新です"
-  echo "  対象: SCR-/API-/traceability の該当設計書を確認してください"
-  echo "  自動同期: Claude 対話中に /sync-docs、または scripts/docs-sync/sync-docs.sh"
-  echo "  （このpushはブロックしていません）"
-  echo "──────────────────────────────────────────────"
+  if [ -n "$code_changed" ] && [ -z "$docs_changed" ]; then
+    echo "──────────────────────────────────────────────"
+    echo "docs-scaffold WARNING: コード変更に対し docs/ が未更新です"
+    echo "  対象: SCR-/API-/traceability の該当設計書を確認してください"
+    echo "  自動同期: Claude 対話中に /sync-docs、または scripts/docs-sync/sync-docs.sh"
+    echo "  （このpushはブロックしていません）"
+    echo "──────────────────────────────────────────────"
+  fi
 fi
+
+# --- 2) docs 構造整合の検査 -------------------------------------------------
+# ERROR = 構造の破綻（ID の dangling / 対応表の不一致 / frontmatter 欠落）→ ブロック
+# WARN  = 埋め忘れ（プレースホルダ / 画像リンク切れ）→ 表示のみ
+# 回避: DOCS_VALIDATE_SOFT=1 git push  または  git push --no-verify
+validator="scripts/docs-validate/validate-docs.py"
+if [ -f "$validator" ] && [ -d docs ]; then
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "docs-validate: python3 未検出のため検査をスキップしました"
+    exit 0
+  fi
+  echo "docs-validate: docs/ の構造を検査します..."
+  if ! python3 "$validator"; then
+    if [ "${DOCS_VALIDATE_SOFT:-0}" = "1" ]; then
+      echo "docs-validate: ERROR がありますが DOCS_VALIDATE_SOFT=1 のため push を継続します"
+      exit 0
+    fi
+    echo "──────────────────────────────────────────────"
+    echo "docs-validate: ERROR のため push を中止しました"
+    echo "  修正するか、DOCS_VALIDATE_SOFT=1 git push で一時的に回避できます"
+    echo "──────────────────────────────────────────────"
+    exit 1
+  fi
+fi
+
 exit 0

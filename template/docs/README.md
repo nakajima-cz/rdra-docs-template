@@ -13,6 +13,12 @@
 - `traceability/` — 画面×UC×API 対応表（多対多を橋渡し）
 - `assets/` — 図・画像の実体
 
+## 整合性チェック
+`python3 scripts/docs-validate/validate-docs.py` で docs/ の構造を検査する（`--json` / `--strict` あり）。
+pre-push で自動実行され、ERROR があれば push がブロックされる（回避: `DOCS_VALIDATE_SOFT=1 git push`）。
+- ERROR: frontmatter 必須キー欠落 / design_status 不正 / ID の dangling 参照 / 対応表と個票の不一致
+- WARN: プレースホルダ未置換 / 画像リンク切れ / 未定義 UC 参照
+
 ## 読み方
 1. `rdra/` で要件（What）を掴む
 2. `specs/screens` `specs/apis` で設計（How）を見る

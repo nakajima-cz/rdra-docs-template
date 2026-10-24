@@ -1,0 +1,13 @@
+# validate-docs
+docs/ の構造整合を検査し、ERROR を潰す。
+
+手順:
+1. `python3 scripts/docs-validate/validate-docs.py` を実行する（JSON が欲しければ `--json`）
+2. ERROR を上から順に修正する。種類と直し方:
+   - `frontmatter に必須キーがありません` → 当該 spec の frontmatter に追記する（値が不明なら空で置く）
+   - `design_status が不正です` → `draft` / `in-review` / `approved` のいずれかに直す
+   - `ADR-xxxx を参照していますが実体が存在しません` → 参照を正すか `docs/adr/xxxx-*.md` を起こす
+   - `対応表に行がありません` / `実体が存在しません` → `docs/traceability/screen-uc-api.md` と個票のどちらかを揃える
+3. WARN は埋め忘れ（プレースホルダ・画像リンク切れ・未定義UC）。分かる範囲で埋め、不明なものは放置してよい
+4. 事実が分からない箇所を推測で埋めない。`TODO:` を残して報告する
+5. 修正は `docs: fix validation errors` として独立コミットする

@@ -77,7 +77,20 @@ copier copy --trust ./rdra-docs-template /path/to/target-repo
 ```
 未コミットの変更を含めて試す場合は `--vcs-ref HEAD` を付ける。
 
+## 整合性チェック（docs-validate）
+展開先リポジトリのルートで:
+```sh
+python3 scripts/docs-validate/validate-docs.py          # 人間向け出力
+python3 scripts/docs-validate/validate-docs.py --json   # CI 向け
+python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
+```
+- **ERROR**（構造の破綻・push をブロック）: frontmatter 必須キー欠落 / `design_status` 不正値 / `ADR-`・`SCR-`・`API-` の dangling 参照 / 対応表と個票の双方向不一致
+- **WARN**（表示のみ）: プレースホルダ未置換（`YYYY-MM-DD` 等） / 画像リンク切れ / `docs/rdra/` に定義の無い `UC-` 参照
+- pre-push から自動実行される。一時回避は `DOCS_VALIDATE_SOFT=1 git push` または `git push --no-verify`
+- 依存は python3 のみ（未検出なら検査をスキップして push を通す）
+
 ## 特徴
+- `scripts/docs-validate/validate-docs.py` で docs の構造整合を機械検査（pre-push でブロック）
 - 既存ファイルは `_skip_if_exists` で上書きしない（docs/, README, CLAUDE, .claude/settings.json）
 - git フックは `.githooks/`（`core.hooksPath`）に置き `.git/hooks` を汚さない
 - `.copier-answers.yml` に版を記録し `copier update` で3-wayマージ追従
