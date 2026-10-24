@@ -1,7 +1,7 @@
 {
  "name": "rdra-docs-template ライフサイクル",
  "title": "rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）",
- "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.7.0 時点）",
+ "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.8.0 時点）",
  "font": "Hiragino Sans",
  "participants": [
   {
@@ -57,7 +57,7 @@
    "kind": "call",
    "from": "hermes",
    "to": "tmpl",
-   "label": "copier copy --trust --vcs-ref v1.7.0",
+   "label": "copier copy --trust --vcs-ref v1.8.0",
    "num": "②"
   },
   {
@@ -70,13 +70,13 @@
   {
    "kind": "note",
    "color": "blue",
-   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs → .docs-scaffold/config.sh (DOCS_SOURCE_DIRS)<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない",
+   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs → .docs-scaffold/config.sh (DOCS_SOURCE_DIRS)<br>use_screens / use_figma で画面spec・対応表・Figma連携を取捨<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない",
    "align": "left",
    "span": [
     "tmpl",
     "repo"
    ],
-   "width": 400
+   "width": 430
   },
   {
    "kind": "call",
@@ -182,13 +182,13 @@
   {
    "kind": "note",
    "color": "yellow",
-   "text": "design_status: draft → in-review → approved<br>結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記<br>合意後 export.sh(PAT read) で確定PNGを screenshots/ へ",
+   "text": "design_status: draft → in-review → approved<br>結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記<br>合意後 export.sh(PAT read) で確定PNGを screenshots/ へ<br>※ ③④のフェーズは use_screens / use_figma = true の案件のみ",
    "align": "left",
    "span": [
     "figma",
     "repo"
    ],
-   "width": 330
+   "width": 400
   },
   {
    "kind": "call",
@@ -352,10 +352,10 @@
   {
    "kind": "note",
    "color": "green",
-   "text": "テンプレ側を改善し新タグを切る（最新: v1.7.0 = source_dirs 質問化）<br>v1.6.0: hook_manager 実装 ／ v1.7.0: ソースパス決め打ちを解消<br>検証: 既定 / Go構成 / 対象外ディレクトリ / config.sh 無し / copier update 保護 を実 scaffold",
+   "text": "テンプレ側を改善し新タグを切る（最新: v1.8.0）<br>v1.6.0: hook_manager 実装 ／ v1.7.0: source_dirs 質問化 ／ v1.8.0: use_screens・use_figma 質問化<br>検証: 画面あり / 画面なし(API専用) / Figmaなし / dangling参照ブロック / v1.7.0→v1.8.0 の copier update",
    "align": "left",
    "at": "tmpl",
-   "width": 520
+   "width": 560
   },
   {
    "kind": "call",
