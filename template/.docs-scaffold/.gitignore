@@ -1,3 +1,4 @@
 # docs-scaffold の実行時ステート（コミット不要）
 sync.log
 last-sync-sha
+last-diff.patch

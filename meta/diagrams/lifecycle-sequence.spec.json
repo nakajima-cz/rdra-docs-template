@@ -1,7 +1,7 @@
 {
  "name": "rdra-docs-template ライフサイクル",
  "title": "rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）",
- "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.8.0 時点）",
+ "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.9.0 時点）",
  "font": "Hiragino Sans",
  "participants": [
   {
@@ -57,7 +57,7 @@
    "kind": "call",
    "from": "hermes",
    "to": "tmpl",
-   "label": "copier copy --trust --vcs-ref v1.8.0",
+   "label": "copier copy --trust --vcs-ref v1.9.0",
    "num": "②"
   },
   {
@@ -70,7 +70,7 @@
   {
    "kind": "note",
    "color": "blue",
-   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs → .docs-scaffold/config.sh (DOCS_SOURCE_DIRS)<br>use_screens / use_figma で画面spec・対応表・Figma連携を取捨<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない",
+   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs・docs_sync_agent → .docs-scaffold/config.sh<br>use_screens / use_figma で画面spec・対応表・Figma連携を取捨<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない",
    "align": "left",
    "span": [
     "tmpl",
@@ -252,19 +252,19 @@
    "kind": "call",
    "from": "coder",
    "to": "repo",
-   "label": "/sync-docs ／ scripts/docs-sync/sync-docs.sh",
+   "label": "scripts/docs-sync/sync-docs.sh（DOCS_SYNC_AGENT で起動先を切替）",
    "num": "⑲"
   },
   {
    "kind": "note",
    "color": "blue",
-   "text": "git diff を claude -p に投入し、frontmatter の source: が<br>差分に含まれる spec の What/How のみ更新する。<br>v1.7.0: 対象 pathspec は .docs-scaffold/config.sh の DOCS_SOURCE_DIRS から生成<br>（Go: cmd internal pkg / monorepo: apps packages などへ変更可。手編集は copier update で保護）<br>※ sync-docs.sh と .claude/ は現状 Claude Code 前提（要抽象化）",
+   "text": "差分を .docs-scaffold/last-diff.patch に書き出し、プロンプトから参照させる<br>DOCS_SYNC_AGENT: claude -p / codex exec / opencode run / 任意コマンド / none<br>frontmatter の source: が差分に含まれる spec の What/How のみ更新<br>対象 pathspec は DOCS_SOURCE_DIRS から生成（Go: cmd internal / monorepo: apps packages）<br>エージェント未インストール時は差分だけ出して exit 0（ブロックしない）",
    "align": "left",
    "span": [
     "coder",
     "repo"
    ],
-   "width": 470
+   "width": 520
   },
   {
    "kind": "separator",
@@ -352,10 +352,10 @@
   {
    "kind": "note",
    "color": "green",
-   "text": "テンプレ側を改善し新タグを切る（最新: v1.8.0）<br>v1.6.0: hook_manager 実装 ／ v1.7.0: source_dirs 質問化 ／ v1.8.0: use_screens・use_figma 質問化<br>検証: 画面あり / 画面なし(API専用) / Figmaなし / dangling参照ブロック / v1.7.0→v1.8.0 の copier update",
+   "text": "テンプレ側を改善し新タグを切る（最新: v1.9.0）<br>v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.8.1 不要ファイル整理 ／ v1.9.0 docs_sync_agent<br>検証: claude / codex / opencode / custom / none / 未インストール / 不正値 をスタブCLIで実行",
    "align": "left",
    "at": "tmpl",
-   "width": 560
+   "width": 620
   },
   {
    "kind": "call",

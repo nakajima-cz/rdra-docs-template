@@ -7,7 +7,7 @@
         <mxCell id="v1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontFamily=Hiragino Sans;" value="&lt;b&gt;rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）&lt;/b&gt;" vertex="1">
           <mxGeometry height="32" width="1990" x="30" y="16" as="geometry" />
         </mxCell>
-        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.8.0 時点）" vertex="1">
+        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.9.0 時点）" vertex="1">
           <mxGeometry height="24" width="1990" x="30" y="50" as="geometry" />
         </mxCell>
         <mxCell id="user" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="中嶋&lt;br&gt;(Slack)" vertex="1">
@@ -35,7 +35,7 @@
           <mxGeometry height="4471" width="220" x="1790" y="96" as="geometry" />
         </mxCell>
         <mxCell id="loop3" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;width=196;height=26;fillColor=none;strokeColor=#555555;strokeWidth=1.5;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="loop [ERROR 0 になるまで]" vertex="1">
-          <mxGeometry height="651" width="1510" x="270" y="3015" as="geometry" />
+          <mxGeometry height="651" width="1510" x="270" y="3032" as="geometry" />
         </mxCell>
         <mxCell id="e4" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
@@ -55,7 +55,7 @@
             <mxPoint x="400" y="316" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.8.0" vertex="1">
+        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.9.0" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="359" as="geometry" />
         </mxCell>
         <mxCell id="e9" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -73,7 +73,7 @@
             <mxPoint x="1400" y="522" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs → .docs-scaffold/config.sh (DOCS_SOURCE_DIRS)&lt;br&gt;use_screens / use_figma で画面spec・対応表・Figma連携を取捨&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない" vertex="1">
+        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs・docs_sync_agent → .docs-scaffold/config.sh&lt;br&gt;use_screens / use_figma で画面spec・対応表・Figma連携を取捨&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない" vertex="1">
           <mxGeometry height="99" width="970" x="540" y="565" as="geometry" />
         </mxCell>
         <mxCell id="v13" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="④ scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線" vertex="1">
@@ -256,7 +256,7 @@
             <mxPoint x="1400" y="2685" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v54" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑲ /sync-docs ／ scripts/docs-sync/sync-docs.sh" vertex="1">
+        <mxCell id="v54" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑲ scripts/docs-sync/sync-docs.sh（DOCS_SYNC_AGENT で起動先を切替）" vertex="1">
           <mxGeometry height="56" width="230" x="1140" y="2745" as="geometry" />
         </mxCell>
         <mxCell id="e55" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -265,104 +265,104 @@
             <mxPoint x="1400" y="2805" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v56" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="git diff を claude -p に投入し、frontmatter の source: が&lt;br&gt;差分に含まれる spec の What/How のみ更新する。&lt;br&gt;v1.7.0: 対象 pathspec は .docs-scaffold/config.sh の DOCS_SOURCE_DIRS から生成&lt;br&gt;（Go: cmd internal pkg / monorepo: apps packages などへ変更可。手編集は copier update で保護）&lt;br&gt;※ sync-docs.sh と .claude/ は現状 Claude Code 前提（要抽象化）" vertex="1">
-          <mxGeometry height="133" width="470" x="1040" y="2848" as="geometry" />
+        <mxCell id="v56" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="差分を .docs-scaffold/last-diff.patch に書き出し、プロンプトから参照させる&lt;br&gt;DOCS_SYNC_AGENT: claude -p / codex exec / opencode run / 任意コマンド / none&lt;br&gt;frontmatter の source: が差分に含まれる spec の What/How のみ更新&lt;br&gt;対象 pathspec は DOCS_SOURCE_DIRS から生成（Go: cmd internal / monorepo: apps packages）&lt;br&gt;エージェント未インストール時は差分だけ出して exit 0（ブロックしない）" vertex="1">
+          <mxGeometry height="150" width="470" x="1040" y="2848" as="geometry" />
         </mxCell>
         <mxCell id="e57" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="3025" as="sourcePoint" />
-            <mxPoint x="2010" y="3025" as="targetPoint" />
+            <mxPoint x="40" y="3042" as="sourcePoint" />
+            <mxPoint x="2010" y="3042" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v58" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑥ push — docs-validate ゲート&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="3013" as="geometry" />
+          <mxGeometry height="22" width="200" x="48" y="3030" as="geometry" />
         </mxCell>
         <mxCell id="v59" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑳ git push（none=.githooks / husky=.husky / lefthook=lefthook から同一スクリプト起動）" vertex="1">
-          <mxGeometry height="61" width="230" x="1140" y="3040" as="geometry" />
+          <mxGeometry height="61" width="230" x="1140" y="3057" as="geometry" />
         </mxCell>
         <mxCell id="e60" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="3105" as="sourcePoint" />
-            <mxPoint x="1650" y="3105" as="targetPoint" />
+            <mxPoint x="1150" y="3122" as="sourcePoint" />
+            <mxPoint x="1650" y="3122" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v61" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉑ validate-docs.py: frontmatter / ID参照 / 対応表の双方向突合" vertex="1">
-          <mxGeometry height="56" width="230" x="1390" y="3165" as="geometry" />
+          <mxGeometry height="56" width="230" x="1390" y="3182" as="geometry" />
         </mxCell>
         <mxCell id="e62" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1650" y="3225" as="sourcePoint" />
-            <mxPoint x="1400" y="3225" as="targetPoint" />
+            <mxPoint x="1650" y="3242" as="sourcePoint" />
+            <mxPoint x="1400" y="3242" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v63" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉒ ERROR: dangling ADR-xxxx・対応表と個票の不一致" vertex="1">
-          <mxGeometry height="56" width="230" x="1390" y="3268" as="geometry" />
+          <mxGeometry height="56" width="230" x="1390" y="3285" as="geometry" />
         </mxCell>
         <mxCell id="e64" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#b85450;strokeWidth=1.8;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1400" y="3328" as="sourcePoint" />
-            <mxPoint x="1650" y="3328" as="targetPoint" />
+            <mxPoint x="1400" y="3345" as="sourcePoint" />
+            <mxPoint x="1650" y="3345" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v65" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉓ push 中止（exit 1）" vertex="1">
-          <mxGeometry height="56" width="230" x="1140" y="3371" as="geometry" />
+          <mxGeometry height="56" width="230" x="1140" y="3388" as="geometry" />
         </mxCell>
         <mxCell id="e66" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#b85450;strokeWidth=1.8;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1650" y="3431" as="sourcePoint" />
-            <mxPoint x="1150" y="3431" as="targetPoint" />
+            <mxPoint x="1650" y="3448" as="sourcePoint" />
+            <mxPoint x="1150" y="3448" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v67" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="ERROR のみブロック。WARN（プレースホルダ・画像リンク切れ・&lt;br&gt;未定義UC）は表示のみ。緊急回避は DOCS_VALIDATE_SOFT=1 git push&lt;br&gt;／ git push --no-verify。python3 のみに依存しエージェント非依存" vertex="1">
-          <mxGeometry height="65" width="1470" x="290" y="3474" as="geometry" />
+          <mxGeometry height="65" width="1470" x="290" y="3491" as="geometry" />
         </mxCell>
         <mxCell id="v68" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉔ /validate-docs で ERROR を修正しコミット" vertex="1">
-          <mxGeometry height="56" width="230" x="1140" y="3563" as="geometry" />
+          <mxGeometry height="56" width="230" x="1140" y="3580" as="geometry" />
         </mxCell>
         <mxCell id="e69" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="3623" as="sourcePoint" />
-            <mxPoint x="1400" y="3623" as="targetPoint" />
+            <mxPoint x="1150" y="3640" as="sourcePoint" />
+            <mxPoint x="1400" y="3640" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v70" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉕ ERROR 0 → push 実行" vertex="1">
-          <mxGeometry height="56" width="230" x="1640" y="3666" as="geometry" />
+          <mxGeometry height="56" width="230" x="1640" y="3683" as="geometry" />
         </mxCell>
         <mxCell id="e71" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1650" y="3726" as="sourcePoint" />
-            <mxPoint x="1900" y="3726" as="targetPoint" />
+            <mxPoint x="1650" y="3743" as="sourcePoint" />
+            <mxPoint x="1900" y="3743" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v72" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉖ リモート反映" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="3769" as="geometry" />
+          <mxGeometry height="56" width="230" x="390" y="3786" as="geometry" />
         </mxCell>
         <mxCell id="e73" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1900" y="3829" as="sourcePoint" />
-            <mxPoint x="400" y="3829" as="targetPoint" />
+            <mxPoint x="1900" y="3846" as="sourcePoint" />
+            <mxPoint x="400" y="3846" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v74" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉗ Slackへ完了報告（差分・残WARN）" vertex="1">
-          <mxGeometry height="56" width="230" x="140" y="3872" as="geometry" />
+          <mxGeometry height="56" width="230" x="140" y="3889" as="geometry" />
         </mxCell>
         <mxCell id="e75" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="3932" as="sourcePoint" />
-            <mxPoint x="150" y="3932" as="targetPoint" />
+            <mxPoint x="400" y="3949" as="sourcePoint" />
+            <mxPoint x="150" y="3949" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e76" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="3995" as="sourcePoint" />
-            <mxPoint x="2010" y="3995" as="targetPoint" />
+            <mxPoint x="40" y="4012" as="sourcePoint" />
+            <mxPoint x="2010" y="4012" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="v77" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑦ テンプレ更新の追従&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="3983" as="geometry" />
+          <mxGeometry height="22" width="200" x="48" y="4000" as="geometry" />
         </mxCell>
-        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.8.0）&lt;br&gt;v1.6.0: hook_manager 実装 ／ v1.7.0: source_dirs 質問化 ／ v1.8.0: use_screens・use_figma 質問化&lt;br&gt;検証: 画面あり / 画面なし(API専用) / Figmaなし / dangling参照ブロック / v1.7.0→v1.8.0 の copier update" vertex="1">
-          <mxGeometry height="99" width="560" x="605" y="4015" as="geometry" />
+        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.9.0）&lt;br&gt;v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.8.1 不要ファイル整理 ／ v1.9.0 docs_sync_agent&lt;br&gt;検証: claude / codex / opencode / custom / none / 未インストール / 不正値 をスタブCLIで実行" vertex="1">
+          <mxGeometry height="82" width="620" x="605" y="4032" as="geometry" />
         </mxCell>
         <mxCell id="v79" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉘ copier update --trust" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="4138" as="geometry" />

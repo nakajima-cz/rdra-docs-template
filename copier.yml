@@ -52,10 +52,28 @@ source_dirs:
   help: 実装ソースのディレクトリ（スペース区切り。docs 未更新警告と docs-sync の対象範囲）
   default: "src app lib api server packages"
 
+docs_sync_agent:
+  type: str
+  help: docs 自動同期に使うコーディングエージェント
+  choices:
+    Claude Code: claude
+    OpenAI Codex CLI: codex
+    OpenCode: opencode
+    任意コマンド（docs_sync_cmd で指定）: custom
+    使わない（差分出力のみ・手動更新）: none
+  default: claude
+
+docs_sync_cmd:
+  type: str
+  help: docs_sync_agent=custom のとき実行するコマンド（プロンプトが最後の引数で渡る）
+  default: ""
+  when: "{{ docs_sync_agent == 'custom' }}"
+
 use_claude_hook:
   type: bool
   help: Claude Code の Stop フックで docs 自動メンテを有効にするか
-  default: true
+  default: "{{ docs_sync_agent == 'claude' }}"
+  when: "{{ docs_sync_agent == 'claude' }}"
 
 hook_manager:
   type: str

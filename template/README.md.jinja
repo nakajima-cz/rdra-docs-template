@@ -15,6 +15,7 @@ RDRA 2.0（要件定義）+ ADR（設計判断）ベースのドキュメント�
 ## docs 自動メンテ
 - `.githooks/pre-push` … SCR-/API- 関連ソースが変わったのに docs 未更新なら警告 + docs 構造検査（ERROR で push をブロック、回避は `DOCS_VALIDATE_SOFT=1 git push`）
 - `scripts/docs-hooks/install.sh` … pre-push ゲートの配線（`none` / `husky` / `lefthook`）。フック管理を変えたら再実行する{% if hook_manager != 'none' %}（このリポジトリは `{{ hook_manager }}` で配線済み）{% endif %}
+- `scripts/docs-sync/sync-docs.sh` … 実装差分から docs の What/How を同期（エージェント: `{{ docs_sync_agent }}`。変更は `.docs-scaffold/config.sh` の `DOCS_SYNC_AGENT`）
 {% if use_claude_hook %}- `.claude/` … Claude Code の Stop フックで作業完了後に docs の What/How を同期（Why は生成せず ADR スタブ止まり）
 - 手動同期: Claude 対話中に `/sync-docs`
 {% endif %}

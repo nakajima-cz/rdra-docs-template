@@ -31,7 +31,7 @@ if [ -n "$changed" ]; then
     echo "docs-scaffold WARNING: コード変更に対し docs/ が未更新です"
     echo "  対象ソース: ${DOCS_SOURCE_DIRS}"
     echo "  SCR-/API-/traceability の該当設計書を確認してください"
-    echo "  自動同期: Claude 対話中に /sync-docs、または scripts/docs-sync/sync-docs.sh"
+    echo "  自動同期: bash scripts/docs-sync/sync-docs.sh（エージェントは .docs-scaffold/config.sh の DOCS_SYNC_AGENT）"
     echo "  （このpushはブロックしていません）"
     echo "──────────────────────────────────────────────"
   fi

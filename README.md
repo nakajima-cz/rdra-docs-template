@@ -44,12 +44,20 @@ git status   # 追加されたファイルを確認してからコミット
 | `use_screens` | 画面設計書（`docs/specs/screens` と 画面×UC×API 対応表）を使うか。API専用/バッチ案件は `false` | `true` |
 | `use_figma` | Figma 連携スクリプト（`scripts/figma-export`）を同梱するか（`use_screens=true` の時だけ質問） | `use_screens` と同じ |
 | `source_dirs` | 実装ソースのディレクトリ（スペース区切り）。docs 未更新警告と docs-sync の対象範囲 | `src app lib api server packages` |
-| `use_claude_hook` | Claude Code の Stop フックで docs 自動メンテを有効にするか | `true` |
+| `docs_sync_agent` | docs 自動同期に使うエージェント（`claude` / `codex` / `opencode` / `custom` / `none`） | `claude` |
+| `docs_sync_cmd` | `docs_sync_agent=custom` のとき実行するコマンド（プロンプトが最後の引数） | （空） |
+| `use_claude_hook` | Claude Code の Stop フックで docs 自動メンテを有効にするか（`docs_sync_agent=claude` の時だけ質問） | `true` |
 | `hook_manager` | pre-push ゲートの配線先（none / husky / lefthook） | `none` |
 
 `use_screens=false` のとき、`docs/specs/screens/` と Figma 連携は配布されず、対応表は
 `docs/traceability/uc-api.md`（UC×API）になり、`docs/WORKFLOW.md` は画面工程を含まない API 版に差し替わる。
 検証スクリプトは `screen-uc-api.md` / `uc-api.md` のどちらでも動く。
+
+`docs_sync_agent` は `.docs-scaffold/config.sh` の `DOCS_SYNC_AGENT` に書き出され、`sync-docs.sh` が
+`claude -p` / `codex exec` / `opencode run` / 任意コマンド を起動し分ける。差分は常に
+`.docs-scaffold/last-diff.patch` に書き出してプロンプトから参照させるため（stdin 依存にしない）、
+エージェントを乗り換えてもスクリプト側の変更は不要。`none` と未インストール時は差分だけ出して exit 0。
+`claude` 以外を選ぶと `.claude/`（Stop フック・スラッシュコマンド）は配布されない。
 
 `source_dirs` の回答は `.docs-scaffold/config.sh` の `DOCS_SOURCE_DIRS` に書き出され、
 `.githooks/pre-push`（docs 未更新警告）と `scripts/docs-sync/sync-docs.sh`（同期対象の git diff）が参照する。
