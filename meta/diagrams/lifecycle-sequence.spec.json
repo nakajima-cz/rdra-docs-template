@@ -1,7 +1,7 @@
 {
  "name": "rdra-docs-template ライフサイクル",
  "title": "rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）",
- "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.9.0 時点）",
+ "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.10.0 時点）",
  "font": "Hiragino Sans",
  "participants": [
   {
@@ -57,7 +57,7 @@
    "kind": "call",
    "from": "hermes",
    "to": "tmpl",
-   "label": "copier copy --trust --vcs-ref v1.9.0",
+   "label": "copier copy --trust --vcs-ref v1.10.0",
    "num": "②"
   },
   {
@@ -70,7 +70,7 @@
   {
    "kind": "note",
    "color": "blue",
-   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs・docs_sync_agent → .docs-scaffold/config.sh<br>use_screens / use_figma で画面spec・対応表・Figma連携を取捨<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない",
+   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs・docs_sync_agent → .docs-scaffold/config.sh<br>use_screens / use_figma で画面spec・対応表・Figma連携を取捨<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 人が書く docs は全部保護（更新で変わらない）",
    "align": "left",
    "span": [
     "tmpl",
@@ -352,10 +352,10 @@
   {
    "kind": "note",
    "color": "green",
-   "text": "テンプレ側を改善し新タグを切る（最新: v1.9.0）<br>v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.8.1 不要ファイル整理 ／ v1.9.0 docs_sync_agent<br>検証: claude / codex / opencode / custom / none / 未インストール / 不正値 をスタブCLIで実行",
+   "text": "テンプレ側を改善し新タグを切る（最新: v1.10.0）<br>v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.9.0 docs_sync_agent ／ v1.10.0 上書き保護の見直し<br>検証: 利用者が書き換えた10ファイルが update 後も保持され衝突0、_template.md とスクリプトは伝播",
    "align": "left",
    "at": "tmpl",
-   "width": 620
+   "width": 640
   },
   {
    "kind": "call",
@@ -368,7 +368,7 @@
    "kind": "call",
    "from": "tmpl",
    "to": "repo",
-   "label": "骨組みのみ3-wayマージ（個票・ADR・用語集は保護）",
+   "label": "伝播するのは scripts / .githooks / _template.md 系のみ",
    "num": "㉙"
   },
   {

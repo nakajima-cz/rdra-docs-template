@@ -89,6 +89,18 @@ bash scripts/docs-hooks/install.sh none      # または husky / lefthook
 copier copy --trust --vcs-ref v1.4.0 https://github.com/nakajima-cz/rdra-docs-template.git .
 ```
 
+## 上書き保護の方針（どのファイルがテンプレ更新で変わるか）
+
+| 区分 | 例 | `copier update` の挙動 |
+|---|---|---|
+| 人が書く docs（保護） | `docs/README.md` `docs/WORKFLOW.md` `docs/rdra/*/README.md` `docs/specs/common/*.md` `docs/specs/*/README.md` `docs/adr/README.md` `SCR-*` `API-*` `ADR-[0-9]*` 対応表 `glossary.md` `LOG.md` | **変更されない**（利用者の記述がそのまま残る） |
+| 雛形（伝播） | `docs/specs/screens/_template.md` `docs/specs/apis/_template.md` `docs/adr/template.md` | テンプレ改善が反映される（手で変えていると3-wayマージ） |
+| 仕組み（伝播） | `scripts/**` `.githooks/**` `.claude/commands/**` | テンプレ改善が反映される |
+| 設定（保護） | `.docs-scaffold/config.sh` `.claude/settings.json` ルート `README.md` `CLAUDE.md` | **変更されない** |
+
+実リポジトリでの検証結果: 利用者が書き換えた10ファイルすべてが更新後も保持され衝突0、
+`_template.md` 2件と `validate-docs.py` にはテンプレ改善が反映された。
+
 ## 更新の追従
 展開先リポジトリのルートで（未コミットの変更がない状態で）:
 ```sh
@@ -124,6 +136,6 @@ python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
 
 ## 特徴
 - `scripts/docs-validate/validate-docs.py` で docs の構造整合を機械検査（pre-push でブロック）
-- 既存ファイルは `_skip_if_exists` で上書きしない（docs/, README, CLAUDE, .claude/settings.json）
+- 人が書く docs は `_skip_if_exists` で保護され、`copier update` で衝突しない（伝播するのは仕組みと `_template.md` 系だけ）
 - git フックは `.githooks/` に置き `.git/hooks` を汚さない。husky / lefthook 併用時は `core.hooksPath` を奪わず、各管理ツールから呼ぶ形で配線する
 - `.copier-answers.yml` に版を記録し `copier update` で3-wayマージ追従

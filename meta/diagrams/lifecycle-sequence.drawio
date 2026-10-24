@@ -7,7 +7,7 @@
         <mxCell id="v1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontFamily=Hiragino Sans;" value="&lt;b&gt;rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）&lt;/b&gt;" vertex="1">
           <mxGeometry height="32" width="1990" x="30" y="16" as="geometry" />
         </mxCell>
-        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.9.0 時点）" vertex="1">
+        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.10.0 時点）" vertex="1">
           <mxGeometry height="24" width="1990" x="30" y="50" as="geometry" />
         </mxCell>
         <mxCell id="user" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="中嶋&lt;br&gt;(Slack)" vertex="1">
@@ -55,7 +55,7 @@
             <mxPoint x="400" y="316" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.9.0" vertex="1">
+        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.10.0" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="359" as="geometry" />
         </mxCell>
         <mxCell id="e9" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -73,7 +73,7 @@
             <mxPoint x="1400" y="522" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs・docs_sync_agent → .docs-scaffold/config.sh&lt;br&gt;use_screens / use_figma で画面spec・対応表・Figma連携を取捨&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 既存 README/CLAUDE/個票/config.sh は上書きしない" vertex="1">
+        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs・docs_sync_agent → .docs-scaffold/config.sh&lt;br&gt;use_screens / use_figma で画面spec・対応表・Figma連携を取捨&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 人が書く docs は全部保護（更新で変わらない）" vertex="1">
           <mxGeometry height="99" width="970" x="540" y="565" as="geometry" />
         </mxCell>
         <mxCell id="v13" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="④ scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線" vertex="1">
@@ -361,8 +361,8 @@
         <mxCell id="v77" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑦ テンプレ更新の追従&lt;/b&gt;" vertex="1">
           <mxGeometry height="22" width="200" x="48" y="4000" as="geometry" />
         </mxCell>
-        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.9.0）&lt;br&gt;v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.8.1 不要ファイル整理 ／ v1.9.0 docs_sync_agent&lt;br&gt;検証: claude / codex / opencode / custom / none / 未インストール / 不正値 をスタブCLIで実行" vertex="1">
-          <mxGeometry height="82" width="620" x="605" y="4032" as="geometry" />
+        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.10.0）&lt;br&gt;v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.9.0 docs_sync_agent ／ v1.10.0 上書き保護の見直し&lt;br&gt;検証: 利用者が書き換えた10ファイルが update 後も保持され衝突0、_template.md とスクリプトは伝播" vertex="1">
+          <mxGeometry height="82" width="640" x="605" y="4032" as="geometry" />
         </mxCell>
         <mxCell id="v79" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉘ copier update --trust" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="4138" as="geometry" />
@@ -373,7 +373,7 @@
             <mxPoint x="650" y="4198" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v81" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉙ 骨組みのみ3-wayマージ（個票・ADR・用語集は保護）" vertex="1">
+        <mxCell id="v81" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉙ 伝播するのは scripts / .githooks / _template.md 系のみ" vertex="1">
           <mxGeometry height="56" width="230" x="640" y="4241" as="geometry" />
         </mxCell>
         <mxCell id="e82" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
