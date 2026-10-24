@@ -18,11 +18,13 @@ _skip_if_exists:
   - "docs/LOG.md"
   - "/.claude/settings.json"
 
-# 生成後に実行（gitフックを .git/hooks ではなく .githooks に向ける）
-# copier update の内部再生成は非gitのtempで走るため、git repo内でのみ実行するようガード
+# 生成後に実行
+# - pre-push ゲートの配線は hook_manager の回答に応じて install.sh が行う
+#   （none=core.hooksPath / husky=.husky/pre-push へ追記 / lefthook=lefthook.yml）
+# - copier update の内部再生成は非gitのtempで走るが、install.sh 側で git repo 判定してスキップする
 _tasks:
-  - "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true"
-  - "chmod +x .githooks/* 2>/dev/null || true"
+  - "chmod +x .githooks/* scripts/docs-hooks/*.sh 2>/dev/null || true"
+  - "bash scripts/docs-hooks/install.sh {{ hook_manager }} || true"
   - "chmod +x scripts/docs-sync/*.sh scripts/figma-export/*.sh scripts/docs-validate/*.py 2>/dev/null || true"
 
 # ---- 質問 ----
@@ -38,9 +40,9 @@ use_claude_hook:
 
 hook_manager:
   type: str
-  help: 既存の git フック管理
+  help: 既存の git フック管理（pre-push ゲートの配線先を決める）
   choices:
-    素の core.hooksPath を使う: none
-    husky を使っている: husky
-    lefthook を使っている: lefthook
+    素の core.hooksPath を使う（.githooks）: none
+    husky を使っている（.husky/pre-push へ追記）: husky
+    lefthook を使っている（lefthook.yml へ配線）: lefthook
   default: none

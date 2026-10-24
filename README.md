@@ -42,17 +42,24 @@ git status   # 追加されたファイルを確認してからコミット
 |---|---|---|
 | `project_name` | ルート README の見出しに使うプロジェクト名 | `My Project` |
 | `use_claude_hook` | Claude Code の Stop フックで docs 自動メンテを有効にするか | `true` |
-| `hook_manager` | 既存の git フック管理（none / husky / lefthook） | `none` |
+| `hook_manager` | pre-push ゲートの配線先（none / husky / lefthook） | `none` |
+
+`hook_manager` の挙動（`scripts/docs-hooks/install.sh` が実施。何度実行しても同じ結果）:
+
+| 回答 | 配線 | 既存設定の扱い |
+|---|---|---|
+| `none` | `git config core.hooksPath .githooks` | 既に別の `core.hooksPath` があれば**上書きせず**、追記すべき1行を表示 |
+| `husky` | `.husky/pre-push` に `bash .githooks/pre-push` を追記 | `core.hooksPath` は**触らない**（husky の `.husky` を壊さない）。`.husky` が無ければ案内のみ |
+| `lefthook` | `lefthook.yml` が無ければ作成して配線 | 既存の lefthook 設定は**自動編集せず**、貼り付け用スニペットを表示 |
 
 ### `--trust` について
 展開後に以下の `_tasks` を実行するため `--trust` が必要（付けないと確認を求められるか、タスクが実行されない）:
-- `git config core.hooksPath .githooks`（git リポジトリ内でのみ）
-- `chmod +x .githooks/*`
+- `bash scripts/docs-hooks/install.sh <hook_manager>`（git リポジトリ内でのみ配線。非gitならスキップ）
+- `chmod +x .githooks/* scripts/**`
 
-`git init` 前に展開した場合は、後から手動で実行する:
+`git init` 前に展開した場合、または husky を後から導入した場合は、手動で実行する:
 ```sh
-git config core.hooksPath .githooks
-chmod +x .githooks/*
+bash scripts/docs-hooks/install.sh none      # または husky / lefthook
 ```
 
 ### バージョンを指定して展開する
@@ -92,5 +99,5 @@ python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
 ## 特徴
 - `scripts/docs-validate/validate-docs.py` で docs の構造整合を機械検査（pre-push でブロック）
 - 既存ファイルは `_skip_if_exists` で上書きしない（docs/, README, CLAUDE, .claude/settings.json）
-- git フックは `.githooks/`（`core.hooksPath`）に置き `.git/hooks` を汚さない
+- git フックは `.githooks/` に置き `.git/hooks` を汚さない。husky / lefthook 併用時は `core.hooksPath` を奪わず、各管理ツールから呼ぶ形で配線する
 - `.copier-answers.yml` に版を記録し `copier update` で3-wayマージ追従
