@@ -2,17 +2,17 @@
 
 配置するもの:
 - ユースケース複合図（UC-xxx）
-- 画面一覧（SCR-xxx の索引 → specs/screens と対応）
-- 帳票・イベント一覧
+{% if use_screens %}- 画面一覧（SCR-xxx の索引 → specs/screens と対応）
+{% endif %}- 帳票・イベント一覧
 
-ここの画面一覧・UC が specs/ の設計書、traceability の対応表の起点になる。
+ここの{% if use_screens %}画面一覧・{% endif %}UC が specs/ の設計書、traceability の対応表の起点になる。
 
 ## ユースケース一覧
 
 UC はここで定義する（`scripts/docs-validate/validate-docs.py` は docs/rdra/ 配下に
 出現する UC-xxx を「定義済み」とみなし、対応表側の未定義 UC を WARN で指摘する）。
 
-| UC | 名称 | アクター | 関連画面 |
+{% if use_screens %}| UC | 名称 | アクター | 関連画面 |
 |------|------|---------|---------|
 | UC-001 | 認証する | 利用者 | SCR-001 |
 
@@ -21,3 +21,7 @@ UC はここで定義する（`scripts/docs-validate/validate-docs.py` は docs/
 | 画面ID | 画面名 | パス | 設計書 |
 |--------|--------|------|--------|
 | SCR-001 | ログイン | /login | `../../specs/screens/SCR-001-login.md` |
+{% else %}| UC | 名称 | アクター | 関連API |
+|------|------|---------|---------|
+| UC-001 | 認証する | 利用者 | API-001 |
+{% endif %}

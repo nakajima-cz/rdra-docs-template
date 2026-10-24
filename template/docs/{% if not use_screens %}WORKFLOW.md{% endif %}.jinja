@@ -1,0 +1,40 @@
+# 設計ワークフロー（RDRA → API設計 → 実装）
+
+この案件は画面設計書（`specs/screens/`）を使わない構成で展開されている。
+画面を伴う案件へ切り替えるときは `copier copy` 時に `use_screens=true` を選ぶ。
+
+## 流れ
+
+1. **RDRA で要件を固める** — `rdra/01-system-value` 〜 `rdra/04-system`
+   - 要求 `REQ-xxx`、ユースケース `UC-xxx`、情報 `INFO-xxx` を採番する。
+   - UC は `rdra/03-boundary/README.md` のユースケース一覧で定義する（validator はここを「定義済み」と見る）。
+
+2. **API を採番して個票を書く** — `specs/apis/API-xxx-<name>.md`
+   - `_template.md` をコピーして使う。frontmatter の `source:` に実装ファイルのパスを書く。
+   - 横断規約（認証・エラー・命名・バリデーション）は `specs/common/` を参照し、個票に重複させない。
+
+3. **対応表に行を足す** — `traceability/uc-api.md`
+   - 1 API = 1 行。実体を作ってから追記する（実体の無い ID を書くと validator が ERROR）。
+
+4. **判断は ADR に残す** — `adr/`
+   - なぜその設計にしたかは個票に書かず、`ADR-xxxx` を作って個票から参照する。
+
+5. **実装 → docs 同期**
+   - 対象ソースは `.docs-scaffold/config.sh` の `DOCS_SOURCE_DIRS`。案件の構成に合わせて編集する。
+   - `scripts/docs-sync/sync-docs.sh` が差分から What/How のみ更新する（Why は生成しない）。
+
+6. **push 時に検査**
+   - `.githooks/pre-push` → `scripts/docs-validate/validate-docs.py`。
+   - ERROR（dangling ID・対応表と個票の不一致・frontmatter 欠落）があると push がブロックされる。
+   - 一時回避: `DOCS_VALIDATE_SOFT=1 git push` / `git push --no-verify`。
+
+## ID 規約
+
+- 要求 `REQ-xxx` / ユースケース `UC-xxx` / 情報 `INFO-xxx` / API `API-xxx` / 状態 `ST-xxx`
+- 意思決定 `ADR-xxxx`（4桁）
+
+## 原則
+
+- **Why はここ（spec）に書かない。** ADR に書き、spec からは ID 参照に留める。
+- **重複を作らない。** 共通規約は `specs/common/` が単一情報源。
+- **対応表は双方向で検査される。** 個票だけ・表だけ、のどちらも ERROR になる。

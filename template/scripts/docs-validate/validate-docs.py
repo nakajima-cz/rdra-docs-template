@@ -29,6 +29,9 @@ REQUIRED_FRONTMATTER = {
 }
 DESIGN_STATUS_VALUES = {"draft", "in-review", "approved"}
 
+# 対応表のファイル名候補（先に見つかった方を使う）
+TRACEABILITY_NAMES = ("screen-uc-api.md", "uc-api.md")
+
 # 未置換のプレースホルダとみなすパターン
 PLACEHOLDER_RE = re.compile(r"^\s*(YYYY-MM-DD|<[^>]*>|TBD|TODO)\s*$", re.IGNORECASE)
 
@@ -148,11 +151,20 @@ def check_spec(path: Path, kind: str, rel: str, rep: Report) -> None:
             rep.warn(rel, f"画像リンク切れ: {link}")
 
 
+def traceability_path(docs: Path) -> Path:
+    """対応表のパス。画面ありは screen-uc-api.md、画面なし構成は uc-api.md。"""
+    for name in TRACEABILITY_NAMES:
+        p = docs / "traceability" / name
+        if p.exists():
+            return p
+    return docs / "traceability" / TRACEABILITY_NAMES[0]
+
+
 def check_traceability(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
-    tr = docs / "traceability" / "screen-uc-api.md"
+    tr = traceability_path(docs)
     rel = str(tr.relative_to(docs.parent))
     if not tr.exists():
-        rep.error(rel, "対応表が存在しません")
+        rep.error(rel, f"対応表が存在しません（{' または '.join(TRACEABILITY_NAMES)}）")
         return
 
     text = strip_code_and_comments(tr.read_text(encoding="utf-8"))
@@ -174,7 +186,7 @@ def check_traceability(docs: Path, defined: dict[str, set[str]], rep: Report) ->
 def check_references(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
     """docs 全体の ADR-/SCR-/API- 参照が実在するかを見る。"""
     skip_names = {"_template.md", "template.md"}
-    traceability = docs / "traceability" / "screen-uc-api.md"
+    traceability = traceability_path(docs)
     for f in sorted(docs.rglob("*.md")):
         if f.name in skip_names or f == traceability:
             continue  # 対応表は check_traceability で見るので二重報告しない

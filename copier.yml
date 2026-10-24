@@ -14,6 +14,7 @@ _skip_if_exists:
   - "docs/specs/apis/API-*.md"
   - "docs/adr/[0-9]*.md"
   - "docs/traceability/screen-uc-api.md"
+  - "docs/traceability/uc-api.md"
   - "docs/glossary.md"
   - "docs/LOG.md"
   - "/.claude/settings.json"
@@ -26,13 +27,25 @@ _skip_if_exists:
 _tasks:
   - "chmod +x .githooks/* scripts/docs-hooks/*.sh 2>/dev/null || true"
   - "bash scripts/docs-hooks/install.sh {{ hook_manager }} || true"
-  - "chmod +x scripts/docs-sync/*.sh scripts/figma-export/*.sh scripts/docs-validate/*.py 2>/dev/null || true"
+  - "chmod +x scripts/docs-sync/*.sh scripts/docs-validate/*.py 2>/dev/null || true"
+  - "chmod +x scripts/figma-export/*.sh 2>/dev/null || true"
 
 # ---- 質問 ----
 project_name:
   type: str
   help: プロジェクト名（ルートREADMEの見出しに使う）
   default: "My Project"
+
+use_screens:
+  type: bool
+  help: 画面設計書（docs/specs/screens・画面×UC×API 対応表）を使うか（API専用/バッチ案件は false）
+  default: true
+
+use_figma:
+  type: bool
+  help: Figma 連携スクリプト（scripts/figma-export）を同梱するか
+  default: "{{ use_screens }}"
+  when: "{{ use_screens }}"
 
 source_dirs:
   type: str

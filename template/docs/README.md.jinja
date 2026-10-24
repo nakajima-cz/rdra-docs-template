@@ -8,10 +8,11 @@
 - `rdra/` — 要件定義（RDRA 4レイヤー。**何を作るか / What**）
 - `specs/` — 設計書（**どう作るか / How**）
   - `common/` — 横断規約の単一情報源（認証・エラー・命名等）
-  - `screens/` — 画面設計書（画面単位）
-  - `apis/` — 詳細設計書（API/エンドポイント単位）
-- `traceability/` — 画面×UC×API 対応表（多対多を橋渡し）
-- `assets/` — 図・画像の実体
+{% if use_screens %}  - `screens/` — 画面設計書（画面単位）
+{% endif %}  - `apis/` — 詳細設計書（API/エンドポイント単位）
+{% if use_screens %}- `traceability/screen-uc-api.md` — 画面×UC×API 対応表（多対多を橋渡し）
+{% else %}- `traceability/uc-api.md` — UC×API 対応表（多対多を橋渡し）
+{% endif %}- `assets/` — 図・画像の実体
 
 ## 整合性チェック
 `python3 scripts/docs-validate/validate-docs.py` で docs/ の構造を検査する（`--json` / `--strict` あり）。
@@ -21,11 +22,11 @@ pre-push で自動実行され、ERROR があれば push がブロックされ�
 
 ## 読み方
 1. `rdra/` で要件（What）を掴む
-2. `specs/screens` `specs/apis` で設計（How）を見る
+2. {% if use_screens %}`specs/screens` `specs/apis`{% else %}`specs/apis`{% endif %} で設計（How）を見る
 3. 判断根拠（Why）が知りたければ各所の `ADR-xxxx` 参照を辿る
-4. 画面とAPIの対応は `traceability/screen-uc-api.md`
+4. {% if use_screens %}画面とAPIの対応は `traceability/screen-uc-api.md`{% else %}UCとAPIの対応は `traceability/uc-api.md`{% endif %}
 
 ## ID規約
 - 要求: `REQ-xxx` / ユースケース: `UC-xxx` / 情報: `INFO-xxx`
-- 画面: `SCR-xxx` / API: `API-xxx` / 状態: `ST-xxx`
+- {% if use_screens %}画面: `SCR-xxx` / {% endif %}API: `API-xxx` / 状態: `ST-xxx`
 - 意思決定: `ADR-xxxx`
