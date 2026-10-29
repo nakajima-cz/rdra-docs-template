@@ -48,54 +48,27 @@ PATは**読み取り専用**（画像export・コメント・変数read程度）
 - Plugin API（Figma Desktop内・単一ユーザー・ヘッドレス不可）
 - Figma MCP server の `generate_figma_design` / `use_figma`（allowlist済みMCPクライアント限定・アカウント単位の対話OAuth・Dev/Fullシート・将来有料）
 
-このため役割ごとに操作を分ける（認証境界を崩さないため）:
+このため「誰が何の認証で何をするか」を分けておく（認証境界を崩さないため）:
 
-| 役割 | Figma認証 | やること |
+| 担当 | Figma認証 | やること |
 |------|-----------|---------|
-| Designer（共通プロファイル） | **持たない** | HTMLモック案(claude-design/sketch)＋画面specの作成まで。Figmaは触らない |
-| 実装エージェント層（Claude Code / Codex） | **Figma MCP(OAuth)を接続** | モックFIX後、HTML+specからFigmaアートボードを生成・編集 |
-| PM（案件別プロファイル） | PAT(read) | 実装エージェントにFigma起こしを指示・駆動。export.shで画像取得 |
+| デザイン担当 | **持たない** | HTMLモック案＋画面specの作成まで。Figmaは触らない |
+| Figma化担当（AIコーディングCLI等） | **Figma MCP(OAuth)** | モックFIX後、HTML+specからFigmaアートボードを生成・編集 |
+| 実装担当 | PAT(read) ないし Figma MCP の読みツールのみ | 実装時にデザインを参照。`export.sh` で画像取得 |
 
-- Figma MCPのOAuthは**案件ごとのFigmaアカウント**で行う。共通Designerには絶対に載せない（1アカウント固定で案件別分離が壊れる）。
+- Figma MCPのOAuthは**案件ごとのFigmaアカウント**で行う。複数案件を横断する共通の作業環境に1アカウントを固定で持たせない（案件別の分離が壊れる）。
 - OAuthは初回にブラウザ同意が1回必要（完全ヘッドレスにはならない）。
+- **書き（アートボード生成）の認証は、Figma化担当の作業環境だけに置く**。実装担当の環境にも書き権限を入れると境界が消える（唯一かつ最大の落とし穴）。読みだけを許すなら、MCPクライアント側で許可ツールを読み系（`get_design_context` / `get_variable_defs` 等）に絞る。
+- トークン・OAuthは案件ごとに分離された設定ディレクトリ側に持たせ、共通の作業環境の環境変数に焼き込まない。
 
-## デザイン作成の流れ（モックFIX → agentがFigma化）
+## デザイン作成の流れ（モックFIX → Figma化）
 
-1. Designer が HTMLモック案（claude-design / sketch）＋画面spec を作成 → 客先レビュー → **モックFIX**
-2. PM が実装エージェント層（Claude Code / Codex）に「このHTMLモック＋specでFigmaに起こして」と指示
-3. 実装エージェントが Figma MCP `generate_figma_design`（HTML→編集可能レイヤー変換）→ 必要なら `use_figma`（デザインシステムのcomponent/variableで調整）でアートボード生成
+1. デザイン担当が HTMLモック案＋画面spec を作成 → 客先レビュー → **モックFIX**
+2. Figma化担当に「このHTMLモック＋specでFigmaに起こして」と依頼
+3. Figma MCP `generate_figma_design`（HTML→編集可能レイヤー変換）→ 必要なら `use_figma`（デザインシステムのcomponent/variableで調整）でアートボード生成
 4. 生成後 `design_status: approved`、`export.sh`（PAT read）で確定画像を screenshots/ に取得 → 画面設計書9節へ
 
 補足: HTMLモック起点にしているため `generate_figma_design` への変換コストが低い。逆順（先にFigmaを作る）にしないのが肝。
-
-## 認証・コンテキストのレイヤリング（プロファイルを増やさず案件差を載せる）
-
-コーダーは実装時にFigmaを**参照（読み）**したい（`get_design_context`＝選択フレームのReact/Tailwind表現、`get_variable_defs`＝トークン）。
-かといって案件ごとに designer/coder を分けると `5 × N案件` のプロファイル乱立になり、共通ルールの多重管理が発生する。これは避ける。
-
-原則: **ロールプロファイルは共通で薄く保ち、案件差は別レイヤーで載せる**。
-
-- ロールプロファイルは共通4つ（architect / designer / coder / tester）＋ 案件ごとの PM のみ = **4 + N**（`5 × N` の直積にしない）。
-- 案件差は3レイヤーで吸収する:
-  1. **コンテキスト分離** → 案件ごとの Group Session（会話文脈だけ分離。同じ共通ロールが案件ごとに独立セッションを持つ）
-  2. **案件固有のクセ・規約** → リポジトリ内の project-local skill（`<repo>/.hermes/skills/`）＋ 薄い `AGENTS.md`。そのrepoのセッションでだけオンデマンドにロード。共通ルールは共通プロファイルに1回だけ書く（多重管理なし）、案件固有はrepoに重ねる。
-  3. **認証（Figma読み/書き）** → プロファイルのenvに固定トークンを焼かない。PMがspawnするCLIの**案件別 config dir** に載せる。共通コーダーが案件Aを触るときは案件AのCLI configで起動＝案件AのFigma読み。
-
-### Figma認証の持たせ方（読み/書きで分ける）
-
-| 役割 | Figma 読み(get_design_context等) | Figma 書き(use_figma) | 認証の置き場所 |
-|------|--------------------------------|----------------------|----------------|
-| Designer（共通） | 任意（基本モック+specなので不要。要れば注入） | 持たない | — / 案件別CLI config |
-| Coder（共通） | **必要**（実装でFigma参照） | 持たない | **案件別CLI config**（共通envに焼かない） |
-| PM（案件別） | あり | **あり**（PM専用config） | PM専用 config dir |
-
-- コーダーのFigma読みは、共通プロファイルに固定トークンを持たせず、**PM駆動のspawn時に案件別CLI configで注入**する。これでプロファイルを増やさず認証を案件別に隔離できる。
-- 書き（アートボード生成）は前節どおり **PM専用config** に限定。共通 coder/Orca の CLI config に Figma MCP(書き) を入れると「PMだけが書ける」が崩れる（唯一の落とし穴）。
-
-### プロファイルを本当に分けるべき例外
-- 人格・判断基準が案件で本質的に違う（顧客別に口調・レビュー観点が別）。
-- config dir スコープでは認証を隔離しきれない。
-- 上記に当たらない限り、案件差は Group Session ＋ repo の project-local skill ＋ 案件別CLI config の3点で吸収する。
 
 ## Why の扱い
 
