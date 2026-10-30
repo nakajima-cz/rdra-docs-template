@@ -17,6 +17,7 @@ _skip_if_exists:
   - "/.docs-scaffold/config.sh"
   # docs 直下
   - "docs/README.md"
+  - "docs/p00-brief.md"
   - "docs/WORKFLOW.md"
   - "docs/glossary.md"
   - "docs/LOG.md"
