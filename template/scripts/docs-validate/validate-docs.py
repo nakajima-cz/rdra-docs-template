@@ -43,12 +43,15 @@ ID_PATTERNS = {
 }
 IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 
-# ID の直後に書かれた名称を拾うためのパターン（いずれも表の中だけを見る）
-#   1) 先頭列:     | UC-001 | 会員を登録する | ...
-#   2) セル内併記: | UC-001 会員を登録する | ...
+# ID の直後に書かれた名称を拾うためのパターン
+#   セル内併記: | UC-001 会員を登録する | ...
+# 先頭列からの採用は「2列目が名称列である表」に限る（下の NAME_HEADER_RE を参照）。
 # 地の文（「UC-001 の扱いを決めた」等）は名称の定義とみなさない。誤検出の元になるため。
-NAME_TABLE_RE = r"^[ \t]*\|\s*{id}\s*\|\s*([^|]+?)\s*\|"
 NAME_CELL_RE = r"\|\s*{id}[ \u3000]+([^|]+?)\s*\|"
+
+# 「2列目が名称列」と判定するヘッダ（これ以外の補助表は名称の定義元とみなさない）
+NAME_HEADER_RE = re.compile(r"^(名称|名前|.*名)$")
+ID_HEADER_RE = re.compile(r"(ID|Id|id)$|^(UC|画面|情報|状態|API|要求)$")
 
 # 名称として採用しない先頭文字列（助詞などで始まるものは説明文であって名称ではない）
 NAME_REJECT_PREFIX = (
@@ -217,6 +220,35 @@ def check_references(docs: Path, defined: dict[str, set[str]], rep: Report) -> N
                 rep.warn(rel, f"{ref} を参照していますが docs/rdra/ 配下に定義が見つかりません")
 
 
+def iter_name_tables(text: str):
+    """「1列目が ID 列、2列目が名称列」の表だけを取り出し、(ID セル, 名称セル) を列挙する。
+
+    補助表（`| UC | 入力となる画面 |` など ID を先頭列に置くが2列目が名称でない表）を
+    名称の定義元と誤認しないため、ヘッダ行を見て判定する。
+    """
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        if not lines[i].lstrip().startswith("|"):
+            i += 1
+            continue
+        block = []
+        while i < len(lines) and lines[i].lstrip().startswith("|"):
+            block.append(lines[i])
+            i += 1
+        if len(block) < 3:
+            continue
+        header = [c.strip() for c in block[0].strip().strip("|").split("|")]
+        if len(header) < 2:
+            continue
+        if not (ID_HEADER_RE.search(header[0]) and NAME_HEADER_RE.match(header[1])):
+            continue
+        for row in block[2:]:
+            cells = [c.strip() for c in row.strip().strip("|").split("|")]
+            if len(cells) >= 2:
+                yield cells[0], cells[1]
+
+
 def check_id_names(docs: Path, rep: Report) -> None:
     """同じ ID が別々の名称で書かれていないかを検査する。
 
@@ -233,21 +265,24 @@ def check_id_names(docs: Path, rep: Report) -> None:
             continue
         rel = str(f.relative_to(docs.parent))
         text = strip_code_and_comments(f.read_text(encoding="utf-8"))
+
+        # 1) 「ID 列 + 名称列」の表から拾う
+        table_names: dict[str, set[str]] = {}
+        for id_cell, name_cell in iter_name_tables(text):
+            for kind, pattern in ID_PATTERNS.items():
+                m = pattern.fullmatch(id_cell.strip())
+                if m:
+                    name = normalize_name(name_cell)
+                    if name:
+                        table_names.setdefault(f"{kind}-{m.group(1)}", set()).add(name)
+                    break
+
         for kind in ID_PATTERNS:
             for num in sorted(set(ID_PATTERNS[kind].findall(text))):
                 ident = f"{kind}-{num}"
-                found = [
-                    n
-                    for n in (
-                        normalize_name(raw)
-                        for raw in re.findall(
-                            NAME_TABLE_RE.format(id=re.escape(ident)), text, flags=re.MULTILINE
-                        )
-                    )
-                    if n
-                ]
+                found = sorted(table_names.get(ident, ()))
                 if not found:
-                    # 先頭列で取れなかったときだけ、セル内併記（| UC-001 名称 |）を見る
+                    # 表で取れなかったときだけ、セル内併記（| UC-001 名称 |）を見る
                     found = [
                         n
                         for n in (
