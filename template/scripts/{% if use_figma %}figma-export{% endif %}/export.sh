@@ -2,7 +2,7 @@
 # docs-scaffold: Figmaの指定フレームをPNG書き出しして screenshots/ に保存する
 # 使い方:
 #   export FIGMA_TOKEN=figd_xxx          # Figma個人アクセストークン
-#   scripts/figma-export/export.sh SCR-001   # 引数=画面ID（省略時は全screens spec）
+#   scripts/figma-export/export.sh SCR-900   # 引数=画面ID（省略時は全screens spec）
 # 依存: bash / curl / python3（jsonパース用。stdlibのみ）
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"

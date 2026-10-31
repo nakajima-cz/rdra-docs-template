@@ -9,7 +9,7 @@ FigmaのフレームをPNG書き出しして `docs/specs/screens/screenshots/` �
 
 ## 使い方
 ```
-scripts/figma-export/export.sh SCR-001   # 特定画面
+scripts/figma-export/export.sh SCR-900   # 特定画面
 scripts/figma-export/export.sh           # 全SCR-*.md 一括
 ```
 環境変数: `FIGMA_SCALE`（既定2）で書き出し倍率を調整。

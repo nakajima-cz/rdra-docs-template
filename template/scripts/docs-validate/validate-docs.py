@@ -43,11 +43,12 @@ ID_PATTERNS = {
 }
 IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 
-# ID の直後に書かれた名称を拾うためのパターン
-#   1) 表の行（ID が先頭列のときだけ）:   | UC-001 | 会員を登録する | ...
-#   2) 行内表記: UC-001 会員を登録する
+# ID の直後に書かれた名称を拾うためのパターン（いずれも表の中だけを見る）
+#   1) 先頭列:     | UC-001 | 会員を登録する | ...
+#   2) セル内併記: | UC-001 会員を登録する | ...
+# 地の文（「UC-001 の扱いを決めた」等）は名称の定義とみなさない。誤検出の元になるため。
 NAME_TABLE_RE = r"^[ \t]*\|\s*{id}\s*\|\s*([^|]+?)\s*\|"
-NAME_INLINE_RE = r"{id}[ \u3000]+([^\s|（）()「」\[\]、。,:：]+)"
+NAME_CELL_RE = r"\|\s*{id}[ \u3000]+([^|]+?)\s*\|"
 
 # 名称として採用しない先頭文字列（助詞などで始まるものは説明文であって名称ではない）
 NAME_REJECT_PREFIX = (
@@ -246,13 +247,13 @@ def check_id_names(docs: Path, rep: Report) -> None:
                     if n
                 ]
                 if not found:
-                    # 表で名称が取れなかったときだけ行内表記を見る
+                    # 先頭列で取れなかったときだけ、セル内併記（| UC-001 名称 |）を見る
                     found = [
                         n
                         for n in (
                             normalize_name(raw)
                             for raw in re.findall(
-                                NAME_INLINE_RE.format(id=re.escape(ident)), text
+                                NAME_CELL_RE.format(id=re.escape(ident)), text
                             )
                         )
                         if n
@@ -296,7 +297,19 @@ def main() -> int:
     ap.add_argument("--docs", default="docs", help="docs ディレクトリ（既定: docs）")
     ap.add_argument("--json", action="store_true", help="JSON で出力する")
     ap.add_argument("--strict", action="store_true", help="WARN も失敗扱いにする")
+    ap.add_argument(
+        "--step",
+        type=int,
+        default=None,
+        metavar="N",
+        help=(
+            "P01 のステップ番号（1-9）。1〜4（RDRAフェーズ1）では ERROR を報告するが "
+            "exit 0 にする。この段階は欠落があって正常なため"
+        ),
+    )
     args = ap.parse_args()
+
+    lenient = args.step is not None and 1 <= args.step <= 4
 
     docs = Path(args.docs).resolve()
     rep = Report()
@@ -339,10 +352,15 @@ def main() -> int:
             f" {len(defined['ADR'])} adr, {len(defined['UC'])} uc）"
         )
         print(total)
+        if lenient and rep.errors:
+            print(
+                f"（--step {args.step} は RDRAフェーズ1 のため ERROR を失敗扱いにしません。"
+                "Step5 以降で解消すること）"
+            )
 
-    if rep.errors:
+    if rep.errors and not lenient:
         return 1
-    if args.strict and rep.warns:
+    if args.strict and rep.warns and not lenient:
         return 1
     return 0
 

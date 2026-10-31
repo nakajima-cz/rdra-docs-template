@@ -4,7 +4,7 @@
 
 ## 命名規約
 `<SCR-ID>_<状態>.png`
-- 例: `SCR-001_default.png`, `SCR-001_error.png`, `SCR-001_loading.png`
+- 例: `SCR-900_default.png`, `SCR-900_error.png`, `SCR-900_loading.png`
 - 状態はイベント一覧・エラーハンドリングの表示パターンに対応させる
 
 ## 取得方法

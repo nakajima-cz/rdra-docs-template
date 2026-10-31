@@ -21,7 +21,7 @@ design_version:
 | 項目 | 内容 |
 |------|------|
 | 画面名 | ログイン |
-| 画面ID | SCR-001 |
+| 画面ID | SCR-900 |
 | パス | `/login` |
 | 概要 | メールアドレスとパスワードで認証する画面。成功後は次画面へ遷移する。 |
 | ページコンポーネント | `src/pages/login/index.tsx` |
@@ -61,7 +61,7 @@ design_version:
 **API通信**:
 | API | メソッド | リクエスト | レスポンス使用先 | 定義箇所 |
 |-----|---------|----------|---------------|---------|
-| ユーザーログイン (`/api/d/account/login` = API-001) | POST | username, password | session | `src/pages/login/index.tsx` |
+| ユーザーログイン (`/api/d/account/login` = API-900) | POST | username, password | session | `src/pages/login/index.tsx` |
 
 **レスポンスに応じたエラー分岐**:
 | No | 条件 | 結果 |
@@ -102,7 +102,7 @@ flowchart LR
 
 確定デザインのスクリーンショット。`scripts/figma-export/export.sh` で自動取得可。
 
-- 初期表示 — ![login](screenshots/SCR-001_default.png)
+- 初期表示 — ![login](screenshots/SCR-900_default.png)
 
 ## 10. デザインレビュー履歴
 
