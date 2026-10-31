@@ -43,6 +43,21 @@ ID_PATTERNS = {
 }
 IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 
+# ID の直後に書かれた名称を拾うためのパターン
+#   1) 表の行（ID が先頭列のときだけ）:   | UC-001 | 会員を登録する | ...
+#   2) 行内表記: UC-001 会員を登録する
+NAME_TABLE_RE = r"^[ \t]*\|\s*{id}\s*\|\s*([^|]+?)\s*\|"
+NAME_INLINE_RE = r"{id}[ \u3000]+([^\s|（）()「」\[\]、。,:：]+)"
+
+# 名称として採用しない先頭文字列（助詞などで始まるものは説明文であって名称ではない）
+NAME_REJECT_PREFIX = (
+    "と", "は", "が", "を", "に", "の", "や", "も", "へ", "で", "から", "まで",
+    "および", "及び", "または", "等", "など", "について", "により", "による",
+)
+
+# 名称として採用しない末尾文字（助詞で終わるものは文の一部であって名称ではない）
+NAME_REJECT_SUFFIX = ("は", "が", "を", "に", "へ", "と", "も", "や", "で", "の", "から", "まで")
+
 
 class Report:
     def __init__(self) -> None:
@@ -201,6 +216,81 @@ def check_references(docs: Path, defined: dict[str, set[str]], rep: Report) -> N
                 rep.warn(rel, f"{ref} を参照していますが docs/rdra/ 配下に定義が見つかりません")
 
 
+def check_id_names(docs: Path, rep: Report) -> None:
+    """同じ ID が別々の名称で書かれていないかを検査する。
+
+    ID の存在だけを見ていると、採番し直したときに対応表と定義で指す対象がずれても
+    気づけない（対応表の `UC-001 認証する` と定義の `UC-001 会員を登録する` が共存しうる）。
+    初出の名称を正本とし、食い違う名称を ERROR にする。
+    """
+    skip_names = {"_template.md", "template.md"}
+    # id -> 名称 -> 最初に見つかった "ファイル" の表示名
+    names: dict[str, dict[str, str]] = {}
+
+    for f in sorted(docs.rglob("*.md")):
+        if f.name in skip_names:
+            continue
+        rel = str(f.relative_to(docs.parent))
+        text = strip_code_and_comments(f.read_text(encoding="utf-8"))
+        for kind in ID_PATTERNS:
+            for num in sorted(set(ID_PATTERNS[kind].findall(text))):
+                ident = f"{kind}-{num}"
+                found = [
+                    n
+                    for n in (
+                        normalize_name(raw)
+                        for raw in re.findall(
+                            NAME_TABLE_RE.format(id=re.escape(ident)), text, flags=re.MULTILINE
+                        )
+                    )
+                    if n
+                ]
+                if not found:
+                    # 表で名称が取れなかったときだけ行内表記を見る
+                    found = [
+                        n
+                        for n in (
+                            normalize_name(raw)
+                            for raw in re.findall(
+                                NAME_INLINE_RE.format(id=re.escape(ident)), text
+                            )
+                        )
+                        if n
+                    ]
+                for name in found:
+                    names.setdefault(ident, {}).setdefault(name, rel)
+
+    for ident, found in sorted(names.items()):
+        if len(found) <= 1:
+            continue
+        detail = " / ".join(f"`{n}`（{src}）" for n, src in sorted(found.items(), key=lambda kv: kv[1]))
+        rep.error(
+            sorted(found.values())[0],
+            f"{ident} の名称が一致しません: {detail}",
+        )
+
+
+def normalize_name(raw: str) -> str:
+    """ID の直後の文字列を名称として採用できるか判定し、正規化して返す（不可なら空文字）。"""
+    name = " ".join(raw.split()).strip(" 　-—:：")
+    if len(name) < 2 or len(name) > 40:
+        return ""
+    if name.startswith(NAME_REJECT_PREFIX):
+        return ""
+    if name.endswith(NAME_REJECT_SUFFIX):
+        return ""
+    # 他の ID を含む文字列は説明文なので名称として扱わない
+    for pattern in ID_PATTERNS.values():
+        if pattern.search(name):
+            return ""
+    # Markdown のリンク・強調・パス表記は名称ではない
+    if any(ch in name for ch in "`*![]/"):
+        return ""
+    if PLACEHOLDER_RE.match(name):
+        return ""
+    return name
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="docs/ の構造整合を検査する")
     ap.add_argument("--docs", default="docs", help="docs ディレクトリ（既定: docs）")
@@ -224,6 +314,7 @@ def main() -> int:
 
     check_traceability(docs, defined, rep)
     check_references(docs, defined, rep)
+    check_id_names(docs, rep)
 
     if args.json:
         print(
