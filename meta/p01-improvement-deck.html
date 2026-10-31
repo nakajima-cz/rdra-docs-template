@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>P01 指示テンプレ 改善レポート</title>
+<style>
+  :root{
+    --ink:#15171c; --ink2:#3d434e; --mute:#7b8291; --line:#dcdfe6;
+    --bg:#f7f6f3; --card:#ffffff; --accent:#b4432c; --good:#1f6f54; --warn:#9a6b12;
+    --jp:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+    --num:"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#2a2c31;font-family:var(--jp);-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+  #deck{width:1920px;height:1080px;transform-origin:center center;position:relative}
+  .s{position:absolute;inset:0;background:var(--bg);color:var(--ink);padding:86px 104px;display:none;flex-direction:column}
+  .s.on{display:flex}
+  .kicker{font-size:22px;letter-spacing:.14em;color:var(--mute);font-weight:600}
+  h1{font-size:92px;line-height:1.1;letter-spacing:-.02em;font-weight:800}
+  h2{font-size:54px;line-height:1.18;letter-spacing:-.015em;font-weight:800}
+  h3{font-size:30px;font-weight:700;line-height:1.3}
+  p,li{font-size:26px;line-height:1.62;color:var(--ink2)}
+  .lead{font-size:34px;line-height:1.5;color:var(--ink)}
+  .rule{height:5px;width:132px;background:var(--accent);margin:26px 0 34px}
+  .foot{position:absolute;left:104px;right:104px;bottom:44px;display:flex;justify-content:space-between;
+        font-size:19px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:38px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:34px 36px}
+  .tag{display:inline-block;font-size:19px;font-weight:700;letter-spacing:.06em;padding:7px 14px;border-radius:5px}
+  .t-bad{background:#f6e3df;color:var(--accent)}
+  .t-fix{background:#e2efe9;color:var(--good)}
+  .t-eff{background:#f4ecd9;color:var(--warn)}
+  .big{font-family:var(--num);font-weight:800;letter-spacing:-.04em;line-height:.92}
+  ul{padding-left:1.3em} li{margin-bottom:12px}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.92em;background:#eceef2;padding:2px 8px;border-radius:4px}
+  .arrow{font-family:var(--num);font-size:46px;color:var(--mute);align-self:center;text-align:center}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:17px 14px;border-bottom:1px solid var(--line);font-size:25px}
+  th{font-size:21px;color:var(--mute);letter-spacing:.06em;font-weight:700}
+  td.n{font-family:var(--num);font-weight:700;font-size:30px}
+  .bars{display:flex;align-items:flex-end;gap:42px;height:320px;padding-top:56px}
+  .bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:14px;height:100%}
+  .bcol{width:100%;border-radius:7px 7px 0 0;background:var(--accent);position:relative}
+  .bcol.z{background:var(--good)}
+  .bcol span{position:absolute;top:-52px;left:0;right:0;text-align:center;font-family:var(--num);
+             font-size:38px;font-weight:800;color:var(--ink)}
+  .blab{font-size:22px;color:var(--mute);font-weight:700}
+  .note{font-size:21px;color:var(--mute);line-height:1.55}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck">
+
+<section class="s">
+  <div class="kicker">rdra-docs-template / P01 要件定義フェーズ</div>
+  <div class="rule"></div>
+  <h1>指示テンプレ<br>改善レポート</h1>
+  <p class="lead" style="margin-top:40px;max-width:1180px">
+    ざっくりした要望を AI に要件定義させる指示テンプレを、同じ題材で <strong>6周</strong> 実地検証し、
+    毎周出た欠陥を潰した記録。<strong>残存欠陥 25件 → 0件</strong>。
+  </p>
+  <div style="margin-top:auto;margin-bottom:34px;display:flex;gap:70px;align-items:flex-end">
+    <div><div class="big" style="font-size:150px;color:var(--accent)">25</div><div class="blab">1周目の欠陥</div></div>
+    <div class="arrow" style="font-size:62px;padding-bottom:26px">→</div>
+    <div><div class="big" style="font-size:150px;color:var(--good)">0</div><div class="blab">6周目の欠陥</div></div>
+    <div style="margin-left:60px;max-width:620px" class="note">
+      検証題材は RDRA 公式サンプルの図書館システム。正解が配布されているため、
+      「出力が悪いのは指示の欠陥か情報不足か」を切り分けられる。
+    </div>
+  </div>
+  <div class="foot"><span>2026-11-01</span><span>1 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">検証のやり方</div>
+  <div class="rule"></div>
+  <h2>書いた本人が評価しない。<br>別コンテキストに「指示ファイルだけ」を読ませる</h2>
+  <div class="grid3" style="margin-top:52px">
+    <div class="card"><h3>① 毎周スキャフォールドし直す</h3>
+      <p style="margin-top:14px">前周の成果物を引き継がない。引き継ぐと、直した指示が効いたのか前周の遺産なのか切り分けられない。</p></div>
+    <div class="card"><h3>② 別エージェントが実行</h3>
+      <p style="margin-top:14px">テンプレを書いた本人が実行すると、書かれていない前提まで補完して「効いているように見える」だけになる。</p></div>
+    <div class="card"><h3>③ 欠陥を報告させる</h3>
+      <p style="margin-top:14px">指示の不足・曖昧（文面の引用付き）、指示同士の矛盾、指示が無くて自分で決めたこと、越境しかけた箇所。</p></div>
+  </div>
+  <div class="card" style="margin-top:36px;border-left:5px solid var(--accent)">
+    <h3>欠陥の定義を厳密化しないと永遠に 0 件にならない</h3>
+    <p style="margin-top:12px">数えるのは4類型だけ ——
+      <strong>(a) 指示が無くて作業が止まった</strong> ／ <strong>(b) 指示同士が矛盾した</strong> ／
+      <strong>(c) 指示に従ったら別の判定が × になった</strong> ／ <strong>(d) 見積りに影響する判断を実行者が自分で決めた</strong>。
+      表の列構成・見出し名・語彙選択は現場裁量として除外する。</p>
+  </div>
+  <div class="foot"><span>検証のやり方</span><span>2 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">結果</div>
+  <div class="rule"></div>
+  <h2>欠陥の推移</h2>
+  <div class="bars" style="margin-top:28px">
+    <div class="bar"><div class="bcol" style="height:100%"><span>25</span></div><div class="blab">1周目</div></div>
+    <div class="bar"><div class="bcol" style="height:24%"><span>6</span></div><div class="blab">2周目</div></div>
+    <div class="bar"><div class="bcol" style="height:28%"><span>7</span></div><div class="blab">3周目</div></div>
+    <div class="bar"><div class="bcol" style="height:16%"><span>4</span></div><div class="blab">4周目</div></div>
+    <div class="bar"><div class="bcol" style="height:20%"><span>5</span></div><div class="blab">5周目</div></div>
+    <div class="bar"><div class="bcol z" style="height:4px"><span>0</span></div><div class="blab">6周目</div></div>
+  </div>
+  <div class="grid2" style="margin-top:46px">
+    <div class="card"><h3>件数は一直線に減らない</h3>
+      <p style="margin-top:12px">3周目に一度増えている。<strong>2〜3周目の欠陥はほぼ全部が前周の修正由来</strong>で、直すたびに新しい穴が開く。
+        件数ではなく<strong>深刻度</strong>で見る。</p></div>
+    <div class="card"><h3>「指示同士の矛盾」が収束の指標</h3>
+      <p style="margin-top:12px">1周目 — / 2周目 1件 / 3周目 2件 / <strong>4周目以降は 0件</strong>。
+        矛盾が消えてから、残りは曖昧さだけになった。</p></div>
+  </div>
+  <div class="foot"><span>結果</span><span>3 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">差分サマリ</div>
+  <div class="rule"></div>
+  <h2>1周目と6周目で何が変わったか</h2>
+  <table style="margin-top:34px">
+    <tr><th style="width:38%">観点</th><th style="width:20%">1周目</th><th style="width:20%">6周目</th><th>意味</th></tr>
+    <tr><td>ブリーフ転記漏れの検出</td><td class="n" style="color:var(--accent)">0 件</td><td class="n" style="color:var(--good)">5 件</td><td>原典にある要素の欠落に気づけるようになった</td></tr>
+    <tr><td>実際に越境して巻き戻した回数</td><td class="n" style="color:var(--accent)">2 回</td><td class="n" style="color:var(--good)">0 回</td><td>次ステップの先取りが起きなくなった</td></tr>
+    <tr><td>指示同士の矛盾</td><td class="n">—</td><td class="n" style="color:var(--good)">0 件</td><td>どう書いても守れない指示が消えた</td></tr>
+    <tr><td>実行者が自力で決めた重要判断</td><td class="n" style="color:var(--accent)">多数</td><td class="n" style="color:var(--good)">0 件</td><td>見積りに効く判断がテンプレ側へ移った</td></tr>
+    <tr><td>仮定 / 未決の記録</td><td class="n">27 / 25</td><td class="n">15 / 24</td><td>マーカー付きで優先度順に読める構造に</td></tr>
+  </table>
+  <div class="card" style="margin-top:34px;border-left:5px solid var(--good)">
+    <p><strong>テンプレ側の実装差分（v1.11.0 → v1.12.0）</strong>：20ファイル / +1,243行。
+      指示テンプレ <span class="mono">p00-brief.md</span> <span class="mono">p01-requirements.md</span>
+      <span class="mono">p01-steps.md</span> を新設（計 535行）、整合チェッカは 260行 → 404行。</p>
+  </div>
+  <div class="foot"><span>差分サマリ</span><span>4 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">改善 ① — 最も深刻だった穴</div>
+  <div class="rule"></div>
+  <h2>ブリーフの転記漏れが UC を丸ごと消す</h2>
+  <div class="grid3" style="margin-top:44px">
+    <div class="card"><span class="tag t-bad">原因</span>
+      <p style="margin-top:18px">要望の原典からブリーフへ転記する際に「利用者はWebで蔵書を確認できる」が抜けた。
+        <strong>構造は完全に整合するので整合チェッカには映らない</strong>。
+        ブリーフ作成は人の作業だから検証不要、という前提が穴だった。</p></div>
+    <div class="card"><span class="tag t-fix">対処</span>
+      <p style="margin-top:18px"><strong>着手前チェック</strong>を新設。ブリーフ8節に転記元資料を挙げさせ、
+        Step1 の前に「資料にあってブリーフに無い要素」を洗い出させる。
+        見つけたものは <span class="mono">[転記漏れの疑い]</span> で未決へ出し、
+        <strong>人がブリーフを直すまで成果物に書かせない</strong>。</p></div>
+    <div class="card"><span class="tag t-eff">効果</span>
+      <p style="margin-top:18px">2周目以降、毎周 <strong>4〜5件</strong>を安定して検出。
+        6周目では実行者が「蔵書検索を UC に起こしかけたが、この一文で止まった」と報告。</p></div>
+  </div>
+  <div class="card" style="margin-top:38px">
+    <p class="note"><strong>一般化：</strong>唯一の入力が壊れていれば後工程は全部壊れる。
+      機械検査で原理的に検出できない欠陥には、<strong>人の作業にも完了条件を置く</strong>しかない。</p>
+  </div>
+  <div class="foot"><span>改善 ①</span><span>5 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">改善 ② — 静かに成立する嘘</div>
+  <div class="rule"></div>
+  <h2>同じ ID が別の名前を指しても ERROR 0 だった</h2>
+  <div class="grid3" style="margin-top:44px">
+    <div class="card"><span class="tag t-bad">原因</span>
+      <p style="margin-top:18px">整合チェッカが <strong>ID の存在しか見ていなかった</strong>。
+        対応表の <span class="mono">UC-001 認証する</span> と定義側の <span class="mono">UC-001 会員を登録する</span> が
+        正面から矛盾しているのに ERROR 0。採番し直した瞬間に<strong>嘘の対応表が静かに成立する</strong>。</p></div>
+    <div class="card"><span class="tag t-fix">対処</span>
+      <p style="margin-top:18px"><strong>ID↔名称の整合チェック</strong>を実装。
+        さらに誤爆を防ぐため、名称の定義元とみなすのは
+        <strong>「1列目が ID 列、2列目が名称列」の表だけ</strong>に限定（ヘッダ行を解析して判定）。
+        地の文と補助表は対象外。</p></div>
+    <div class="card"><span class="tag t-eff">効果</span>
+      <p style="margin-top:18px">4観点で実測確認 —— 真の不一致は検出、補助表は誤爆なし、
+        人工的な不一致も検出、両 copier 構成の新規展開で ERROR 0。</p></div>
+  </div>
+  <div class="card" style="margin-top:38px;border-left:5px solid var(--warn)">
+    <p class="note"><strong>副作用も実測した：</strong>最初の実装は補助表の2列目を名称と誤認し、
+      一度に <strong>ERROR 12件</strong>を誤爆した。チェックを足したら<strong>必ず誤検出側も試す</strong>。</p>
+  </div>
+  <div class="foot"><span>改善 ②</span><span>6 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">改善 ③ — 出口のない袋小路</div>
+  <div class="rule"></div>
+  <h2>雛形サンプルの ID が実案件の採番と衝突した</h2>
+  <div class="grid3" style="margin-top:44px">
+    <div class="card"><span class="tag t-bad">原因</span>
+      <p style="margin-top:18px">雛形が <span class="mono">UC-001</span> <span class="mono">SCR-001</span> をサンプルとして出荷していた。
+        案件が <span class="mono">UC-001</span> を実内容で採番した瞬間に対応表のサンプル行と衝突し、
+        <strong>触っても触らなくても ERROR</strong>。P01 の範囲で ERROR 0 にできる書き方が存在しなくなった。</p></div>
+    <div class="card"><span class="tag t-fix">対処</span>
+      <p style="margin-top:18px">雛形サンプルの ID を<strong>予約帯の 900番台</strong>へ移動。
+        あわせて「900番台は<strong>全判定項目の母集団から除外</strong>し、例示行の削除対象にも含めない」と明記。</p></div>
+    <div class="card"><span class="tag t-eff">効果</span>
+      <p style="margin-top:18px">実案件は 001 から自由に採番できるようになり、
+        6周目は対応表・個票を<strong>一切触らずに</strong> ERROR 0 で完了。</p></div>
+  </div>
+  <div class="card" style="margin-top:38px">
+    <p class="note"><strong>一般化：</strong>「残せ」と「整合させろ」は、<strong>除外宣言が無いと両立しない</strong>。
+      雛形が配る例示データは、実案件が絶対に使わない番号帯に隔離する。</p>
+  </div>
+  <div class="foot"><span>改善 ③</span><span>7 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">改善 ④ — 自分の修正が次の欠陥を生む</div>
+  <div class="rule"></div>
+  <h2>後のステップが前のステップの判定を壊していた</h2>
+  <div class="grid2" style="margin-top:44px">
+    <div class="card"><span class="tag t-bad">原因</span>
+      <p style="margin-top:18px">Step1 に「業務一覧の各行に区分を記入（空欄0件）」を足し、
+        別の周に Step5 へ「対象判断は <span class="mono">03-boundary</span> が正本」を足した。
+        両方を素直に守ると <span class="mono">02-external</span> の区分列が消え、
+        <strong>Step5 を実行した瞬間に Step1 の判定が × に変わる</strong>。</p>
+      <p style="margin-top:16px" class="note">実行者からは「どうやっても守れない」として報告された。</p></div>
+    <div class="card"><span class="tag t-fix">対処</span>
+      <p style="margin-top:18px">「<span class="mono">02-external</span> の区分列は Step1 時点の<strong>暫定値</strong>なので、
+        消さずにそのまま残す（消すと Step1 の判定が後から × になる）」と明記。
+        正本は <span class="mono">03-boundary</span> のまま。</p>
+      <p style="margin-top:16px"><span class="tag t-eff">効果</span></p>
+      <p style="margin-top:14px">6周目の実行者が「Step5 で消しかけたが、この一文で止めた」と報告。
+        最終状態でも Step1 の判定は ○ を維持。</p></div>
+  </div>
+  <div class="card" style="margin-top:34px;border-left:5px solid var(--accent)">
+    <p class="note"><strong>一般化：</strong>ステップ別の判定を足したら、<strong>フェーズ終了時点でもその判定が真か</strong>を確かめる。
+      各ステップ単体では全部 ○ でも、通しで見ると後段が前段を壊していることがある。</p>
+  </div>
+  <div class="foot"><span>改善 ④</span><span>8 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">改善 ⑤ — 指示の書き方そのもの</div>
+  <div class="rule"></div>
+  <h2>実測で「嘘」を止めた4つの書き方</h2>
+  <div class="grid2" style="margin-top:40px;gap:30px">
+    <div class="card"><h3>ゴールは「状態」で書く。作業で書かない</h3>
+      <p style="margin-top:12px">「UC を洗い出す」は終わりが判定できない。
+        <strong>「アクターの紐づかない UC が 0 件」</strong>なら判定できる。
+        判定を数で書くと自己採点に解釈の余地が消える。</p></div>
+    <div class="card"><h3>禁止は名指しで書く</h3>
+      <p style="margin-top:12px"><strong>「思いつかない状態を無理に捻り出さない」</strong>
+        「遷移は書かない」といった具体的な一文が最も強く創作を止めた。
+        実行者は「これが無ければ確実に創作していた」と明言。抽象的な注意書きは効かない。</p></div>
+    <div class="card"><h3>入力に無い情報を事実として書かせない</h3>
+      <p style="margin-top:12px"><strong>「ブリーフに無いことは未確定として扱う」</strong>だけで、
+        貸出期間・延滞料金といった一般知識による創作がほぼ全部止まり、仮定・未決へ逃げた。</p></div>
+    <div class="card"><h3>途中段階で機械検査の全通過を求めない</h3>
+      <p style="margin-top:12px">欠落があって正常な段階に整合を要求すると、
+        <strong>AI は空欄をもっともらしい嘘で埋める</strong>。
+        「 ERROR が出てもこのフェーズでは修正しなくてよい」と書き、<span class="mono">--step</span> で機械化した。</p></div>
+  </div>
+  <div class="foot"><span>改善 ⑤</span><span>9 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">現在地と次の一手</div>
+  <div class="rule"></div>
+  <h2>ゲートは6周とも「否」。これが正しい挙動</h2>
+  <div class="grid2" style="margin-top:40px">
+    <div class="card"><h3>G1 ゲートが自己承認を拒否し続けた</h3>
+      <p style="margin-top:14px">6周とも AI は「見積り可能とは言えない」と判断して止まった。
+        根拠は <span class="mono">[UC件数に影響]</span> の未決が残り、
+        転記漏れ由来の UC が意図的に欠落しているため。</p>
+      <p style="margin-top:14px"><strong>人がブリーフを直すまで通らない設計</strong>が、実装として機能している。</p></div>
+    <div class="card"><h3>残課題</h3>
+      <ul style="margin-top:14px">
+        <li>RDRAフェーズ3（条件・バリエーション）は未検証。業務知識そのものなので、人が同席する実案件で初めて意味を持つ</li>
+        <li>P02 以降（基本設計・デザイン・詳細設計）の指示テンプレは未作成</li>
+        <li><span class="mono">v1.12.0</span> はローカルタグのみ。push は未実施</li>
+      </ul></div>
+  </div>
+  <div class="card" style="margin-top:34px;border-left:5px solid var(--good)">
+    <h3>次の一手</h3>
+    <p style="margin-top:12px">テンプレが固まったので、<strong>実案件を1本通す</strong>段階。
+      そこで出た欠陥だけを昇格させ、同じループで P02 の指示テンプレへ進む。</p>
+  </div>
+  <div class="foot"><span>現在地と次の一手</span><span>10 / 10</span></div>
+</section>
+
+</div></div>
+<script>
+  const slides=[...document.querySelectorAll('.s')];
+  let i=parseInt(location.hash.replace('#',''))||parseInt(localStorage.getItem('p01deck')||'1');
+  if(isNaN(i)||i<1||i>slides.length)i=1;
+  function show(n){i=Math.max(1,Math.min(slides.length,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i-1));
+    localStorage.setItem('p01deck',i);}
+  function fit(){const d=document.getElementById('deck');
+    const s=Math.min(innerWidth/1920,innerHeight/1080);
+    d.style.transform='scale('+s+')';}
+  addEventListener('resize',fit);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key))show(i+1);
+    if(['ArrowLeft','PageUp'].includes(e.key))show(i-1);
+    if(e.key==='Home')show(1); if(e.key==='End')show(slides.length);});
+  fit();show(i);
+</script>
+</body>
+</html>
