@@ -327,6 +327,39 @@ def normalize_name(raw: str) -> str:
     return name
 
 
+def spec_sections(path: Path) -> list[str]:
+    """`## ` 見出しの一覧を返す（節構成の比較用）。"""
+    return [
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.startswith("## ")
+    ]
+
+
+def check_spec_sections(docs: Path, rep: Report) -> None:
+    """個票の節構成が `_template.md` と一致しているかを見る（`##` レベルのみ）。
+
+    節の過不足は「設計書としての形が崩れている」合図だが、案件固有の節を足すのは
+    正当にありうるので WARN に留める。P02 のゲートではこの WARN を 0 件にする。
+    """
+    for folder, prefix in (("screens", "SCR-"), ("apis", "API-")):
+        tpl = docs / "specs" / folder / "_template.md"
+        if not tpl.exists():
+            continue
+        expected = spec_sections(tpl)
+        if not expected:
+            continue
+        for f in sorted((docs / "specs" / folder).glob(f"{prefix}*.md")):
+            rel = str(f.relative_to(docs.parent))
+            actual = spec_sections(f)
+            missing = [s for s in expected if s not in actual]
+            extra = [s for s in actual if s not in expected]
+            if missing:
+                rep.warn(rel, f"雛形にある節がありません: {' / '.join(missing)}")
+            if extra:
+                rep.warn(rel, f"雛形に無い節があります: {' / '.join(extra)}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="docs/ の構造整合を検査する")
     ap.add_argument("--docs", default="docs", help="docs ディレクトリ（既定: docs）")
@@ -363,6 +396,7 @@ def main() -> int:
     check_traceability(docs, defined, rep)
     check_references(docs, defined, rep)
     check_id_names(docs, rep)
+    check_spec_sections(docs, rep)
 
     if args.json:
         print(
