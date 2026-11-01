@@ -108,15 +108,21 @@ flowchart LR
 
 ## 9. 画面レイアウト
 
-確定デザインのスクリーンショット。リンク切れ検出と目視確認のための節。
-画像は `screenshots/` 配下に置く（配置規約は screens/README.md 参照）。
-Figma連携時は `scripts/figma-export/export.sh` で frontmatter の figma_node_id から自動取得できる。
+デザインの正本への入口。レビュー中は HTML モックへのリンク、確定後はスクリーンショット。
+
+- 当てたパターン: <パターン名>
+- モック: [<案の名前>](../../design/mocks/<SCR-ID>-<短い名前>.html)
+- 主要な操作の流れ: <1行ずつ箇条書き>
+
+確定後（Figma へ起こした場合）は画像も併記する。画像は `screenshots/` 配下
+（配置規約は screens/README.md 参照）。`scripts/figma-export/export.sh` で
+frontmatter の figma_node_id から自動取得できる。
 
 - <パターン名> — ![alt](screenshots/<SCR-ID>_<状態>.png)
 
 ## 10. デザインレビュー履歴
 
-Figma上の客先フィードバックの「結論」だけをここに転記する（やり取り自体はFigmaに残す）。
+客先フィードバックの「結論」だけをここに転記する（やり取り自体はレビューの場に残す）。
 frontmatter の design_status（draft→in-review→approved）はここの最新状況と一致させる。
 
 | 日付 | 指摘元 | 指摘内容 | 対応 | 反映後 design_version |
