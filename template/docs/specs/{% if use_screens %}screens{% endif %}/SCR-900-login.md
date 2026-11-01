@@ -28,7 +28,7 @@ design_version:
 | 認証 | 不要 |
 | レイアウト | default |
 | SSR/SSG | CSR |
-| 関連UC | UC-900 ログインする |
+| 関連UC | UC-900 認証する |
 
 ## 2. 操作権限
 
