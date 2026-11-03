@@ -67,9 +67,8 @@ components:
     画面（フロントエンド）: screens
     API（バックエンド）: apis
     バッチ・定期処理: batch
-  default:
-    - screens
-    - apis
+  # 旧 use_screens 回答を持つ既存プロジェクトは、その値から初期選択を決める
+  default: "{{ (['screens', 'apis'] if use_screens else ['apis']) if use_screens is defined else ['screens', 'apis'] }}"
 
 # 以下3つは components から導出する（質問しない）
 use_screens:
