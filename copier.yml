@@ -29,6 +29,8 @@ _skip_if_exists:
   - "docs/specs/screens/screenshots/README.md"
   - "docs/specs/apis/API-*.md"
   - "docs/specs/apis/README.md"
+  - "docs/specs/batches/BATCH-*.md"
+  - "docs/specs/batches/README.md"
   - "docs/specs/common/*.md"
   # ADR（本体と索引。template.md は保護しない＝伝播させる）
   - "docs/adr/[0-9]*.md"
@@ -36,6 +38,7 @@ _skip_if_exists:
   # 対応表
   - "docs/traceability/screen-uc-api.md"
   - "docs/traceability/uc-api.md"
+  - "docs/traceability/uc-batch.md"
   # 図版の置き場
   - "docs/assets/README.md"
 
@@ -55,10 +58,34 @@ project_name:
   help: プロジェクト名（ルートREADMEの見出しに使う）
   default: "My Project"
 
+components:
+  type: str
+  multiselect: true
+  help: |-
+    このプロジェクトが持つ構成要素（複数選択可）。選んだものだけ指示テンプレと設計書の置き場が配布される
+  choices:
+    画面（フロントエンド）: screens
+    API（バックエンド）: apis
+    バッチ・定期処理: batch
+  default:
+    - screens
+    - apis
+
+# 以下3つは components から導出する（質問しない）
 use_screens:
   type: bool
-  help: 画面設計書（docs/specs/screens・画面×UC×API 対応表）を使うか（API専用/バッチ案件は false）
-  default: true
+  default: "{{ 'screens' in components }}"
+  when: false
+
+use_apis:
+  type: bool
+  default: "{{ 'apis' in components }}"
+  when: false
+
+use_batch:
+  type: bool
+  default: "{{ 'batch' in components }}"
+  when: false
 
 use_figma:
   type: bool

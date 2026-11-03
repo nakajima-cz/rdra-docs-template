@@ -1,11 +1,17 @@
 # P04 詳細設計 — 指示テンプレ
 
-確定したデザインをもとに、画面の中身と API を設計するフェーズの指示文。
+{% if use_screens %}確定したデザインをもとに、{% endif %}この案件が持つ構成要素の中身を設計するフェーズの指示文。
+この構成で書くのは次のとおり。
+
+{% if use_screens %}- **画面**: パス・レイアウト・画面個票の 1〜8 節
+{% endif %}{% if use_apis %}- **API**: `API-xxx` の採番と個票（Input / Output / エラー分岐）
+{% endif %}{% if use_batch %}- **バッチ**: バッチ個票の 2〜5 節（処理の流れ・失敗時の扱い・他の処理との関係）
+{% endif %}
 
 **使い方**: 下のコードブロックを **1ステップ分ずつ** コピーしてAIに渡す。
 
-- **入力**: 承認済みのモック（`design_status: approved`）、画面個票の枠、`docs/rdra/` 4層
-- **出力**: 画面個票の 1〜8 節、`docs/specs/apis/API-xxx-*.md`、対応表の API 列
+- **入力**: {% if use_screens %}承認済みのモック（`design_status: approved`）、画面個票の枠、{% endif %}{% if use_batch %}バッチ個票の枠、{% endif %}`docs/rdra/` 4層
+- **出力**: {% if use_screens %}画面個票の 1〜8 節{% endif %}{% if use_screens and use_apis %}、{% endif %}{% if use_apis %}`docs/specs/apis/API-xxx-*.md`、対応表の API 列{% endif %}{% if use_batch %}{% if use_screens or use_apis %}、{% endif %}バッチ個票の 2〜5 節{% endif %}
 - **抜けるゲート**: G4 整合（**機械判定のみ。人の承認は無い**）
 
 ## このフェーズの性質
@@ -44,7 +50,7 @@
 
 - docs/specs/screens/SCR-xxx-*.md  ← 画面個票。1 節と 9・10 節が埋まっている
 - docs/design/mocks/*.html         ← 承認済みのモック。画面の中身はこれが正
-- docs/design/README.md            ← 共通の決めごと（画面幅・確定操作の位置など）
+{% if use_screens %}- docs/design/README.md            ← 共通の決めごと（画面幅・確定操作の位置など）{% endif %}
 - docs/rdra/03-boundary/README.md  ← UC 一覧・イベント一覧
 - docs/rdra/04-system/README.md    ← 情報（INFO-xxx）と状態（ST-xxx）
 - docs/specs/common/               ← 横断規約（認証・エラー・命名・バリデーション）
@@ -100,6 +106,7 @@
 
 ## ステップ指示（共通指示の後ろに付ける）
 
+{% if use_screens %}
 ### Step1 画面のパスを決め、基本情報を仕上げる
 
 - **主担当**: AI
@@ -156,6 +163,7 @@ design_status が approved の画面について、モックを見ながら 2〜
 API は名称だけを書き、採番はしない。
 ```
 
+{% endif %}{% if use_apis %}
 ### Step3 API を採番し、個票を作る
 
 - **主担当**: AI
@@ -177,6 +185,11 @@ API は名称だけを書き、採番はしない。
 
 時間イベント（日次の延滞検出など）や外部システム連携で動く UC は、画面から呼ばれないので
 API 個票にすると「どの画面からも呼ばれない API」になり、判定と衝突する。
+{% if use_batch %}
+この構成にはバッチがある。これらは **P02 で `BATCH-xxx` を採番済み**なので、
+ここで新しい置き場を作らない。採番から漏れていたものを見つけたら
+`docs/traceability/uc-batch.md` の「どのバッチからも使われない UC」へ書き、P02 へ差し戻す。
+{% else %}
 これらは API にせず、`docs/specs/apis/README.md` に**一覧として書き出す**。
 
 - 書くこと: 何をきっかけに動くか / どの UC に対応するか / どの `INFO-xxx` `ST-xxx` を変えるか
@@ -184,6 +197,7 @@ API 個票にすると「どの画面からも呼ばれない API」になり、
 
 一覧が 0 件なら「0 件」と明記する。書かずに済ませると、**画面に出てこない処理が
 成果物のどこにも現れないまま実装へ渡る**。
+{% endif %}
 
 ```text
 # 今回のステップ
@@ -195,6 +209,32 @@ Input / Output と、扱う INFO-xxx、エラー分岐を書く。
 実装のソースを指す欄は「（実装後に記入）」。
 ```
 
+{% endif %}{% if use_batch %}
+### Step3b バッチ個票の 2〜5 節を書く
+
+- **主担当**: AI
+- **ゴール**: バッチが人の見ていない時間に落ちたときに何が起きるかが決まっている
+- **判定**:
+  - 採番した全 `BATCH-xxx` の 2〜5 節が埋まっている（`（P04 で記入）` が 0 件）
+  - 2 節の処理の流れが、対象の絞り込み条件を `INFO-xxx` と `ST-xxx` で特定している
+  - **3 節が全行埋まっている**（途中で落ちたら / 再実行してよいか / 気づく手段）
+  - 「再実行してよいか」が「よい」でない場合、**何を重複させてはいけないか**が書いてある
+  - 4 節の先行・後続に書いた処理が実在する（`BATCH-xxx` {% if use_screens %}または `SCR-xxx` {% endif %}で特定）
+  - `起動方式` が `（実装方式の決定後に記入）`、`エントリポイント` が `（実装後に記入）`
+- **やらない**: cron 式やキューの設定を書かない。リトライ回数を決めない（実行基盤が決まっていない）
+- **出力先**: `docs/specs/batches/`
+- **補足**: 3 節を空にしたまま通さない。**バッチは失敗したときの扱いが設計の本体**であり、
+  ここが決まっていないと運用に渡せない。決められないものは `docs/p00-brief.md` 7 節の未決へ上げる
+
+```text
+# 今回のステップ
+
+docs/prompts/p04-detail.md の「Step3b バッチ個票の 2〜5 節を書く」を実行する。
+全 BATCH の個票について、処理の流れ・失敗したときの扱い・他の処理との関係を書く。
+3 節は全行埋める。再実行してよいかを必ず判断し、よくない場合は
+何を重複させてはいけないかを書く。起動方式と実行基盤は決めない。
+```
+{% endif %}{% if use_screens or use_apis %}
 ### Step4 対応表を仕上げる
 
 - **主担当**: AI
@@ -207,18 +247,19 @@ Input / Output と、扱う INFO-xxx、エラー分岐を書く。
   - 個票の 5 節で使うと書いた API と、対応表のその画面の行の API が一致している
   - `python3 scripts/docs-validate/validate-docs.py` が **ERROR 0**
 - **やらない**: 画面や UC の行を足さない
-- **出力先**: `docs/traceability/screen-uc-api.md`
+- **出力先**: {% if use_screens %}`docs/traceability/screen-uc-api.md`{% else %}`docs/traceability/uc-api.md`{% endif %}
 
 ```text
 # 今回のステップ
 
 docs/prompts/p04-detail.md の「Step4 対応表を仕上げる」を実行する。
-docs/traceability/screen-uc-api.md の API 列と用途列を埋め、
+{% if use_screens %}docs/traceability/screen-uc-api.md{% else %}docs/traceability/uc-api.md{% endif %} の API 列と用途列を埋め、
 個票の 5 節と食い違いが無いか突き合わせる。最後に validator を ERROR 0 にする。
 ```
 
 ---
 
+{% endif %}
 ## G4 ゲートの判定（機械のみ。人は介在しない）
 
 次がすべて満たされたら P05 へ進む。

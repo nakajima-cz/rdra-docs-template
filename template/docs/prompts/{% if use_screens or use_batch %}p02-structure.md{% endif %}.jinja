@@ -1,12 +1,19 @@
-# P02 基本設計（画面設計） — 指示テンプレ
+# P02 基本設計 — 指示テンプレ
 
-確定した UC 一覧から、画面に `SCR-xxx` を採番し、画面設計書の枠と対応表を作るフェーズの指示文。
+確定した UC 一覧から、**この案件が持つ構成要素に ID を採番し**、設計書の枠と対応表を作る
+フェーズの指示文。この構成では次を扱う。
+
+{% if use_screens %}- **画面**: `SCR-xxx` を採番し、画面設計書の枠と画面×UC 対応表を作る
+{% endif %}{% if use_batch %}- **バッチ**: `BATCH-xxx` を採番し、バッチ設計書の枠と UC×バッチ 対応表を作る
+{% endif %}
+{% if use_apis %}API（`API-xxx`）はここでは採番しない。画面・バッチから呼ばれる単位が決まる **P04** で採番する。
+{% endif %}
 
 **使い方**: 下のコードブロックを **1ステップ分ずつ** コピーしてAIに渡す。
 案件ごとに書き換えるのは成果物であって、この指示文ではない。
 
 - **入力**: `docs/rdra/03-boundary/README.md`（確定した UC 一覧・画面一覧・イベント一覧）
-- **出力**: `docs/specs/screens/SCR-xxx-*.md`（枠のみ）、`docs/traceability/screen-uc-api.md`
+- **出力**: {% if use_screens %}`docs/specs/screens/SCR-xxx-*.md`（枠のみ）、`docs/traceability/screen-uc-api.md`{% endif %}{% if use_screens and use_batch %} ／ {% endif %}{% if use_batch %}`docs/specs/batches/BATCH-xxx-*.md`（枠のみ）、`docs/traceability/uc-batch.md`{% endif %}
 - **抜けるゲート**: G2 整合（**機械判定のみ。人の承認は無い**）
 
 ## このフェーズの性質（P01 との最大の違い）
@@ -18,8 +25,10 @@
   機械が見ない判定は、ステップ指示の側で**何を書き、何を書かないか**を一意に決めておく。
 - **だから、ここで業務判断をしてはいけない。** UC を増やす・減らす・統合する必要に気づいたら、
   その場で直さず **G1 へ差し戻す**（ `docs/p00-brief.md` の「7. 未決事項」へ `[UC件数に影響]` で上げる）。
-- **画面の中身はまだ設計しない。** 枠（frontmatter と見出し）だけを作る。
-  項目・レイアウトは P03 のモック確定後、P04 で埋める。
+- **中身はまだ設計しない。** 枠（frontmatter と見出し）だけを作る。
+{% if use_screens %}  画面の項目・レイアウトは P03 のモック確定後、P04 で埋める。
+{% endif %}{% if use_batch %}  バッチの処理の流れ・失敗時の扱いは P04 で埋める。
+{% endif %}
 
 ---
 
@@ -48,7 +57,8 @@
 
 - docs/rdra/03-boundary/README.md  ← UC 一覧・画面一覧・イベント一覧（確定済み）
 - docs/rdra/04-system/README.md    ← 情報と状態（画面が扱う対象の確認用）
-- docs/specs/screens/_template.md  ← 画面設計書の雛形。節構成はここに従う
+{% if use_screens %}- docs/specs/screens/_template.md  ← 画面設計書の雛形。節構成はここに従う
+{% endif %}{% if use_batch %}- docs/specs/batches/_template.md  ← バッチ設計書の雛形。節構成はここに従う{% endif %}
 - docs/specs/common/               ← 横断規約（認証・エラー・命名・バリデーション）
 - docs/p00-brief.md                ← 制約と運用ルール
 - docs/adr/                        ← 既存の決定
@@ -101,6 +111,7 @@
 
 ## ステップ指示（共通指示の後ろに付ける）
 
+{% if use_screens %}
 ### Step1 画面に SCR を採番する
 
 - **主担当**: AI
@@ -124,7 +135,7 @@
 ```text
 # 今回のステップ
 
-docs/prompts/p02-screens.md の「Step1 画面に SCR を採番する」を実行する。
+docs/prompts/p02-structure.md の「Step1 画面に SCR を採番する」を実行する。
 画面一覧（P01: 名称のみ）に並ぶ画面へ、上から順に SCR-001 から採番し、
 docs/rdra/03-boundary/README.md の「画面ID対応」の表を埋める。
 「設計書」列には個票のファイル名を書き、「パス」列は「（P04 で記入）」のまま残す。
@@ -191,11 +202,63 @@ docs/rdra/03-boundary/README.md の「画面ID対応」の表を埋める。
 ```text
 # 今回のステップ
 
-docs/prompts/p02-screens.md の「Step2 画面設計書の枠を作る」を実行する。
+docs/prompts/p02-structure.md の「Step2 画面設計書の枠を作る」を実行する。
 docs/specs/screens/_template.md の `##` 節構成に従い、採番した全 SCR の個票を作る。
 「1. 基本情報」だけを P01 からの転記で埋め、他の節は指示文のとおり記入待ち表記にする。
 ```
 
+{% endif %}{% if use_batch %}
+### Step1b バッチに BATCH を採番する
+
+- **主担当**: AI
+- **ゴール**: 画面から起動しない処理がすべて `BATCH-xxx` を持っている
+- **判定**:
+  - `docs/rdra/03-boundary/README.md` の UC のうち、**人が画面で操作しない契機で動くもの**が
+    すべて `BATCH-xxx` を持っている
+  - `docs/specs/batches/README.md` のバッチ一覧に、1列目=ID・2列目=名称で全行ある
+  - **バッチにしないものが理由付きで書かれている**（業務上のきっかけはあるが、
+    自動処理を伴わないもの。無ければ「無し」と明記する）
+  - `BATCH-900` を母集団に含めていない
+- **やらない**: 起動方式（cron かキューか）を決めない。処理の中身を書かない
+- **出力先**: `docs/specs/batches/README.md`
+- **補足**: 画面から人が押して始まる処理はバッチではない。画面の操作として設計する。
+  判断の軸は「**人が始めるのか、時刻や受信が始めるのか**」
+
+```text
+# 今回のステップ
+
+docs/prompts/p02-structure.md の「Step1b バッチに BATCH を採番する」を実行する。
+docs/rdra/03-boundary/README.md の UC のうち、人が画面で操作しない契機で動くものに
+BATCH-xxx を採番し、docs/specs/batches/README.md のバッチ一覧へ書く。
+自動処理を伴わないきっかけは「バッチにしないもの」へ理由付きで書く。
+起動方式と処理の中身は書かない。
+```
+
+### Step2b バッチ設計書の枠を作る
+
+- **主担当**: AI
+- **ゴール**: 採番した全バッチに個票のファイルがあり、節構成が雛形と一致している
+- **判定**:
+  - 採番した全 `BATCH-xxx` に `docs/specs/batches/BATCH-xxx-<短い名前>.md` がある
+  - 節構成が `_template.md` と一致（`validate-docs.py` の節構成 WARN が 0）
+  - 1 節の基本情報は**全7行**を埋める。`関連UC`・`起動契機`・`入力`・`出力`・`想定件数` は
+    P01 の成果物から転記または一意に導出する。`起動方式`・`エントリポイント` は
+    `（実装方式の決定後に記入）`・`（実装後に記入）`
+  - 2〜5 節の本文は**空のまま**（`（P04 で記入）`）
+- **やらない**: 処理の流れを書かない。失敗時の扱いを決めない
+- **出力先**: `docs/specs/batches/`
+
+```text
+# 今回のステップ
+
+docs/prompts/p02-structure.md の「Step2b バッチ設計書の枠を作る」を実行する。
+採番した全 BATCH について _template.md を複製して個票を作り、
+1 節の基本情報の全7行を埋める。2〜5 節は（P04 で記入）のままにする。
+節構成を雛形から変えない。
+```
+{% endif %}
+
+{% if use_screens %}
 ### Step3 対応表を埋める
 
 - **主担当**: AI
@@ -212,10 +275,33 @@ docs/specs/screens/_template.md の `##` 節構成に従い、採番した全 SC
 ```text
 # 今回のステップ
 
-docs/prompts/p02-screens.md の「Step3 対応表を埋める」を実行する。
+docs/prompts/p02-structure.md の「Step3 対応表を埋める」を実行する。
 docs/traceability/screen-uc-api.md に全 SCR の行を作り、UC 列を P01 の対応で埋める。
 API 列と用途列は「（P04 で記入）」のまま残す。最後に validator を実行し ERROR 0 にする。
 ```
+{% endif %}{% if use_batch %}
+### Step3b UC × バッチ 対応表を埋める
+
+- **主担当**: AI
+- **ゴール**: UC × バッチ 対応表が、バッチ個票と双方向で一致している
+- **判定**:
+  - 採番した全 `BATCH-xxx` の行が対応表にある
+  - 対応表にあって個票が無い `BATCH-xxx` が 0 件
+  - 各行の UC 列に、P01 で確定した UC が書かれている
+  - 起動契機の列が全行埋まっている（個票 1 節と同じ文言）
+  - `python3 scripts/docs-validate/validate-docs.py` が **ERROR 0**
+- **やらない**: 「どのバッチからも使われない UC」の欄は埋めない（P04 で埋める）
+- **出力先**: `docs/traceability/uc-batch.md`
+
+```text
+# 今回のステップ
+
+docs/prompts/p02-structure.md の「Step3b UC × バッチ 対応表を埋める」を実行する。
+docs/traceability/uc-batch.md に全 BATCH の行を作り、UC 列と起動契機の列を埋める。
+「どのバッチからも使われない UC」の欄は（P04 で記入）のまま残す。
+最後に validator を実行し ERROR 0 にする。
+```
+{% endif %}
 
 ---
 

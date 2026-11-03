@@ -14,7 +14,7 @@
 | 指示テンプレ | フェーズ | 入力 | 主な出力 | 抜けるゲート |
 |---|---|---|---|---|
 | `p01-requirements.md` | P01 要件定義 | `docs/p00-brief.md` | `docs/rdra/` 4層, `docs/glossary.md`, `docs/adr/` | G1 要件FIX（人の承認） |
-| `p02-screens.md` | P02 基本設計 | 確定した UC 一覧 | SCR採番, 個票の枠, 対応表 | G2 整合（機械判定） |
+| `p02-structure.md` | P02 基本設計 | 確定した UC 一覧 | SCR採番, 個票の枠, 対応表 | G2 整合（機械判定） |
 | `p03-design.md` | P03 デザイン | 画面個票の枠 | `docs/design/mocks/` の HTMLモック, 個票9・10節 | G3 デザインFIX（人の承認） |
 | `p04-detail.md` | P04 詳細設計 | 承認済みモックと画面個票の枠 | 個票1〜8節, API個票, 対応表の完成 | G4 整合（機械判定） |
 | `p05-handoff.md` | P05 実装ハンドオフ | G4 を通った `docs/` 一式 | `docs/handoff/` のロット一覧と指示 | — |
@@ -25,8 +25,8 @@
   やらないこと・**主担当（人 / AI）** を定義したもの。`p01-requirements.md` から参照される判定基準の正本。
 
 P01〜P05 まで作成済み。
-`use_screens=false` の構成では `p02-screens.md` / `p03-design.md` / `p04-detail.md` /
-`p05-handoff.md` は配布されない（API のみの P02〜P05 指示テンプレは未作成）。
+`use_screens=false` の構成では `p02-structure.md` / `p03-design.md` / `p04-detail.md` /
+`p05-handoff.md` は配布されない。
 
 P03 の成果物の正本は `docs/design/mocks/` の HTML モック。Figma へ起こすかは
 モックFIX（G3 通過）の後に**人へ確認してから**決める（ `use_figma=true` の構成のみ）。

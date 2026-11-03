@@ -62,7 +62,7 @@ design_version:
 **API通信**:
 | API | メソッド | リクエスト | レスポンス使用先 | 定義箇所 |
 |-----|---------|----------|---------------|---------|
-| ユーザーログイン (`/api/d/account/login` = API-900) | POST | username, password | session | `src/pages/login/index.tsx` |
+| ユーザーログイン (`/api/d/account/login`{% if use_apis %} = API-900{% endif %}) | POST | username, password | session | `src/pages/login/index.tsx` |
 
 **レスポンスに応じたエラー分岐**:
 | No | 条件 | 結果 |

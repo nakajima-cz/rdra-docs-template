@@ -26,11 +26,14 @@ from pathlib import Path
 REQUIRED_FRONTMATTER = {
     "screen": ["source", "updated", "source_commit", "design_status"],
     "api": ["source", "updated"],
+    "batch": ["source", "updated"],
 }
 DESIGN_STATUS_VALUES = {"draft", "in-review", "approved"}
 
 # 対応表のファイル名候補（先に見つかった方を使う）
 TRACEABILITY_NAMES = ("screen-uc-api.md", "uc-api.md")
+# バッチ構成の対応表（SCR/API の対応表とは別に持つ）
+BATCH_TRACEABILITY_NAME = "uc-batch.md"
 
 # 未置換のプレースホルダとみなすパターン
 PLACEHOLDER_RE = re.compile(r"^\s*(YYYY-MM-DD|<[^>]*>|TBD|TODO)\s*$", re.IGNORECASE)
@@ -38,6 +41,7 @@ PLACEHOLDER_RE = re.compile(r"^\s*(YYYY-MM-DD|<[^>]*>|TBD|TODO)\s*$", re.IGNOREC
 ID_PATTERNS = {
     "SCR": re.compile(r"\bSCR-(\d{3,})\b"),
     "API": re.compile(r"\bAPI-(\d{3,})\b"),
+    "BATCH": re.compile(r"\bBATCH-(\d{3,})\b"),
     "UC": re.compile(r"\bUC-(\d{3,})\b"),
     "ADR": re.compile(r"\bADR-(\d{4,})\b"),
 }
@@ -116,7 +120,9 @@ def ids_in(text: str, kind: str) -> set[str]:
 
 def collect_defined_ids(docs: Path) -> dict[str, set[str]]:
     """ファイル名・見出しから「定義済み」とみなせる ID を集める。"""
-    defined: dict[str, set[str]] = {"SCR": set(), "API": set(), "UC": set(), "ADR": set()}
+    defined: dict[str, set[str]] = {
+        "SCR": set(), "API": set(), "BATCH": set(), "UC": set(), "ADR": set()
+    }
 
     for f in sorted((docs / "specs" / "screens").glob("SCR-*.md")):
         m = re.match(r"(SCR-\d{3,})", f.name)
@@ -126,6 +132,10 @@ def collect_defined_ids(docs: Path) -> dict[str, set[str]]:
         m = re.match(r"(API-\d{3,})", f.name)
         if m:
             defined["API"].add(m.group(1))
+    for f in sorted((docs / "specs" / "batches").glob("BATCH-*.md")):
+        m = re.match(r"(BATCH-\d{3,})", f.name)
+        if m:
+            defined["BATCH"].add(m.group(1))
     for f in sorted((docs / "adr").glob("[0-9]*.md")):
         m = re.match(r"(\d{4,})", f.name)
         if m:
@@ -180,6 +190,8 @@ def traceability_path(docs: Path) -> Path:
 
 
 def check_traceability(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
+    if not defined["SCR"] and not defined["API"]:
+        return  # 画面も API も無い構成（バッチのみ等）はこの対応表を持たない
     tr = traceability_path(docs)
     rel = str(tr.relative_to(docs.parent))
     if not tr.exists():
@@ -300,17 +312,34 @@ def check_adr_index(docs: Path, defined: dict[str, set[str]], rep: Report) -> No
             )
 
 
+def check_batch_traceability(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
+    """バッチがある構成で、UC × バッチ 対応表との過不足を見る。"""
+    if not defined["BATCH"]:
+        return
+    tr = docs / "traceability" / BATCH_TRACEABILITY_NAME
+    rel = str(tr.relative_to(docs.parent))
+    if not tr.exists():
+        rep.error(rel, f"バッチがありますが対応表が存在しません（{BATCH_TRACEABILITY_NAME}）")
+        return
+    listed = ids_in(strip_code_and_comments(tr.read_text(encoding="utf-8")), "BATCH")
+    for missing in sorted(listed - defined["BATCH"]):
+        rep.error(rel, f"{missing} が対応表にあるが docs/specs/batches/{missing}-*.md が存在しません")
+    for orphan in sorted(defined["BATCH"] - listed):
+        rep.error(rel, f"{orphan} の設計書があるが対応表に行がありません")
+
+
 def check_references(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
     """docs 全体の ADR-/SCR-/API- 参照が実在するかを見る。"""
     skip_names = {"_template.md", "template.md"}
     traceability = traceability_path(docs)
+    batch_traceability = docs / "traceability" / BATCH_TRACEABILITY_NAME
     adr_index = adr_index_path(docs)
     for f in sorted(docs.rglob("*.md")):
-        if f.name in skip_names or f == traceability or f == adr_index:
+        if f.name in skip_names or f in (traceability, batch_traceability) or f == adr_index:
             continue  # 対応表と ADR 一覧は専用チェックで見るので二重報告しない
         rel = str(f.relative_to(docs.parent))
         text = strip_code_and_comments(f.read_text(encoding="utf-8"))
-        for kind in ("ADR", "SCR", "API"):
+        for kind in ("ADR", "SCR", "API", "BATCH"):
             for ref in sorted(ids_in(text, kind) - defined[kind]):
                 rep.error(rel, f"{ref} を参照していますが実体が存在しません")
         # UC は docs/rdra/ 側の記述揺れがありうるので WARN 止まり
@@ -441,7 +470,7 @@ def check_spec_sections(docs: Path, rep: Report) -> None:
     節の過不足は「設計書としての形が崩れている」合図だが、案件固有の節を足すのは
     正当にありうるので WARN に留める。P02 のゲートではこの WARN を 0 件にする。
     """
-    for folder, prefix in (("screens", "SCR-"), ("apis", "API-")):
+    for folder, prefix in (("screens", "SCR-"), ("apis", "API-"), ("batches", "BATCH-")):
         tpl = docs / "specs" / folder / "_template.md"
         if not tpl.exists():
             continue
@@ -491,8 +520,11 @@ def main() -> int:
         check_spec(f, "screen", str(f.relative_to(docs.parent)), rep)
     for f in sorted((docs / "specs" / "apis").glob("API-*.md")):
         check_spec(f, "api", str(f.relative_to(docs.parent)), rep)
+    for f in sorted((docs / "specs" / "batches").glob("BATCH-*.md")):
+        check_spec(f, "batch", str(f.relative_to(docs.parent)), rep)
 
     check_traceability(docs, defined, rep)
+    check_batch_traceability(docs, defined, rep)
     check_references(docs, defined, rep)
     check_adr_index(docs, defined, rep)
     check_id_names(docs, rep)
@@ -518,6 +550,7 @@ def main() -> int:
         total = (
             f"docs-validate: ERROR {len(rep.errors)} / WARN {len(rep.warns)}"
             f"（検査: {len(defined['SCR'])} screens, {len(defined['API'])} apis,"
+            f" {len(defined['BATCH'])} batches,"
             f" {len(defined['ADR'])} adr, {len(defined['UC'])} uc）"
         )
         print(total)
