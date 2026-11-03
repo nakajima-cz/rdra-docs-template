@@ -4,7 +4,7 @@
 検査対象は docs/ 配下のみ。コードの正しさは見ない（spec 同士・ID 参照の整合のみ）。
 
 ERROR (exit 1): 構造の破綻。frontmatter 必須キー欠落 / design_status 不正 /
-                ID の dangling 参照 / traceability との不一致。
+                ID の dangling 参照 / traceability との不一致 / ADR 一覧との不一致。
 WARN  (exit 0): 埋め忘れ。プレースホルダ未置換 / 画像リンク切れ / UC 未定義。
 
 使い方:
