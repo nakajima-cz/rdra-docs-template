@@ -282,8 +282,11 @@ def check_adr_index(docs: Path, defined: dict[str, set[str]], rep: Report) -> No
         if (m := re.match(r"(\d{4,})", f.name))
     }
 
-    for missing in sorted(set(listed) - set(files)):
-        rep.error(rel, f"{missing} が一覧にあるが docs/adr/{missing[4:]}-*.md が存在しません")
+    # 表の外（地の文や、表として成立していない行）に書かれた ADR 参照も拾う。
+    # check_references はこのファイルを見ないので、ここで dangling を一度だけ報告する。
+    for missing in sorted(ids_in(text, "ADR") - defined["ADR"]):
+        rep.error(rel, f"{missing} を参照していますが実体が存在しません")
+
     for orphan in sorted(set(files) - set(listed)):
         rep.error(rel, f"{orphan} の本体があるが一覧に行がありません")
 
