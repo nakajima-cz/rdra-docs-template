@@ -202,13 +202,109 @@ def check_traceability(docs: Path, defined: dict[str, set[str]], rep: Report) ->
         rep.warn(rel, f"{uc} が対応表にあるが docs/rdra/ 配下に定義が見つかりません")
 
 
+ADR_STATUS_RE = re.compile(r"^-\s*(?:ステータス|Status)\s*[:：]\s*(.+?)\s*$", re.MULTILINE)
+STATUS_HEADER_RE = re.compile(r"^(ステータス|Status|状態)$", re.IGNORECASE)
+
+
+def adr_index_path(docs: Path) -> Path:
+    return docs / "adr" / "README.md"
+
+
+def adr_status_of(path: Path) -> str:
+    """ADR 本体の `- ステータス: X` を返す（取れなければ空文字）。"""
+    m = ADR_STATUS_RE.search(strip_code_and_comments(path.read_text(encoding="utf-8")))
+    return normalize_status(m.group(1)) if m else ""
+
+
+def normalize_status(raw: str) -> str:
+    """比較用にステータスを正規化する。雛形の選択肢列挙（`A | B | C`）は比較対象外。"""
+    s = " ".join(raw.replace("**", "").split()).strip()
+    if "|" in s or "/" in s or PLACEHOLDER_RE.match(s):
+        return ""
+    return s
+
+
+def iter_adr_index_rows(text: str):
+    """ADR 一覧表の (ID セル, ステータスセル) を列挙する。
+
+    ヘッダに ID 列とステータス列がある表だけを一覧とみなす。列順は固定しない。
+    """
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        if not lines[i].lstrip().startswith("|"):
+            i += 1
+            continue
+        block = []
+        while i < len(lines) and lines[i].lstrip().startswith("|"):
+            block.append(lines[i])
+            i += 1
+        if len(block) < 3:
+            continue
+        header = [c.strip() for c in block[0].strip().strip("|").split("|")]
+        if not ID_HEADER_RE.search(header[0]):
+            continue
+        status_col = next(
+            (n for n, h in enumerate(header) if STATUS_HEADER_RE.match(h)), None
+        )
+        for row in block[2:]:
+            cells = [c.strip() for c in row.strip().strip("|").split("|")]
+            if not cells:
+                continue
+            status = cells[status_col] if status_col is not None and status_col < len(cells) else ""
+            yield cells[0], status
+
+
+def check_adr_index(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
+    """docs/adr/README.md の一覧と ADR 本体を双方向で突き合わせる。
+
+    索引を更新しない ADR は、読み手から見れば存在しないのと同じ。ステータスの
+    食い違い（本体が Superseded なのに一覧が Accepted のまま）も同じ理由で ERROR。
+    """
+    idx = adr_index_path(docs)
+    if not idx.exists():
+        if defined["ADR"]:
+            rep.error("docs/adr/README.md", "ADR の一覧（README.md）が存在しません")
+        return
+
+    rel = str(idx.relative_to(docs.parent))
+    text = strip_code_and_comments(idx.read_text(encoding="utf-8"))
+
+    listed: dict[str, str] = {}
+    for id_cell, status_cell in iter_adr_index_rows(text):
+        m = ID_PATTERNS["ADR"].search(id_cell)
+        if m:
+            listed[f"ADR-{m.group(1)}"] = normalize_status(status_cell)
+
+    files = {
+        f"ADR-{m.group(1)}": f
+        for f in sorted((docs / "adr").glob("[0-9]*.md"))
+        if (m := re.match(r"(\d{4,})", f.name))
+    }
+
+    for missing in sorted(set(listed) - set(files)):
+        rep.error(rel, f"{missing} が一覧にあるが docs/adr/{missing[4:]}-*.md が存在しません")
+    for orphan in sorted(set(files) - set(listed)):
+        rep.error(rel, f"{orphan} の本体があるが一覧に行がありません")
+
+    for ident in sorted(set(listed) & set(files)):
+        want = listed[ident]
+        got = adr_status_of(files[ident])
+        if want and got and want != got:
+            rep.error(
+                rel,
+                f"{ident} のステータスが一覧と本体で一致しません: 一覧 `{want}` / 本体 `{got}`",
+            )
+
+
 def check_references(docs: Path, defined: dict[str, set[str]], rep: Report) -> None:
     """docs 全体の ADR-/SCR-/API- 参照が実在するかを見る。"""
     skip_names = {"_template.md", "template.md"}
     traceability = traceability_path(docs)
+    adr_index = adr_index_path(docs)
     for f in sorted(docs.rglob("*.md")):
-        if f.name in skip_names or f == traceability:
-            continue  # 対応表は check_traceability で見るので二重報告しない
+        if f.name in skip_names or f == traceability or f == adr_index:
+            continue  # 対応表と ADR 一覧は専用チェックで見るので二重報告しない
         rel = str(f.relative_to(docs.parent))
         text = strip_code_and_comments(f.read_text(encoding="utf-8"))
         for kind in ("ADR", "SCR", "API"):
@@ -395,6 +491,7 @@ def main() -> int:
 
     check_traceability(docs, defined, rep)
     check_references(docs, defined, rep)
+    check_adr_index(docs, defined, rep)
     check_id_names(docs, rep)
     check_spec_sections(docs, rep)
 

@@ -11,3 +11,6 @@
 | ADR-0002 | 要件定義に RDRA を採用 | Accepted | YYYY-MM-DD |
 
 ステータス: Proposed / Accepted / Deprecated / Superseded by ADR-xxxx
+
+この一覧は `validate-docs.py` が検査する。ADR 本体と一覧の行は**双方向で一致させる**
+（本体があって行が無い／行があって本体が無い／ステータスの食い違い はいずれも ERROR）。
