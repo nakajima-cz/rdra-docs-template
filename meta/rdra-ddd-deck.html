@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>RDRA × DDD 実装フェーズの接続</title>
+<style>
+  :root{
+    --ink:#15171c; --ink2:#3d434e; --mute:#7b8291; --line:#dcdfe6;
+    --bg:#f7f6f3; --card:#ffffff; --accent:#b4432c; --good:#1f6f54; --warn:#9a6b12;
+    --human:#1d4f91; --mach:#6b7280;
+    --jp:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+    --num:"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#2a2c31;font-family:var(--jp);-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+  #deck{width:1920px;height:1080px;transform-origin:center center;position:relative}
+  .s{position:absolute;inset:0;background:var(--bg);color:var(--ink);padding:78px 96px;display:none;flex-direction:column}
+  .s.on{display:flex}
+  .kicker{font-size:22px;letter-spacing:.14em;color:var(--mute);font-weight:600}
+  h1{font-size:88px;line-height:1.1;letter-spacing:-.02em;font-weight:800}
+  h2{font-size:50px;line-height:1.18;letter-spacing:-.015em;font-weight:800}
+  h3{font-size:28px;font-weight:700;line-height:1.3}
+  p,li{font-size:25px;line-height:1.6;color:var(--ink2)}
+  .lead{font-size:33px;line-height:1.5;color:var(--ink)}
+  .rule{height:5px;width:132px;background:var(--accent);margin:24px 0 30px}
+  .foot{position:absolute;left:96px;right:96px;bottom:40px;display:flex;justify-content:space-between;
+        font-size:19px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:30px 32px}
+  .tag{display:inline-block;font-size:18px;font-weight:700;letter-spacing:.06em;padding:6px 13px;border-radius:5px}
+  .t-h{background:#dde7f5;color:var(--human)}
+  .t-m{background:#e8eaed;color:var(--mach)}
+  .t-bad{background:#f6e3df;color:var(--accent)}
+  .t-fix{background:#e2efe9;color:var(--good)}
+  .big{font-family:var(--num);font-weight:800;letter-spacing:-.04em;line-height:.92}
+  ul{padding-left:1.25em} li{margin-bottom:10px}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#eceef2;padding:2px 7px;border-radius:4px}
+  .arrow{font-family:var(--num);font-size:42px;color:var(--mute);align-self:center;text-align:center}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:15px 12px;border-bottom:1px solid var(--line);font-size:24px}
+  th{font-size:20px;color:var(--mute);letter-spacing:.06em;font-weight:700}
+  td.n{font-family:var(--num);font-weight:700;font-size:29px}
+  .bars{display:flex;align-items:flex-end;gap:30px;height:300px;padding-top:56px}
+  .bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:12px;height:100%}
+  .bcol{width:100%;border-radius:7px 7px 0 0;background:var(--accent);position:relative}
+  .bcol.z{background:var(--good)}
+  .bcol span{position:absolute;top:-48px;left:0;right:0;text-align:center;font-family:var(--num);
+             font-size:34px;font-weight:800;color:var(--ink)}
+  .blab{font-size:20px;color:var(--mute);font-weight:700}
+  .note{font-size:20px;color:var(--mute);line-height:1.5}
+
+  /* フロー図 */
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:30px}
+  .ph{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 16px;text-align:center}
+  .ph .pid{font-family:var(--num);font-size:30px;font-weight:800;color:var(--mute)}
+  .ph .pnm{font-size:23px;font-weight:700;margin-top:4px;line-height:1.25}
+  .ph .pout{font-size:18px;color:var(--mute);margin-top:10px;line-height:1.35}
+  .gate{width:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:0 0 112px}
+  .gbox{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;
+        font-family:var(--num);font-size:30px;font-weight:800;border:4px solid}
+  .g-h{border-color:var(--human);background:#dde7f5;color:var(--human)}
+  .g-m{border-color:var(--line);background:#eef0f3;color:var(--mach)}
+  .glab{font-size:17px;font-weight:700;line-height:1.2;text-align:center}
+  .g-h+.glab{color:var(--human)} .g-m+.glab{color:var(--mute)}
+  .humanbar{display:flex;margin-top:26px;align-items:center}
+  .hslot{background:#dde7f5;border:2px solid var(--human);border-radius:9px;padding:14px 12px;text-align:center;
+         color:var(--human);font-weight:700;font-size:21px;line-height:1.3}
+  .spacer{flex:1}
+  .stepline{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap}
+  .stp{background:#eef0f3;border-radius:6px;padding:7px 13px;font-size:19px;color:var(--ink2);font-weight:600}
+  .stp.h{background:#dde7f5;color:var(--human)}
+  .ask{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--human);border-radius:10px;padding:24px 28px}
+  .ask h3{color:var(--human)}
+  .numq{font-family:var(--num);font-weight:800;color:var(--human);font-size:26px;margin-right:10px}
+</style>
+<style>
+  .layer{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .lcol{background:var(--card);padding:28px 30px}
+  .lcol+.lcol{border-left:1px solid var(--line)}
+  .lhead{font-size:22px;font-weight:800;letter-spacing:.04em;color:var(--mute)}
+  .ltitle{font-size:34px;font-weight:800;margin-top:6px}
+  .chip{display:inline-block;background:#eef0f3;border-radius:6px;padding:6px 12px;font-size:19px;
+        font-weight:700;color:var(--ink2);margin:5px 6px 0 0}
+  .chip.a{background:#f6e3df;color:var(--accent)}
+  .chip.g{background:#e2efe9;color:var(--good)}
+  .hub{display:grid;grid-template-columns:1fr 300px 1fr;gap:20px;align-items:center;margin-top:16px}
+  .hubbox{background:var(--accent);color:#fff;border-radius:14px;padding:30px 20px;text-align:center}
+  .hubbox .hn{font-size:40px;font-weight:800}
+  .hubbox .hs{font-size:21px;opacity:.86;margin-top:8px}
+  .ucrow{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 16px;
+         font-size:21px;margin-bottom:9px;line-height:1.35}
+  .ucrow b{font-family:var(--num);color:var(--accent);margin-right:10px}
+  .lots{display:flex;gap:9px;margin-top:7px}
+  .lot{width:74px;text-align:center;padding:9px 0;border-radius:7px;font-family:var(--num);
+       font-weight:800;font-size:22px;background:#eef0f3;color:#b9bec7;border:1px solid var(--line)}
+  .lot.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .before{opacity:.5}
+  .holebox{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--accent);
+           border-radius:10px;padding:22px 26px}
+  .holebox h3{color:var(--accent)}
+  .stepnum{font-family:var(--num);font-size:30px;font-weight:800;color:var(--mute);line-height:1}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck">
+
+<section class="s">
+  <div class="kicker">rdra-docs-template / 実装フェーズの設計</div>
+  <div class="rule"></div>
+  <h1>RDRA × DDD</h1>
+  <p class="lead" style="margin-top:34px;max-width:1300px">
+    RDRA テンプレートの<strong>実装フェーズに DDD を取り込む</strong>。
+    社内の <span class="mono">creadorz/web-ddd</span> を実装時テンプレとして使い、
+    設計から実装への変換規則をテンプレ側に持つ。<br>
+    図書館システムの実データ（INFO 16・ST 26・UC 70）で調査した結果と、決めたこと。
+  </p>
+  <div class="spacer"></div>
+  <div class="foot"><span>調査: rdra-p05-library-v3</span><span>1 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">出発点</div><div class="rule"></div>
+  <h2>テンプレートの実装フェーズにルールが無い</h2>
+  <div class="layer" style="margin-top:34px">
+    <div class="lcol">
+      <div class="lhead">手元にあるもの A</div>
+      <div class="ltitle">rdra-docs-template</div>
+      <p style="margin-top:14px">要求から実装ハンドオフまで 6 フェーズ。copier で他チームへ配布する。</p>
+      <div style="margin-top:14px">
+        <span class="chip">技術非依存</span><span class="chip">P00〜P05</span>
+        <span class="chip">validator で機械判定</span><span class="chip">ADR</span>
+      </div>
+      <p class="note" style="margin-top:18px">copier の質問に言語・フレームワークは1つも無い</p>
+    </div>
+    <div class="lcol">
+      <div class="lhead">手元にあるもの B</div>
+      <div class="ltitle">creadorz/web-ddd</div>
+      <p style="margin-top:14px">DDD で Web サービスを作るときの実装テンプレ。稼働中。</p>
+      <div style="margin-top:14px">
+        <span class="chip">TypeScript</span><span class="chip">レイヤード</span>
+        <span class="chip">TSyringe</span><span class="chip">契約テスト</span><span class="chip">Docker</span>
+      </div>
+      <p class="note" style="margin-top:18px">.claude/skills に実装フローが 13 本</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:30px;border-left:5px solid var(--human)">
+    <h3>問い</h3>
+    <p style="margin-top:8px">テンプレートに組み込むか、分離しておくか。</p>
+  </div>
+  <div class="foot"><span>出発点</span><span>2 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">調べて分かったこと</div><div class="rule"></div>
+  <h2>2つは重なっていない。段が違う</h2>
+  <div class="flow" style="margin-top:38px">
+    <div class="ph"><div class="pid">P00</div><div class="pnm">ブリーフ</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">P01</div><div class="pnm">要件</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">P02</div><div class="pnm">構成要素</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">P03</div><div class="pnm">デザイン</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">P04</div><div class="pnm">詳細設計</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">P05</div><div class="pnm">ハンドオフ</div></div>
+    <div class="arrow" style="color:var(--accent)">›</div>
+    <div class="ph" style="border-color:var(--accent);background:#fdf3f1">
+      <div class="pid" style="color:var(--accent)">実装</div>
+      <div class="pnm" style="color:var(--accent)">web-ddd</div></div>
+  </div>
+  <div class="grid2" style="margin-top:40px">
+    <div class="card"><h3>RDRA テンプレ = 何を作るか</h3>
+      <p style="margin-top:10px">業務・要件・画面・API・データ。技術に依存しない。</p></div>
+    <div class="card"><h3>web-ddd = どう作るか</h3>
+      <p style="margin-top:10px">ドメイン・レイヤー・テスト・DI。技術に固定される。</p></div>
+  </div>
+  <div class="card" style="margin-top:26px;border-left:5px solid var(--accent)">
+    <h3>重なるのは1点だけ</h3>
+    <p style="margin-top:8px"><span class="mono">webddd-backend-make</span> の Phase 1〜2（ヒアリング → BasePlan 作成）。
+      ここは P00〜P05 が既に出している。<strong>今のまま両方使うと、要件を2回聞かれる。</strong></p>
+  </div>
+  <div class="foot"><span>段が違う</span><span>3 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">web-ddd 側に無いもの（実物を全走査）</div><div class="rule"></div>
+  <h2>だから RDRA 側に流用価値がある</h2>
+  <div class="grid3" style="margin-top:32px">
+    <div class="card"><span class="tag t-bad">要件</span>
+      <h3 style="margin-top:12px">システム全体の要件</h3>
+      <p style="margin-top:8px">Phase 1 で聞くのは5問だけ。UC の網羅・アクター・情報・状態は出てこない。</p></div>
+    <div class="card"><span class="tag t-bad">整合</span>
+      <h3 style="margin-top:12px">機能間の突き合わせ</h3>
+      <p style="margin-top:8px"><span class="mono">.plans/</span> は機能ごとに独立。同じデータを触る別機能を照合する場所が無い。</p></div>
+    <div class="card"><span class="tag t-bad">Why</span>
+      <h3 style="margin-top:12px">決定の理由</h3>
+      <p style="margin-top:8px">ADR に相当するものが無い。理由は BasePlan に流れ、plan ごと古くなる。</p></div>
+    <div class="card"><span class="tag t-bad">同期</span>
+      <h3 style="margin-top:12px">設計と実装の線</h3>
+      <p style="margin-top:8px"><span class="mono">source_commit</span> と doc-sync のような、コードから設計書を最小更新する仕組みが無い。</p></div>
+    <div class="card"><span class="tag t-bad">停止点</span>
+      <h3 style="margin-top:12px">要件を固定するゲート</h3>
+      <p style="margin-top:8px">CHECKPOINT は作業承認で、<span class="mono">all-yes</span> で飛ばせる。G1・G3 とは役割が違う。</p></div>
+    <div class="card" style="border-left:5px solid var(--good)"><span class="tag t-fix">結論</span>
+      <h3 style="margin-top:12px">規約は持たない。対応関係だけ持つ</h3>
+      <p style="margin-top:8px">DDD 規約の正本は web-ddd。コピーすれば二重管理になる。</p></div>
+  </div>
+  <div class="foot"><span>流用価値</span><span>4 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">決めたこと</div><div class="rule"></div>
+  <h2>P05 にドメインモデリングを挿し、ハンドオフを P06 へ</h2>
+  <div class="note" style="margin-top:26px;font-size:22px">変更前</div>
+  <div class="flow before" style="margin-top:8px">
+    <div class="ph"><div class="pid">P04</div><div class="pnm">詳細設計</div></div>
+    <div class="gate"><div class="gbox g-m">G4</div><div class="glab">機械判定</div></div>
+    <div class="ph"><div class="pid">P05</div><div class="pnm">ハンドオフ</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">—</div><div class="pnm">実装</div></div>
+  </div>
+  <div class="note" style="margin-top:34px;font-size:22px;color:var(--accent)">変更後</div>
+  <div class="flow" style="margin-top:8px">
+    <div class="ph"><div class="pid">P04</div><div class="pnm">詳細設計</div><div class="pout">API 採番</div></div>
+    <div class="gate"><div class="gbox g-m">G4</div><div class="glab">機械判定</div></div>
+    <div class="ph" style="border-color:var(--accent);background:#fdf3f1">
+      <div class="pid" style="color:var(--accent)">P05</div>
+      <div class="pnm" style="color:var(--accent)">ドメインモデリング</div>
+      <div class="pout">docs/domain/</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">P06</div><div class="pnm">ハンドオフ</div><div class="pout">ロット L1..Ln</div></div>
+    <div class="arrow">›</div>
+    <div class="ph"><div class="pid">—</div><div class="pnm">実装 (web-ddd)</div><div class="pout">BasePlan.md</div></div>
+  </div>
+  <div class="grid2" style="margin-top:36px">
+    <div class="card"><h3>なぜ API の後か</h3>
+      <p style="margin-top:8px">web-ddd のフローが <span class="mono">openapi → domain → interface → test → impl</span>。
+        API 契約が先、ドメインが後。RDRA 側も P04 で API を採番するので順序が合う。</p></div>
+    <div class="card" style="border-left:5px solid var(--accent)"><h3>なぜハンドオフの前か</h3>
+      <p style="margin-top:8px">集約がロット境界をまたぐため。後ろに置くと<strong>同じ集約が複数回、別々に設計される</strong>。
+        実データで確認した（9枚目）。</p></div>
+  </div>
+  <div class="foot"><span>案1で確定</span><span>5 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">変換規則</div><div class="rule"></div>
+  <h2>RDRA の成果物は DDD の構成要素へ写せる</h2>
+  <table style="margin-top:26px">
+    <tr><th style="width:26%">RDRA 側</th><th style="width:34%">DDD / web-ddd 側</th><th>備考</th></tr>
+    <tr><td><span class="mono">INFO-xxx</span> 情報</td><td>エンティティ／値オブジェクト</td><td>属性だけを写す</td></tr>
+    <tr><td><span class="mono">ST-xxx</span> 状態</td><td>状態遷移と不変条件</td><td>振る舞いの出どころ</td></tr>
+    <tr><td><span class="mono">UC-xxx</span></td><td><span class="mono">application/usecase/&lt;Domain&gt;/&lt;action&gt;</span></td><td>1 対多を許す（粒度が違う）</td></tr>
+    <tr><td><span class="mono">API-xxx</span></td><td>interface 層のルート・OpenAPI</td><td>P04 で採番済み</td></tr>
+    <tr><td>条件・バリエーション</td><td>ドメインの不変条件・バリデーション</td><td>振る舞いの出どころ</td></tr>
+    <tr><td><span class="mono">BATCH-xxx</span></td><td>WebAPI を伴わない内部機能（パターンC）</td><td>web-ddd 側に受け皿あり</td></tr>
+  </table>
+  <div class="card" style="margin-top:30px;border-left:5px solid var(--accent)">
+    <h3>指示テンプレに必ず書く一文</h3>
+    <p style="margin-top:8px"><strong>INFO をそのままエンティティにしない。</strong>
+      属性は INFO から、<strong>振る舞いは ST の遷移条件と条件・バリエーションから</strong>引く。
+      書かなければ、DDD の形をしているが集約が無いコードになる。</p>
+  </div>
+  <div class="foot"><span>対応関係だけを持つ</span><span>6 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">実データ / 図書館システム</div><div class="rule"></div>
+  <h2>状態の有無で集約候補が機械的に割れた</h2>
+  <div class="grid4" style="margin-top:30px">
+    <div class="card" style="text-align:center"><div class="big" style="font-size:86px;color:var(--accent)">7</div>
+      <div style="margin-top:12px;font-weight:700;font-size:23px">集約ルート</div>
+      <p class="note" style="margin-top:6px">ST を持つ</p></div>
+    <div class="card" style="text-align:center"><div class="big" style="font-size:86px">1</div>
+      <div style="margin-top:12px;font-weight:700;font-size:23px">構成要素</div>
+      <p class="note" style="margin-top:6px">会員カード</p></div>
+    <div class="card" style="text-align:center"><div class="big" style="font-size:86px">2</div>
+      <div style="margin-top:12px;font-weight:700;font-size:23px">マスタ</div>
+      <p class="note" style="margin-top:6px">書誌・図書館</p></div>
+    <div class="card" style="text-align:center"><div class="big" style="font-size:86px">1</div>
+      <div style="margin-top:12px;font-weight:700;font-size:23px">イベント記録</div>
+      <p class="note" style="margin-top:6px">廃棄記録</p></div>
+  </div>
+  <div class="grid2" style="margin-top:34px">
+    <div class="card">
+      <h3>集約ルート候補と状態数</h3>
+      <div class="stepline" style="margin-top:14px">
+        <span class="stp">会員 4</span><span class="stp">蔵書 6</span><span class="stp">予約 6</span>
+        <span class="stp">貸出 3</span><span class="stp">配送 3</span><span class="stp">棚卸 2</span>
+        <span class="stp">蔵書発注 2</span>
+      </div>
+      <p class="note" style="margin-top:16px">ST を持つ＝守るべき不変条件とライフサイクルがある</p>
+    </div>
+    <div class="card">
+      <h3>ST を持たない情報の行き先</h3>
+      <p style="margin-top:10px">会員カードは発行・確認のみで会員に従属 → <strong>会員集約の中</strong>。
+        書誌と図書館は参照されるだけ → <strong>マスタ</strong>。
+        廃棄記録は廃棄に伴って発生 → <strong>イベント</strong>。</p>
+    </div>
+  </div>
+  <div class="foot"><span>対象内 INFO 11 件</span><span>7 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">判断が要る箇所</div><div class="rule"></div>
+  <h2>集約をまたぐ UC は 7 件。全件に蔵書が絡む</h2>
+  <div class="hub" style="margin-top:24px">
+    <div>
+      <div class="ucrow"><b>UC-010</b>予約 + 配送</div>
+      <div class="ucrow"><b>UC-011</b>予約</div>
+      <div class="ucrow"><b>UC-012</b>予約 + 貸出</div>
+      <div class="ucrow"><b>UC-013</b>貸出</div>
+    </div>
+    <div class="hubbox"><div class="hn">蔵書</div><div class="hs">INFO-004 / 6 状態<br>7 件すべてに関与</div></div>
+    <div>
+      <div class="ucrow"><b>UC-016</b>予約 + 配送</div>
+      <div class="ucrow"><b>UC-017</b>棚卸</div>
+      <div class="ucrow"><b>UC-020</b>蔵書発注</div>
+      <div class="ucrow" style="border-style:dashed;color:var(--mute)">状態を動かす UC 16 件 中 7 件</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:30px;border-left:5px solid var(--human)">
+    <h3>RDRA に欠陥があるわけではない</h3>
+    <p style="margin-top:8px">RDRA はこの事実を<strong>正しく記録している</strong>。
+      ただし<strong>1トランザクションにするのか、集約を分けて結果整合にするのかは決めていない</strong>。
+      決める必要がない手法なので当然。<strong>新フェーズが引き受けるのはこの判断と、理由の ADR 記録。</strong></p>
+  </div>
+  <div class="foot"><span>蔵書が交差点</span><span>8 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">案1の裏付け</div><div class="rule"></div>
+  <h2>集約はロット境界をまたぐ</h2>
+  <table style="margin-top:28px">
+    <tr><th style="width:16%">情報</th><th style="width:44%">状態を変える UC</th><th>またぐロット</th></tr>
+    <tr><td><strong>蔵書</strong></td><td>UC-010, 011, 012, 013, 016, 017, 020</td>
+      <td><div class="lots"><span class="lot">L1</span><span class="lot">L2</span><span class="lot">L3</span><span class="lot on">L4</span><span class="lot on">L5</span><span class="lot on">L6</span></div></td></tr>
+    <tr><td><strong>予約</strong></td><td>UC-008, 009, 010, 011, 012, 016</td>
+      <td><div class="lots"><span class="lot">L1</span><span class="lot">L2</span><span class="lot on">L3</span><span class="lot on">L4</span><span class="lot on">L5</span><span class="lot">L6</span></div></td></tr>
+    <tr><td>貸出</td><td>UC-012, 013, 014</td>
+      <td><div class="lots"><span class="lot">L1</span><span class="lot">L2</span><span class="lot">L3</span><span class="lot">L4</span><span class="lot on">L5</span><span class="lot">L6</span></div></td></tr>
+    <tr><td>配送</td><td>UC-010, 015, 016</td>
+      <td><div class="lots"><span class="lot">L1</span><span class="lot">L2</span><span class="lot">L3</span><span class="lot on">L4</span><span class="lot">L5</span><span class="lot">L6</span></div></td></tr>
+  </table>
+  <div class="card" style="margin-top:32px;border-left:5px solid var(--accent)">
+    <h3>ドメインモデリングをロット単位にできない理由</h3>
+    <p style="margin-top:8px">蔵書と予約が<strong>3 ロットずつにまたがる</strong>。ハンドオフの後に置くと、
+      <strong>蔵書が 3 回、別々に設計される</strong>。だからハンドオフより前に置く。</p>
+  </div>
+  <div class="foot"><span>実データで確認</span><span>9 / 10</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">残った穴と、次にやること</div><div class="rule"></div>
+  <h2>RDRA 側から写せなかった 3 つ</h2>
+  <div class="grid3" style="margin-top:28px">
+    <div class="holebox"><h3>状態遷移の規則が無い</h3>
+      <p style="margin-top:8px">ST は状態の<strong>列挙</strong>で遷移図ではない。どの状態からどこへ、どの UC を契機に、
+        どんな条件で、が無い。<span class="mono">docs/domain/</span> に遷移表を新設する。</p></div>
+    <div class="holebox"><h3>業務ルールが空だった</h3>
+      <p style="margin-top:8px">「条件・バリエーション」節は未記入（RDRA フェーズ3 の実施は G1 判断のため）。
+        <strong>空のときの分岐が要る</strong> — 引けないものは未決へ上げ、埋めたことにしない。</p></div>
+    <div class="holebox" style="border-left-color:var(--mute)"><h3>コンテキスト境界は導けない</h3>
+      <p style="margin-top:8px">RDRA はシステム境界を 1 つとして扱う。この規模（集約 7・UC 70）では
+        単一コンテキストで足りるので、当面は論点に立てない。</p></div>
+  </div>
+  <h2 style="margin-top:44px;font-size:40px">次の手順</h2>
+  <div class="grid4" style="margin-top:18px">
+    <div class="card"><div class="stepnum">02</div><h3 style="margin-top:10px">指示テンプレを1枚</h3>
+      <p class="note" style="margin-top:8px">穴3つへの対応を織り込む</p></div>
+    <div class="card"><div class="stepnum">03</div><h3 style="margin-top:10px">別コンテキストで実走</h3>
+      <p class="note" style="margin-top:8px">欠陥0件が2周続くまで</p></div>
+    <div class="card"><div class="stepnum">04</div><h3 style="margin-top:10px">validator 拡張</h3>
+      <p class="note" style="margin-top:8px">写し漏れ3種を機械判定。ID 接頭辞は増やさない</p></div>
+    <div class="card" style="border-left:5px solid var(--good)"><div class="stepnum">05</div>
+      <h3 style="margin-top:10px">web-ddd に1機能通す</h3>
+      <p class="note" style="margin-top:8px"><strong>集約の切り方の妥当性はここでしか分からない</strong></p></div>
+  </div>
+  <div class="foot"><span>ステップ2へ</span><span>10 / 10</span></div>
+</section>
+
+</div></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.s')];
+  let i=parseInt(location.hash.replace('#',''))||1;
+  if(isNaN(i)||i<1||i>slides.length)i=1;
+  function show(n){i=Math.max(1,Math.min(slides.length,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i-1));}
+  function fit(){const d=document.getElementById('deck');
+    const s=Math.min(innerWidth/1920,innerHeight/1080);
+    d.style.transform='scale('+s+')';}
+  addEventListener('resize',fit);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key))show(i+1);
+    if(['ArrowLeft','PageUp'].includes(e.key))show(i-1);
+    if(e.key==='Home')show(1); if(e.key==='End')show(slides.length);});
+  window.__show=show; window.__n=slides.length;
+  fit();show(i);
+</script>
+</body>
+</html>
