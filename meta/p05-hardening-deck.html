@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>P05 ドメインモデリング — 指示テンプレを14周実走して欠陥0件へ</title>
+<style>
+  :root{
+    --ink:#15171c; --ink2:#3d434e; --mute:#7b8291; --line:#dcdfe6;
+    --bg:#f7f6f3; --card:#ffffff; --accent:#b4432c; --good:#1f6f54; --warn:#9a6b12;
+    --human:#1d4f91; --mach:#6b7280;
+    --jp:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+    --num:"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#2a2c31;font-family:var(--jp);-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+  #deck{width:1920px;height:1080px;transform-origin:center center;position:relative}
+  .s{position:absolute;inset:0;background:var(--bg);color:var(--ink);padding:78px 96px;display:none;flex-direction:column}
+  .s.on{display:flex}
+  .kicker{font-size:22px;letter-spacing:.14em;color:var(--mute);font-weight:600}
+  h1{font-size:88px;line-height:1.1;letter-spacing:-.02em;font-weight:800}
+  h2{font-size:50px;line-height:1.18;letter-spacing:-.015em;font-weight:800}
+  h3{font-size:28px;font-weight:700;line-height:1.3}
+  p,li{font-size:25px;line-height:1.6;color:var(--ink2)}
+  .lead{font-size:33px;line-height:1.5;color:var(--ink)}
+  .rule{height:5px;width:132px;background:var(--accent);margin:24px 0 30px}
+  .foot{position:absolute;left:96px;right:96px;bottom:40px;display:flex;justify-content:space-between;
+        font-size:19px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:30px 32px}
+  .tag{display:inline-block;font-size:18px;font-weight:700;letter-spacing:.06em;padding:6px 13px;border-radius:5px}
+  .t-h{background:#dde7f5;color:var(--human)}
+  .t-m{background:#e8eaed;color:var(--mach)}
+  .t-bad{background:#f6e3df;color:var(--accent)}
+  .t-fix{background:#e2efe9;color:var(--good)}
+  .big{font-family:var(--num);font-weight:800;letter-spacing:-.04em;line-height:.92}
+  ul{padding-left:1.25em} li{margin-bottom:10px}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#eceef2;padding:2px 7px;border-radius:4px}
+  .arrow{font-family:var(--num);font-size:42px;color:var(--mute);align-self:center;text-align:center}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:15px 12px;border-bottom:1px solid var(--line);font-size:24px}
+  th{font-size:20px;color:var(--mute);letter-spacing:.06em;font-weight:700}
+  td.n{font-family:var(--num);font-weight:700;font-size:29px}
+  .bars{display:flex;align-items:flex-end;gap:30px;height:300px;padding-top:56px}
+  .bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:12px;height:100%}
+  .bcol{width:100%;border-radius:7px 7px 0 0;background:var(--accent);position:relative}
+  .bcol.z{background:var(--good)}
+  .bcol span{position:absolute;top:-48px;left:0;right:0;text-align:center;font-family:var(--num);
+             font-size:34px;font-weight:800;color:var(--ink)}
+  .blab{font-size:20px;color:var(--mute);font-weight:700}
+  .note{font-size:20px;color:var(--mute);line-height:1.5}
+
+  /* フロー図 */
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:30px}
+  .ph{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 16px;text-align:center}
+  .ph .pid{font-family:var(--num);font-size:30px;font-weight:800;color:var(--mute)}
+  .ph .pnm{font-size:23px;font-weight:700;margin-top:4px;line-height:1.25}
+  .ph .pout{font-size:18px;color:var(--mute);margin-top:10px;line-height:1.35}
+  .gate{width:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:0 0 112px}
+  .gbox{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;
+        font-family:var(--num);font-size:30px;font-weight:800;border:4px solid}
+  .g-h{border-color:var(--human);background:#dde7f5;color:var(--human)}
+  .g-m{border-color:var(--line);background:#eef0f3;color:var(--mach)}
+  .glab{font-size:17px;font-weight:700;line-height:1.2;text-align:center}
+  .g-h+.glab{color:var(--human)} .g-m+.glab{color:var(--mute)}
+  .humanbar{display:flex;margin-top:26px;align-items:center}
+  .hslot{background:#dde7f5;border:2px solid var(--human);border-radius:9px;padding:14px 12px;text-align:center;
+         color:var(--human);font-weight:700;font-size:21px;line-height:1.3}
+  .spacer{flex:1}
+  .stepline{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap}
+  .stp{background:#eef0f3;border-radius:6px;padding:7px 13px;font-size:19px;color:var(--ink2);font-weight:600}
+  .stp.h{background:#dde7f5;color:var(--human)}
+  .ask{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--human);border-radius:10px;padding:24px 28px}
+  .ask h3{color:var(--human)}
+  .numq{font-family:var(--num);font-weight:800;color:var(--human);font-size:26px;margin-right:10px}
+</style>
+<style>
+  .layer{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .lcol{background:var(--card);padding:28px 30px}
+  .lcol+.lcol{border-left:1px solid var(--line)}
+  .lhead{font-size:22px;font-weight:800;letter-spacing:.04em;color:var(--mute)}
+  .ltitle{font-size:34px;font-weight:800;margin-top:6px}
+  .chip{display:inline-block;background:#eef0f3;border-radius:6px;padding:6px 12px;font-size:19px;
+        font-weight:700;color:var(--ink2);margin:5px 6px 0 0}
+  .chip.a{background:#f6e3df;color:var(--accent)}
+  .chip.g{background:#e2efe9;color:var(--good)}
+  .hub{display:grid;grid-template-columns:1fr 300px 1fr;gap:20px;align-items:center;margin-top:16px}
+  .hubbox{background:var(--accent);color:#fff;border-radius:14px;padding:30px 20px;text-align:center}
+  .hubbox .hn{font-size:40px;font-weight:800}
+  .hubbox .hs{font-size:21px;opacity:.86;margin-top:8px}
+  .ucrow{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 16px;
+         font-size:21px;margin-bottom:9px;line-height:1.35}
+  .ucrow b{font-family:var(--num);color:var(--accent);margin-right:10px}
+  .lots{display:flex;gap:9px;margin-top:7px}
+  .lot{width:74px;text-align:center;padding:9px 0;border-radius:7px;font-family:var(--num);
+       font-weight:800;font-size:22px;background:#eef0f3;color:#b9bec7;border:1px solid var(--line)}
+  .lot.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .before{opacity:.5}
+  .holebox{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--accent);
+           border-radius:10px;padding:22px 26px}
+  .holebox h3{color:var(--accent)}
+  .stepnum{font-family:var(--num);font-size:30px;font-weight:800;color:var(--mute);line-height:1}
+</style>
+
+<style>
+  .bars14{display:flex;align-items:flex-end;gap:13px;height:330px;padding-top:62px}
+  .b14{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:10px;height:100%}
+  .b14 .c{width:100%;border-radius:6px 6px 0 0;background:var(--accent);position:relative}
+  .b14 .c.z{background:var(--good)}
+  .b14 .c.zz{background:var(--good);min-height:7px}
+  .b14 .c span{position:absolute;top:-42px;left:0;right:0;text-align:center;font-family:var(--num);
+               font-size:30px;font-weight:800;color:var(--ink)}
+  .b14 .l{font-size:18px;color:var(--mute);font-weight:700;font-family:var(--num)}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:22px}
+  .sbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 30px}
+  .sbox.bad{border-left:6px solid var(--accent)} .sbox.good{border-left:6px solid var(--good)}
+  .sbox h3{font-size:26px} .sbox .q{font-size:21px;line-height:1.5;color:var(--ink2);margin-top:12px;
+            background:#f1f2f5;border-radius:8px;padding:14px 16px}
+  .phase{display:flex;gap:0;align-items:stretch;margin-top:26px}
+  .pbox{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 12px;text-align:center}
+  .pbox.new{background:#e2efe9;border-color:var(--good);border-width:2px}
+  .pbox .i{font-family:var(--num);font-size:26px;font-weight:800;color:var(--mute)}
+  .pbox.new .i{color:var(--good)}
+  .pbox .t{font-size:21px;font-weight:700;margin-top:3px;line-height:1.25}
+  .pbox .o{font-size:17px;color:var(--mute);margin-top:8px;line-height:1.3}
+  .gsep{width:84px;flex:0 0 84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+  .gcir{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;font-family:var(--num);
+         font-size:24px;font-weight:800;border:4px solid var(--human);background:#dde7f5;color:var(--human)}
+  .glb{font-size:16px;font-weight:700;color:var(--human);text-align:center;line-height:1.15}
+  .map{display:grid;grid-template-columns:1fr 70px 1fr;gap:16px;align-items:center;margin-top:8px}
+  .mrow{display:contents}
+  .mcell{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px 20px;font-size:23px}
+  .marr{font-family:var(--num);font-size:30px;color:var(--mute);text-align:center}
+  .mhead{font-size:20px;color:var(--mute);font-weight:700;letter-spacing:.06em;padding-left:4px}
+  .q1{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--good);
+      border-radius:10px;padding:20px 26px;margin-bottom:14px}
+  .q1 .qt{font-size:23px;line-height:1.5;color:var(--ink)}
+  .q1 .qw{font-size:19px;color:var(--mute);margin-top:8px;line-height:1.4}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck">
+
+<section class="s">
+  <div class="kicker">rdra-docs-template v2.1.0</div>
+  <h1>指示テンプレを<br>14周まわして<br>欠陥 0 件にした</h1>
+  <div class="rule" style="width:200px;margin:34px 0 28px"></div>
+  <p class="lead">RDRA の要件定義成果物から DDD のドメインモデルを起こす工程を <strong>P05</strong> として新設し、<br>
+  図書館システムを題材に指示文を実走で詰めた。</p>
+  <div style="display:flex;gap:46px;margin-top:40px">
+    <div><div class="big" style="font-size:76px;color:var(--good)">0</div><p class="note" style="margin-top:6px">14周目の欠陥件数</p></div>
+    <div><div class="big" style="font-size:76px">14</div><p class="note" style="margin-top:6px">実走した周回数</p></div>
+    <div><div class="big" style="font-size:76px">19</div><p class="note" style="margin-top:6px">判定項目（全て ○）</p></div>
+    <div><div class="big" style="font-size:76px">0</div><p class="note" style="margin-top:6px">validator ERROR（全周）</p></div>
+  </div>
+  <div class="foot"><span>2026-11-07</span><span>1 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">足したもの</div><div class="rule"></div>
+  <h2>設計書と実装ハンドオフの間に、集約を切る工程を挿した</h2>
+  <div class="phase">
+    <div class="pbox"><div class="i">P01-03</div><div class="t">要件定義</div><div class="o">INFO / ST / UC</div></div>
+    <div class="gsep"><div class="gcir">G1</div><div class="glb">要件FIX</div></div>
+    <div class="pbox"><div class="i">P04</div><div class="t">詳細設計</div><div class="o">画面 / API 個票</div></div>
+    <div class="pbox new"><div class="i">P05</div><div class="t">ドメイン<br>モデリング</div><div class="o">集約・整合方式<br>状態遷移・UseCase</div></div>
+    <div class="pbox"><div class="i">P06</div><div class="t">ハンドオフ</div><div class="o">ロット L1..Ln</div></div>
+    <div class="pbox"><div class="i">実装</div><div class="t">実装規約へ</div><div class="o">web-ddd 側</div></div>
+  </div>
+  <div class="grid2" style="margin-top:34px">
+    <div class="card" style="border-left:5px solid var(--good)"><h3>新しい人のゲートは作らない</h3>
+      <p style="margin-top:10px">停止点は G1（要件FIX）と G3（デザインFIX）のまま。P05 は完了時にまとめて承認する。
+      ゲートを増やすと案件の進みが止まる。</p></div>
+    <div class="card"><h3>旧 P05 は P06 へ改称</h3>
+      <p style="margin-top:10px">ハンドオフの入力に <span class="mono">docs/domain/README.md</span> が加わった。
+      ロットは<strong>作業の単位</strong>、集約は<strong>整合性を保つ範囲</strong>で軸が違う。</p></div>
+  </div>
+  <div class="foot"><span>P05 を新設</span><span>2 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">変換規則</div><div class="rule"></div>
+  <h2>RDRA に無いのは集約境界だけ。それがこの工程の主務</h2>
+  <div class="map">
+    <div class="mhead">RDRA の成果物</div><div></div><div class="mhead">DDD の構成要素</div>
+    <div class="mcell">INFO-xxx のうち<strong>状態を持つもの</strong></div><div class="marr">→</div><div class="mcell">集約ルート</div>
+    <div class="mcell">状態を持たない INFO-xxx</div><div class="marr">→</div><div class="mcell">マスタ / 値オブジェクト / イベント記録</div>
+    <div class="mcell">ST-xxx 状態モデル</div><div class="marr">→</div><div class="mcell">状態遷移と不変条件</div>
+    <div class="mcell">UC-xxx</div><div class="marr">→</div><div class="mcell">UseCase（1対多を許す）</div>
+    <div class="mcell" style="background:#f6e3df;border-color:var(--accent)"><strong>該当なし</strong></div>
+    <div class="marr" style="color:var(--accent)">✕</div>
+    <div class="mcell" style="background:#f6e3df;border-color:var(--accent)"><strong>集約境界</strong></div>
+  </div>
+  <p class="note" style="margin-top:26px">※ RDRA は情報どうしの関連は描くが、「どこまでを1回の変更でまとめて守るか」は持たない。
+  材料は揃っているのに変換規則が決まっていない、という状態だった。</p>
+  <div class="foot"><span>写せるもの・写せないもの</span><span>3 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">設計判断</div><div class="rule"></div>
+  <h2>規約の正本は実装側に置き、テンプレは参照先だけを持つ</h2>
+  <div class="split">
+    <div class="sbox good"><h3>rdra-docs-template</h3>
+      <p style="margin-top:10px">何を作るか。要件・機能間の整合・Why の記録・要件確定の停止点。</p>
+      <div style="margin-top:12px"><span class="chip g">対応関係</span><span class="chip g">参照先 URL</span><span class="chip">言語非依存</span></div></div>
+    <div class="sbox good"><h3>creadorz/web-ddd</h3>
+      <p style="margin-top:10px">どう作るか。TypeScript・レイヤー構成・TSyringe・契約テスト・Docker。</p>
+      <div style="margin-top:12px"><span class="chip g">DDD 実装規約</span><span class="chip g">命名</span><span class="chip">技術スタック固定</span></div></div>
+  </div>
+  <div class="card" style="margin-top:28px;border-left:5px solid var(--human)">
+    <h3 style="color:var(--human)">接続点は1つだけ</h3>
+    <p style="margin-top:10px">P05 がドメインモデルを出す → P06 が実装規約の plan 形式へ変換する。
+    copier 質問 <span class="mono">impl_guide</span> に URL を入れるだけで繋がる（既定は空）。</p>
+    <p class="note" style="margin-top:12px">理由: 技術依存度の差、二重管理の前例、更新速度の不一致。
+    規約をテンプレへ写すと、web-ddd 側が変わるたびにテンプレの全案件が古くなる。</p>
+  </div>
+  <div class="foot"><span>分離して1点で繋ぐ</span><span>4 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">検証のやり方</div><div class="rule"></div>
+  <h2>書いた本人のセッションでは、欠陥が見えない</h2>
+  <div class="grid3">
+    <div class="card"><div class="stepnum">01</div><h3 style="margin-top:10px">毎周リポジトリを作り直す</h3>
+      <p class="note" style="margin-top:8px">P04 完了コミットから clone。前周の成果物を残すと、直った効果と残骸が混ざる</p></div>
+    <div class="card"><div class="stepnum">02</div><h3 style="margin-top:10px">別コンテキストで実走</h3>
+      <p class="note" style="margin-top:8px">サブエージェントに「指示文だけを読め」「書き換えるな」「観測が目的」と渡す</p></div>
+    <div class="card"><div class="stepnum">03</div><h3 style="margin-top:10px">4類型で報告させる</h3>
+      <p class="note" style="margin-top:8px">親切さの改善案と本物の欠陥を分けないと、0件かどうかが判定できない</p></div>
+  </div>
+  <div class="grid4" style="margin-top:30px">
+    <div class="card" style="padding:22px 24px"><span class="tag t-bad">(a)</span>
+      <p style="margin-top:12px;font-size:23px">指示が無くて<strong>作業が止まった</strong></p></div>
+    <div class="card" style="padding:22px 24px"><span class="tag t-bad">(b)</span>
+      <p style="margin-top:12px;font-size:23px">指示同士が<strong>矛盾した</strong></p></div>
+    <div class="card" style="padding:22px 24px"><span class="tag t-bad">(c)</span>
+      <p style="margin-top:12px;font-size:23px">従ったら別の判定が<strong>×になった</strong></p></div>
+    <div class="card" style="padding:22px 24px"><span class="tag t-bad">(d)</span>
+      <p style="margin-top:12px;font-size:23px">指示が無く<strong>件数に響く判断</strong>を自分でした</p></div>
+  </div>
+  <p class="note" style="margin-top:22px">表の列構成・見出し名・語彙の選択は「現場裁量」として別章へ。欠陥に数えない。</p>
+  <div class="foot"><span>観測が目的</span><span>5 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">14周の推移</div><div class="rule"></div>
+  <h2>件数は振動した。単調には減らない</h2>
+  <div class="bars14">
+    <div class="b14"><div class="c" style="height:100.0%"><span>9</span></div><div class="l">1</div></div>
+    <div class="b14"><div class="c" style="height:33.3%"><span>3</span></div><div class="l">2</div></div>
+    <div class="b14"><div class="c" style="height:66.7%"><span>6</span></div><div class="l">3</div></div>
+    <div class="b14"><div class="c" style="height:44.4%"><span>4</span></div><div class="l">4</div></div>
+    <div class="b14"><div class="c" style="height:55.6%"><span>5</span></div><div class="l">5</div></div>
+    <div class="b14"><div class="c" style="height:33.3%"><span>3</span></div><div class="l">6</div></div>
+    <div class="b14"><div class="c" style="height:22.2%"><span>2</span></div><div class="l">7</div></div>
+    <div class="b14"><div class="c" style="height:66.7%"><span>6</span></div><div class="l">8</div></div>
+    <div class="b14"><div class="c" style="height:33.3%"><span>3</span></div><div class="l">9</div></div>
+    <div class="b14"><div class="c" style="height:44.4%"><span>4</span></div><div class="l">10</div></div>
+    <div class="b14"><div class="c" style="height:33.3%"><span>3</span></div><div class="l">11</div></div>
+    <div class="b14"><div class="c" style="height:22.2%"><span>2</span></div><div class="l">12</div></div>
+    <div class="b14"><div class="c" style="height:33.3%"><span>3</span></div><div class="l">13</div></div>
+    <div class="b14"><div class="c zz" style="height:1.6%"><span>0</span></div><div class="l">14</div></div>
+  </div>
+  <div class="grid3" style="margin-top:26px">
+    <div class="card" style="padding:22px 26px"><h3 style="font-size:24px">(a) 作業が止まった</h3>
+      <p class="big" style="font-size:46px;color:var(--good);margin-top:10px">14周 0</p></div>
+    <div class="card" style="padding:22px 26px"><h3 style="font-size:24px">判定の ×</h3>
+      <p class="big" style="font-size:46px;color:var(--good);margin-top:10px">13周 0</p>
+      <p class="note" style="margin-top:4px">1周目に1件のみ</p></div>
+    <div class="card" style="padding:22px 26px"><h3 style="font-size:24px">validator ERROR</h3>
+      <p class="big" style="font-size:46px;color:var(--good);margin-top:10px">全周 0</p>
+      <p class="note" style="margin-top:4px">WARN 4 は起点と同一</p></div>
+  </div>
+  <div class="foot"><span>9→3→6→4→5→3→2→6→3→4→3→2→3→0</span><span>6 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">欠陥の中身</div><div class="rule"></div>
+  <h2>件数ではなく、壊れ方が3段階で移っていった</h2>
+  <div class="grid3" style="margin-top:10px">
+    <div class="card"><span class="tag t-bad">1〜5周</span>
+      <h3 style="margin-top:14px">指示が足りない</h3>
+      <p style="margin-top:10px">「含む情報」列が必ず空になる。集約の状態を変えない UC が判定を同時に満たせない。
+      <strong>どうやっても守れない矛盾</strong>がこの層。</p>
+      <p class="note" style="margin-top:12px">対処: 振り分け順序を明示、例外表記を用意</p></div>
+    <div class="card"><span class="tag t-bad">6〜11周</span>
+      <h3 style="margin-top:14px">自分が書いた例示が<br>題材と食い違う</h3>
+      <p style="margin-top:10px">「配送待ちなど」と書いた状態が、実際には除外条項に当たる状態だった。
+      挙げた文面が38個票中1件しか無かった。</p>
+      <p class="note" style="margin-top:12px">対処: 例示を削る／抽象形にする</p></div>
+    <div class="card"><span class="tag t-fix">12〜14周</span>
+      <h3 style="margin-top:14px">規定を足した副作用</h3>
+      <p style="margin-top:10px">穴を塞ぐと、その規定の前提が成り立たないケースが隣に浮かぶ。
+      <strong>穴が移動しているだけ</strong>の状態。</p>
+      <p class="note" style="margin-top:12px">対処: 除外条項を同時に書く → 0件へ</p></div>
+  </div>
+  <p class="note" style="margin-top:28px">※ 同じ欠陥の再発は14周を通して一度も無かった。毎周ちがう箇所の未定義が露出している。
+  精密化するたびに、その文が使っている語の内側にもう一段の未定義が現れる構造だった。</p>
+  <div class="foot"><span>3段階</span><span>7 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">いちばん効いた発見</div><div class="rule"></div>
+  <h2>例示は基準文より強く作用する</h2>
+  <div class="split">
+    <div class="sbox good"><h3>効く側</h3>
+      <div class="q">依存関係があっても 2 節へ送る<br>（<strong>廃棄記録など</strong>）</div>
+      <p style="margin-top:14px">題材に実在するものを名指しすると、実行者がその場で越境を止める。
+      複数の周で「例示が該当したので即座に止まった」と報告された。</p></div>
+    <div class="sbox bad"><h3>害する側</h3>
+      <div class="q">同じ趣旨の文が3つ以上なら定型句<br>（「<strong>遷移できない組み合わせ…</strong>」など）</div>
+      <p style="margin-top:14px">挙げた文面は38個票中<strong>1件</strong>しか無く、件数ルールでは逆に「固有の条件」。
+      例示と規則が正反対を指し、未決が0件と4件で振れた。</p></div>
+  </div>
+  <div class="card" style="margin-top:26px;border-left:5px solid var(--human)">
+    <h3 style="color:var(--human)">例示を書く前の3つの確認</h3>
+    <div class="stepline" style="margin-top:14px">
+      <span class="stp h">閾値つき規則に文面の例を添えない</span>
+      <span class="stp h">引き元を「欄の名前」で指定しない</span>
+      <span class="stp h">実在IDを使うなら題材を開いて確かめる</span>
+    </div>
+    <p class="note" style="margin-top:14px">3つとも実際に踏んだ。欄名で指定した「API個票の<strong>事前条件</strong>」は、その欄名自体が題材に存在しなかった。</p>
+  </div>
+  <div class="foot"><span>両刃の剣</span><span>8 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">0件への最後の一手</div><div class="rule"></div>
+  <h2>規定を1つ足したら、前提が崩れるケースを同時に探す</h2>
+  <div class="grid2" style="margin-top:10px">
+    <div class="card" style="border-left:5px solid var(--accent)">
+      <h3 style="color:var(--accent)">13周目 — 穴が隣へ移った</h3>
+      <p style="margin-top:12px"><strong>足した規定:</strong> 結果整合とした UC は、待ちに入る操作と抜ける操作で<strong>必ず割る</strong></p>
+      <p style="margin-top:10px"><strong>浮いたケース:</strong> 仮置き棚配置は待ちに<strong>入るだけ</strong>で、抜けるのは別の UC。
+      指定された割り方が適用できない</p></div>
+    <div class="card" style="border-left:5px solid var(--good)">
+      <h3 style="color:var(--good)">14周目 — 除外条項を添えた</h3>
+      <p style="margin-top:12px"><strong>足した一文:</strong> 抜ける操作がその UC の中に無いなら<strong>割らない</strong></p>
+      <p style="margin-top:10px"><strong>結果:</strong> 仮置き棚配置は1行、配送と棚卸は2行。
+      「抜ける操作がこの UC の中にあるか」の1問で機械的に決まった</p></div>
+  </div>
+  <div class="card" style="margin-top:28px">
+    <h3>検査として残した手順</h3>
+    <p style="margin-top:10px">「<strong>必ず〜する</strong>」と書いたときは、<strong>〜できない入力が母集団にあるか</strong>を確かめる。
+    検証の依頼文にも「今回足した除外条項が、別のケースを新たに壊していないか」を入れる。</p>
+    <p class="note" style="margin-top:12px">14周目は実行者が全ケースに当てて「新条項は既存の経路で決まる行を一つも奪っていない」と確認した。</p>
+  </div>
+  <div class="foot"><span>除外条項を同時に書く</span><span>9 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">記録しておくもの</div><div class="rule"></div>
+  <h2>消すと結果が変わる一文</h2>
+  <div class="q1"><div class="qt">判定は<strong>生成側だけで行う</strong>。「集約が消えれば一緒に消えるか」で判定しない</div>
+    <div class="qw">退会・廃棄済・返却済という終端状態で情報を消さない設計では常に偽になり、「含む情報」が全行空になる</div></div>
+  <div class="q1"><div class="qt">集約ルートを生成する UC は、状態モデルで<strong>遷移元を持たない状態の遷移 UC</strong> とする</div>
+    <div class="qw">情報モデルに生成 UC の欄が無いため、この一文が無いと判定を始める起点が無く作業が止まる</div></div>
+  <div class="q1"><div class="qt">状態を1つも変えない下位操作には<strong>行を作らない</strong>（照合の登録など）</div>
+    <div class="qw">これが無いと5節が API 個票38件に引きずられ、UC 単位の対応表ではなく API 単位の表になる</div></div>
+  <div class="q1"><div class="qt">実装規約が読めない場合は命名を自分で確定しない。暫定名＋未決へ。<strong>読めないことを理由に作業を止めない</strong></div>
+    <div class="qw">参照先 URL は private リポジトリで実際に 404 だった。この一文が無ければ Step4 で止まっていた</div></div>
+  <p class="note" style="margin-top:22px">※ 毎周「強く効いた制約」を報告させ、後の整理で冗長と見えても削らないよう記録に残している。</p>
+  <div class="foot"><span>効いた制約の記録</span><span>10 / 11</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">結果と、残っていること</div><div class="rule"></div>
+  <h2>v2.1.0 を push した</h2>
+  <div class="grid2">
+    <div class="card" style="border-left:5px solid var(--good)"><h3 style="color:var(--good)">完了</h3>
+      <ul style="margin-top:12px">
+        <li>P05 指示テンプレ（4ステップ）と成果物雛形6節</li>
+        <li>旧 P05 → P06 改称、copier 質問 <span class="mono">impl_guide</span></li>
+        <li>14周実走で欠陥0件、全周 validator ERROR 0</li>
+        <li>components 7構成すべてで jinja 残留 0</li>
+      </ul></div>
+    <div class="card" style="border-left:5px solid var(--accent)"><h3 style="color:var(--accent)">残っていること</h3>
+      <ul style="margin-top:12px">
+        <li><strong>実案件での検証が0本</strong>。題材は RDRA 公式サンプルのみ</li>
+        <li>WORKFLOW.md の保護ポリシー（伝播させるか注記で済ますか）</li>
+        <li>Figma MCP の OAuth 接続と本物トークンでの実行</li>
+      </ul></div>
+  </div>
+  <div class="card" style="margin-top:28px;border-left:5px solid var(--human)">
+    <h3 style="color:var(--human)">判断してほしいこと</h3>
+    <p style="margin-top:10px"><span class="numq">1</span>次にどの案件で1本通すか。集約の切り方が妥当かは、実案件を通すまで分からない。</p>
+    <p style="margin-top:8px"><span class="numq">2</span>WORKFLOW.md を既存案件へ伝播させるか（<span class="mono">_skip_if_exists</span> から外すか）。</p>
+  </div>
+  <div class="foot"><span>v2.1.0</span><span>11 / 11</span></div>
+</section>
+
+</div></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.s')];
+  let i=parseInt(location.hash.replace('#',''))||1;
+  if(isNaN(i)||i<1||i>slides.length)i=1;
+  function show(n){i=Math.max(1,Math.min(slides.length,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i-1));}
+  function fit(){const d=document.getElementById('deck');
+    const s=Math.min(innerWidth/1920,innerHeight/1080);
+    d.style.transform='scale('+s+')';}
+  addEventListener('resize',fit);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key))show(i+1);
+    if(['ArrowLeft','PageUp'].includes(e.key))show(i-1);
+    if(e.key==='Home')show(1); if(e.key==='End')show(slides.length);});
+  window.__show=show; window.__n=slides.length;
+  fit();show(i);
+</script>
+</body>
+</html>

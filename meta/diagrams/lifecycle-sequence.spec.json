@@ -1,409 +1,489 @@
 {
- "name": "rdra-docs-template ライフサイクル",
- "title": "rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）",
- "subtitle": "出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.10.0 時点）",
- "font": "Hiragino Sans",
- "participants": [
-  {
-   "id": "user",
-   "label": "中嶋<br>(Slack)"
-  },
-  {
-   "id": "hermes",
-   "label": "Hermes<br>PMプロファイル"
-  },
-  {
-   "id": "tmpl",
-   "label": "rdra-docs-template<br>(copier テンプレ)"
-  },
-  {
-   "id": "figma",
-   "label": "Figma"
-  },
-  {
-   "id": "coder",
-   "label": "実装エージェント<br>Claude Code / Codex / Orca"
-  },
-  {
-   "id": "repo",
-   "label": "案件リポジトリ<br>docs/ · src/"
-  },
-  {
-   "id": "hook",
-   "label": "pre-push hook<br>docs-validate"
-  },
-  {
-   "id": "remote",
-   "label": "GitHub remote"
-  }
- ],
- "steps": [
-  {
-   "kind": "separator",
-   "label": "① 展開 — copier copy",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "call",
-   "from": "user",
-   "to": "hermes",
-   "label": "Slack: 案件を立ち上げて",
-   "num": "①"
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "tmpl",
-   "label": "copier copy --trust --vcs-ref v1.10.0",
-   "num": "②"
-  },
-  {
-   "kind": "call",
-   "from": "tmpl",
-   "to": "repo",
-   "label": "docs/ · scripts/ · .githooks/ を生成",
-   "num": "③"
-  },
-  {
-   "kind": "note",
-   "color": "blue",
-   "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs・docs_sync_agent → .docs-scaffold/config.sh<br>use_screens / use_figma で画面spec・対応表・Figma連携を取捨<br>.copier-answers.yml にテンプレURLと版を記録<br>_skip_if_exists: 人が書く docs は全部保護（更新で変わらない）",
-   "align": "left",
-   "span": [
-    "tmpl",
-    "repo"
-   ],
-   "width": 430
-  },
-  {
-   "kind": "call",
-   "from": "tmpl",
-   "to": "hook",
-   "label": "scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線",
-   "num": "④"
-  },
-  {
-   "kind": "note",
-   "color": "green",
-   "align": "left",
-   "span": [
-    "tmpl",
-    "hook"
-   ],
-   "width": 430,
-   "text": "v1.6.0: hook_manager の回答で配線先が決まる（冪等）<br>none → core.hooksPath=.githooks<br>husky → .husky/pre-push へ1行追記（core.hooksPath は奪わない）<br>lefthook → lefthook.yml を作成して配線<br>既存の core.hooksPath / lefthook 設定がある場合は上書きせず手順表示のみ"
-  },
-  {
-   "kind": "return",
-   "from": "repo",
-   "to": "hermes",
-   "label": "展開直後から validate-docs は ERROR 0",
-   "num": "⑤"
-  },
-  {
-   "kind": "separator",
-   "label": "② 要件定義 — RDRA 4レイヤー",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "call",
-   "from": "user",
-   "to": "hermes",
-   "label": "Slackで壁打ち（要求・業務フロー・制約）",
-   "num": "⑥"
-  },
-  {
-   "kind": "note",
-   "color": "green",
-   "text": "Slackのやり取りが意思決定の一次ソース。<br>結論だけを ADR-xxxx / rdra 配下へ転記し、<br>spec 本文には Why を書かず ID 参照に留める",
-   "align": "left",
-   "span": [
-    "user",
-    "hermes"
-   ],
-   "width": 330
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "repo",
-   "label": "rdra/01-system-value: REQ-xxx・システムコンテキスト図",
-   "num": "⑦"
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "repo",
-   "label": "rdra/03-boundary: UC-xxx / 画面一覧 SCR-xxx を採番",
-   "num": "⑧"
-  },
-  {
-   "kind": "separator",
-   "label": "③ デザイン — Figma 往復",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "call",
-   "from": "user",
-   "to": "hermes",
-   "label": "デザイン方針・客先要望",
-   "num": "⑨"
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "coder",
-   "label": "HTMLモック＋画面spec から Figma 起こしを指示",
-   "num": "⑩"
-  },
-  {
-   "kind": "call",
-   "from": "coder",
-   "to": "figma",
-   "label": "generate_figma_design / use_figma（OAuth）",
-   "num": "⑪"
-  },
-  {
-   "kind": "return",
-   "from": "figma",
-   "to": "hermes",
-   "label": "客先レビュー指摘（やり取りは Figma に残す）",
-   "num": "⑫"
-  },
-  {
-   "kind": "note",
-   "color": "yellow",
-   "text": "design_status: draft → in-review → approved<br>結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記<br>合意後 export.sh(PAT read) で確定PNGを screenshots/ へ<br>※ ③④のフェーズは use_screens / use_figma = true の案件のみ",
-   "align": "left",
-   "span": [
-    "figma",
-    "repo"
-   ],
-   "width": 400
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "repo",
-   "label": "確定PNG取り込み・design_status: approved",
-   "num": "⑬"
-  },
-  {
-   "kind": "separator",
-   "label": "④ 設計書 — specs / traceability / ADR",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "repo",
-   "label": "specs/screens/SCR-xxx.md ・ specs/apis/API-xxx.md",
-   "num": "⑭"
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "repo",
-   "label": "traceability に行追加 ／ Why は ADR-xxxx へ集約",
-   "num": "⑮"
-  },
-  {
-   "kind": "separator",
-   "label": "⑤ 実装 → docs 同期",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "call",
-   "from": "user",
-   "to": "hermes",
-   "label": "実装フェーズへ移行を指示",
-   "num": "⑯"
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "coder",
-   "label": "タスク委譲（Orca / Claude Code / Codex）",
-   "num": "⑰"
-  },
-  {
-   "kind": "call",
-   "from": "coder",
-   "to": "repo",
-   "label": "DOCS_SOURCE_DIRS のディレクトリを変更（既定: src app lib api server packages）",
-   "num": "⑱"
-  },
-  {
-   "kind": "call",
-   "from": "coder",
-   "to": "repo",
-   "label": "scripts/docs-sync/sync-docs.sh（DOCS_SYNC_AGENT で起動先を切替）",
-   "num": "⑲"
-  },
-  {
-   "kind": "note",
-   "color": "blue",
-   "text": "差分を .docs-scaffold/last-diff.patch に書き出し、プロンプトから参照させる<br>DOCS_SYNC_AGENT: claude -p / codex exec / opencode run / 任意コマンド / none<br>frontmatter の source: が差分に含まれる spec の What/How のみ更新<br>対象 pathspec は DOCS_SOURCE_DIRS から生成（Go: cmd internal / monorepo: apps packages）<br>エージェント未インストール時は差分だけ出して exit 0（ブロックしない）",
-   "align": "left",
-   "span": [
-    "coder",
-    "repo"
-   ],
-   "width": 520
-  },
-  {
-   "kind": "separator",
-   "label": "⑥ push — docs-validate ゲート",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "call",
-   "from": "coder",
-   "to": "hook",
-   "label": "git push（none=.githooks / husky=.husky / lefthook=lefthook から同一スクリプト起動）",
-   "num": "⑳"
-  },
-  {
-   "kind": "call",
-   "from": "hook",
-   "to": "repo",
-   "label": "validate-docs.py: frontmatter / ID参照 / 対応表の双方向突合",
-   "num": "㉑"
-  },
-  {
-   "kind": "fail",
-   "from": "repo",
-   "to": "hook",
-   "label": "ERROR: dangling ADR-xxxx・対応表と個票の不一致",
-   "num": "㉒"
-  },
-  {
-   "kind": "fail",
-   "from": "hook",
-   "to": "coder",
-   "label": "push 中止（exit 1）",
-   "num": "㉓"
-  },
-  {
-   "kind": "note",
-   "color": "red",
-   "text": "ERROR のみブロック。WARN（プレースホルダ・画像リンク切れ・<br>未定義UC）は表示のみ。緊急回避は DOCS_VALIDATE_SOFT=1 git push<br>／ git push --no-verify。python3 のみに依存しエージェント非依存",
-   "align": "left",
-   "span": [
-    "hermes",
-    "hook"
-   ],
-   "width": 340
-  },
-  {
-   "kind": "call",
-   "from": "coder",
-   "to": "repo",
-   "label": "/validate-docs で ERROR を修正しコミット",
-   "num": "㉔"
-  },
-  {
-   "kind": "call",
-   "from": "hook",
-   "to": "remote",
-   "label": "ERROR 0 → push 実行",
-   "num": "㉕"
-  },
-  {
-   "kind": "return",
-   "from": "remote",
-   "to": "hermes",
-   "label": "リモート反映",
-   "num": "㉖"
-  },
-  {
-   "kind": "return",
-   "from": "hermes",
-   "to": "user",
-   "label": "Slackへ完了報告（差分・残WARN）",
-   "num": "㉗"
-  },
-  {
-   "kind": "separator",
-   "label": "⑦ テンプレ更新の追従",
-   "span": [
-    "user",
-    "remote"
-   ]
-  },
-  {
-   "kind": "note",
-   "color": "green",
-   "text": "テンプレ側を改善し新タグを切る（最新: v1.10.0）<br>v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.9.0 docs_sync_agent ／ v1.10.0 上書き保護の見直し<br>検証: 利用者が書き換えた10ファイルが update 後も保持され衝突0、_template.md とスクリプトは伝播",
-   "align": "left",
-   "at": "tmpl",
-   "width": 640
-  },
-  {
-   "kind": "call",
-   "from": "hermes",
-   "to": "tmpl",
-   "label": "copier update --trust",
-   "num": "㉘"
-  },
-  {
-   "kind": "call",
-   "from": "tmpl",
-   "to": "repo",
-   "label": "伝播するのは scripts / .githooks / _template.md 系のみ",
-   "num": "㉙"
-  },
-  {
-   "kind": "return",
-   "from": "repo",
-   "to": "hermes",
-   "label": "validate-docs を再実行して整合を確認",
-   "num": "㉚"
-  }
- ],
- "frames": [
-  {
-   "label": "loop [ERROR 0 になるまで]",
-   "from_step": 30,
-   "to_step": 35,
-   "left": "hermes",
-   "right": "hook"
-  }
- ],
- "legend": [
-  {
-   "color": "green",
-   "text": "リポジトリ内の実ファイル・実コマンドで確認済み"
-  },
-  {
-   "color": "blue",
-   "text": "設定/スクリプト由来（copier.yml・sync-docs.sh）"
-  },
-  {
-   "color": "yellow",
-   "text": "WORKFLOW.md の運用規約（人手の運用）"
-  },
-  {
-   "color": "red",
-   "text": "検証 ERROR・push ブロック"
-  }
- ]
+  "name": "rdra-docs-template ライフサイクル",
+  "title": "rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）",
+  "subtitle": "出典: README.md / copier.yml / docs/prompts/p01-requirements.md〜p06-handoff.md / docs/domain/README.md / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v2.1.0 時点）",
+  "font": "Hiragino Sans",
+  "participants": [
+    {
+      "id": "user",
+      "label": "中嶋<br>(Slack)"
+    },
+    {
+      "id": "hermes",
+      "label": "Hermes<br>PMプロファイル"
+    },
+    {
+      "id": "tmpl",
+      "label": "rdra-docs-template<br>(copier テンプレ)"
+    },
+    {
+      "id": "figma",
+      "label": "Figma"
+    },
+    {
+      "id": "coder",
+      "label": "実装エージェント<br>Claude Code / Codex / Orca"
+    },
+    {
+      "id": "repo",
+      "label": "案件リポジトリ<br>docs/ · src/"
+    },
+    {
+      "id": "hook",
+      "label": "pre-push hook<br>docs-validate"
+    },
+    {
+      "id": "remote",
+      "label": "GitHub remote"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "separator",
+      "label": "① 展開 — copier copy",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "user",
+      "to": "hermes",
+      "num": "①",
+      "label": "Slack: 案件を立ち上げて"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "tmpl",
+      "num": "②",
+      "label": "copier copy --trust --vcs-ref v2.1.0"
+    },
+    {
+      "kind": "call",
+      "from": "tmpl",
+      "to": "repo",
+      "num": "③",
+      "label": "docs/ · scripts/ · .githooks/ を生成"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "tmpl",
+        "repo"
+      ],
+      "color": "blue",
+      "text": "_tasks: install.sh {{ hook_manager }} / chmod +x<br>source_dirs・docs_sync_agent → .docs-scaffold/config.sh<br>components で画面spec・API個票・バッチ個票を取捨<br>impl_guide に実装規約リポジトリのURL（P05・P06 が参照）<br>_skip_if_exists: 人が書く docs は全部保護（更新で変わらない）",
+      "width": 430
+    },
+    {
+      "kind": "call",
+      "from": "tmpl",
+      "to": "hook",
+      "num": "④",
+      "label": "scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "tmpl",
+        "hook"
+      ],
+      "color": "green",
+      "text": "v1.6.0: hook_manager の回答で配線先が決まる（冪等）<br>none → core.hooksPath=.githooks<br>husky → .husky/pre-push へ1行追記（core.hooksPath は奪わない）<br>lefthook → lefthook.yml を作成して配線<br>既存の core.hooksPath / lefthook 設定がある場合は上書きせず手順表示のみ",
+      "width": 430
+    },
+    {
+      "kind": "return",
+      "from": "repo",
+      "to": "hermes",
+      "num": "⑤",
+      "label": "展開直後から validate-docs は ERROR 0"
+    },
+    {
+      "kind": "separator",
+      "label": "② 要件定義 — RDRA 4レイヤー（P01〜P03）",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "user",
+      "to": "hermes",
+      "num": "⑥",
+      "label": "Slackで壁打ち（要求・業務フロー・制約）"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "user",
+        "hermes"
+      ],
+      "color": "green",
+      "text": "Slackのやり取りが意思決定の一次ソース。<br>結論だけを ADR-xxxx / rdra 配下へ転記し、<br>spec 本文には Why を書かず ID 参照に留める",
+      "width": 330
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑦",
+      "label": "rdra/01-system-value: REQ-xxx・システムコンテキスト図"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑧",
+      "label": "rdra/04-system: INFO-xxx 情報モデル・ST-xxx 状態モデル"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑨",
+      "label": "rdra/03-boundary: UC-xxx / 画面一覧 SCR-xxx を採番"
+    },
+    {
+      "kind": "return",
+      "from": "hermes",
+      "to": "user",
+      "num": "⑩",
+      "label": "G1 要件FIX（人の承認ゲート）"
+    },
+    {
+      "kind": "separator",
+      "label": "③ デザイン — Figma 往復",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "user",
+      "to": "hermes",
+      "num": "⑪",
+      "label": "デザイン方針・客先要望"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "coder",
+      "num": "⑫",
+      "label": "HTMLモック＋画面spec から Figma 起こしを指示"
+    },
+    {
+      "kind": "call",
+      "from": "coder",
+      "to": "figma",
+      "num": "⑬",
+      "label": "generate_figma_design / use_figma（OAuth）"
+    },
+    {
+      "kind": "return",
+      "from": "figma",
+      "to": "hermes",
+      "num": "⑭",
+      "label": "客先レビュー指摘（やり取りは Figma に残す）"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "figma",
+        "repo"
+      ],
+      "color": "yellow",
+      "text": "design_status: draft → in-review → approved<br>結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記<br>合意後 export.sh(PAT read) で確定PNGを screenshots/ へ<br>※ ③④のフェーズは components に screens を含む案件のみ",
+      "width": 400
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑮",
+      "label": "確定PNG取り込み・design_status: approved（G3 デザインFIX）"
+    },
+    {
+      "kind": "separator",
+      "label": "④ 設計書 — specs / traceability / ADR（P04）",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑯",
+      "label": "specs/screens/SCR-xxx.md ・ specs/apis/API-xxx.md"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑰",
+      "label": "traceability に行追加 ／ Why は ADR-xxxx へ集約"
+    },
+    {
+      "kind": "separator",
+      "label": "⑤ ドメインモデリング — RDRA → DDD（P05・v2.1.0 で新設）",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "tmpl",
+      "num": "⑱",
+      "label": "docs/prompts/p05-domain.md の4ステップを実行"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "tmpl",
+        "repo"
+      ],
+      "color": "blue",
+      "text": "Step1 集約を切る: 状態を持つ INFO が集約ルート、残りはマスタ/VO/イベント記録へ<br>Step2 整合方式: 2つ以上の情報の状態を同時に変える UC を同一Tx／結果整合に振る<br>Step3 状態遷移: 状態モデルの (状態, UC) の組ごとに1行、ガード条件を引く<br>Step4 UseCase 対応: UC → UseCase、実装規約（impl_guide）の命名へ寄せる<br>RDRA に無いのは集約境界だけ。それがこのフェーズの主務",
+      "width": 520
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑲",
+      "label": "docs/domain/README.md（集約・整合方式・遷移・UseCase対応）"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "⑳",
+      "label": "ADR: 集約境界 ／ 集約をまたぐ整合方式"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "repo",
+        "hook"
+      ],
+      "color": "yellow",
+      "text": "規約の正本は実装側リポジトリ（impl_guide）に置き、<br>テンプレは対応関係と参照先だけを持つ<br>読めない（未設定・404）ときは暫定名＋未決へ上げ、作業は止めない<br>新しい人のゲートは設けない — 完了時にまとめて承認",
+      "width": 400
+    },
+    {
+      "kind": "return",
+      "from": "hermes",
+      "to": "user",
+      "num": "㉑",
+      "label": "集約の切り方・整合方式・未決事項をまとめて承認依頼"
+    },
+    {
+      "kind": "separator",
+      "label": "⑥ 実装 → docs 同期（P06 ハンドオフ）",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "user",
+      "to": "hermes",
+      "num": "㉒",
+      "label": "実装フェーズへ移行を指示"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "repo",
+      "num": "㉓",
+      "label": "docs/prompts/p06-handoff.md: ロット L1..Ln へ分割"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "hermes",
+        "repo"
+      ],
+      "color": "blue",
+      "text": "入力に docs/domain/README.md が入る（v2.1.0）<br>ロット＝実装担当へ渡す作業の単位、集約＝整合性を保つ範囲。軸が違う<br>1つの集約が複数ロットにまたがってよい（蔵書は L4・L5・L6）",
+      "width": 430
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "coder",
+      "num": "㉔",
+      "label": "タスク委譲（Orca / Claude Code / Codex）"
+    },
+    {
+      "kind": "call",
+      "from": "coder",
+      "to": "repo",
+      "num": "㉕",
+      "label": "DOCS_SOURCE_DIRS のディレクトリを変更（既定: src app lib api server packages）"
+    },
+    {
+      "kind": "call",
+      "from": "coder",
+      "to": "repo",
+      "num": "㉖",
+      "label": "scripts/docs-sync/sync-docs.sh（DOCS_SYNC_AGENT で起動先を切替）"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "coder",
+        "repo"
+      ],
+      "color": "blue",
+      "text": "差分を .docs-scaffold/last-diff.patch に書き出し、プロンプトから参照させる<br>DOCS_SYNC_AGENT: claude -p / codex exec / opencode run / 任意コマンド / none<br>frontmatter の source: が差分に含まれる spec の What/How のみ更新<br>対象 pathspec は DOCS_SOURCE_DIRS から生成（Go: cmd internal / monorepo: apps packages）<br>エージェント未インストール時は差分だけ出して exit 0（ブロックしない）",
+      "width": 520
+    },
+    {
+      "kind": "separator",
+      "label": "⑦ push — docs-validate ゲート",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "call",
+      "from": "coder",
+      "to": "hook",
+      "num": "㉗",
+      "label": "git push（none=.githooks / husky=.husky / lefthook から同一スクリプト起動）"
+    },
+    {
+      "kind": "call",
+      "from": "hook",
+      "to": "repo",
+      "num": "㉘",
+      "label": "validate-docs.py: frontmatter / ID参照 / 対応表の双方向突合"
+    },
+    {
+      "kind": "fail",
+      "from": "repo",
+      "to": "hook",
+      "num": "㉙",
+      "label": "ERROR: dangling ADR-xxxx・対応表と個票の不一致"
+    },
+    {
+      "kind": "fail",
+      "from": "hook",
+      "to": "coder",
+      "num": "㉚",
+      "label": "push 中止（exit 1）"
+    },
+    {
+      "kind": "note",
+      "span": [
+        "hermes",
+        "hook"
+      ],
+      "color": "red",
+      "text": "ERROR のみブロック。WARN（プレースホルダ・画像リンク切れ・<br>未定義UC）は表示のみ。緊急回避は DOCS_VALIDATE_SOFT=1 git push<br>／ git push --no-verify。python3 のみに依存しエージェント非依存<br>docs/domain/ の表は検査しない（ID の実在と ADR 索引の整合のみ）",
+      "width": 340
+    },
+    {
+      "kind": "call",
+      "from": "coder",
+      "to": "repo",
+      "num": "㉛",
+      "label": "/validate-docs で ERROR を修正しコミット"
+    },
+    {
+      "kind": "call",
+      "from": "hook",
+      "to": "remote",
+      "num": "㉜",
+      "label": "ERROR 0 → push 実行"
+    },
+    {
+      "kind": "return",
+      "from": "remote",
+      "to": "hermes",
+      "num": "㉝",
+      "label": "リモート反映"
+    },
+    {
+      "kind": "return",
+      "from": "hermes",
+      "to": "user",
+      "num": "㉞",
+      "label": "Slackへ完了報告（差分・残WARN）"
+    },
+    {
+      "kind": "separator",
+      "label": "⑧ テンプレ更新の追従",
+      "span": [
+        "user",
+        "remote"
+      ]
+    },
+    {
+      "kind": "note",
+      "at": "tmpl",
+      "color": "green",
+      "width": 640,
+      "text": "テンプレ側を改善し新タグを切る（最新: v2.1.0）<br>v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 components ／ v1.9.0 docs_sync_agent ／ v1.10.0 上書き保護の見直し<br>v2.0.0 フェーズ駆動の指示テンプレ（P01〜P05）／ v2.1.0 P05 ドメインモデリング新設・旧P05→P06 へ改称・impl_guide 追加<br>v2.1.0 の検証: 図書館システムで指示テンプレを14周実走し欠陥0件へ収束"
+    },
+    {
+      "kind": "call",
+      "from": "hermes",
+      "to": "tmpl",
+      "num": "㉟",
+      "label": "copier update --trust"
+    },
+    {
+      "kind": "call",
+      "from": "tmpl",
+      "to": "repo",
+      "num": "㊱",
+      "label": "伝播するのは scripts / .githooks / _template.md 系のみ"
+    },
+    {
+      "kind": "return",
+      "from": "repo",
+      "to": "hermes",
+      "num": "㊲",
+      "label": "validate-docs を再実行して整合を確認"
+    }
+  ],
+  "frames": [
+    {
+      "label": "loop [ERROR 0 になるまで]",
+      "from_step": 41,
+      "to_step": 46,
+      "left": "hermes",
+      "right": "hook"
+    }
+  ],
+  "legend": [
+    {
+      "color": "green",
+      "text": "リポジトリ内の実ファイル・実コマンドで確認済み"
+    },
+    {
+      "color": "blue",
+      "text": "設定/スクリプト・指示テンプレ由来（copier.yml・docs/prompts/）"
+    },
+    {
+      "color": "yellow",
+      "text": "WORKFLOW.md の運用規約（人手の運用）"
+    },
+    {
+      "color": "red",
+      "text": "検証 ERROR・push ブロック"
+    }
+  ]
 }

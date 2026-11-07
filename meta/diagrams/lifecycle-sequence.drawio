@@ -1,41 +1,41 @@
 <mxfile host="Electron">
   <diagram id="seq" name="rdra-docs-template ライフサイクル">
-    <mxGraphModel dx="1797" dy="1447" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2050" pageHeight="4807" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1797" dy="1447" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2050" pageHeight="5954" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="v1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontFamily=Hiragino Sans;" value="&lt;b&gt;rdra-docs-template リポジトリのライフサイクル（Hermes を含む役割分担）&lt;/b&gt;" vertex="1">
           <mxGeometry height="32" width="1990" x="30" y="16" as="geometry" />
         </mxCell>
-        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v1.10.0 時点）" vertex="1">
+        <mxCell id="v2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontFamily=Hiragino Sans;fontColor=#555555;" value="出典: README.md / copier.yml / docs/prompts/p01-requirements.md〜p06-handoff.md / docs/domain/README.md / scripts/docs-hooks/install.sh / .docs-scaffold/config.sh / .githooks/pre-push / scripts/docs-sync/sync-docs.sh / scripts/docs-validate/validate-docs.py（v2.1.0 時点）" vertex="1">
           <mxGeometry height="24" width="1990" x="30" y="50" as="geometry" />
         </mxCell>
         <mxCell id="user" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="中嶋&lt;br&gt;(Slack)" vertex="1">
-          <mxGeometry height="4471" width="220" x="40" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="40" y="96" as="geometry" />
         </mxCell>
         <mxCell id="hermes" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="Hermes&lt;br&gt;PMプロファイル" vertex="1">
-          <mxGeometry height="4471" width="220" x="290" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="290" y="96" as="geometry" />
         </mxCell>
         <mxCell id="tmpl" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="rdra-docs-template&lt;br&gt;(copier テンプレ)" vertex="1">
-          <mxGeometry height="4471" width="220" x="540" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="540" y="96" as="geometry" />
         </mxCell>
         <mxCell id="figma" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="Figma" vertex="1">
-          <mxGeometry height="4471" width="220" x="790" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="790" y="96" as="geometry" />
         </mxCell>
         <mxCell id="coder" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="実装エージェント&lt;br&gt;Claude Code / Codex / Orca" vertex="1">
-          <mxGeometry height="4471" width="220" x="1040" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="1040" y="96" as="geometry" />
         </mxCell>
         <mxCell id="repo" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="案件リポジトリ&lt;br&gt;docs/ · src/" vertex="1">
-          <mxGeometry height="4471" width="220" x="1290" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="1290" y="96" as="geometry" />
         </mxCell>
         <mxCell id="hook" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="pre-push hook&lt;br&gt;docs-validate" vertex="1">
-          <mxGeometry height="4471" width="220" x="1540" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="1540" y="96" as="geometry" />
         </mxCell>
         <mxCell id="remote" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;collapsible=0;recursiveResize=0;outlineConnect=0;size=64;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="GitHub remote" vertex="1">
-          <mxGeometry height="4471" width="220" x="1790" y="96" as="geometry" />
+          <mxGeometry height="5618" width="220" x="1790" y="96" as="geometry" />
         </mxCell>
         <mxCell id="loop3" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;width=196;height=26;fillColor=none;strokeColor=#555555;strokeWidth=1.5;fontSize=13;fontStyle=1;fontFamily=Hiragino Sans;" value="loop [ERROR 0 になるまで]" vertex="1">
-          <mxGeometry height="651" width="1510" x="270" y="3032" as="geometry" />
+          <mxGeometry height="668" width="1510" x="270" y="4128" as="geometry" />
         </mxCell>
         <mxCell id="e4" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
@@ -55,7 +55,7 @@
             <mxPoint x="400" y="316" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v1.10.0" vertex="1">
+        <mxCell id="v8" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="② copier copy --trust --vcs-ref v2.1.0" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="359" as="geometry" />
         </mxCell>
         <mxCell id="e9" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -73,7 +73,7 @@
             <mxPoint x="1400" y="522" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs・docs_sync_agent → .docs-scaffold/config.sh&lt;br&gt;use_screens / use_figma で画面spec・対応表・Figma連携を取捨&lt;br&gt;.copier-answers.yml にテンプレURLと版を記録&lt;br&gt;_skip_if_exists: 人が書く docs は全部保護（更新で変わらない）" vertex="1">
+        <mxCell id="v12" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="_tasks: install.sh {{ hook_manager }} / chmod +x&lt;br&gt;source_dirs・docs_sync_agent → .docs-scaffold/config.sh&lt;br&gt;components で画面spec・API個票・バッチ個票を取捨&lt;br&gt;impl_guide に実装規約リポジトリのURL（P05・P06 が参照）&lt;br&gt;_skip_if_exists: 人が書く docs は全部保護（更新で変わらない）" vertex="1">
           <mxGeometry height="99" width="970" x="540" y="565" as="geometry" />
         </mxCell>
         <mxCell id="v13" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="④ scripts/docs-hooks/install.sh 〈hook_manager〉 で pre-push を配線" vertex="1">
@@ -85,7 +85,7 @@
             <mxPoint x="1650" y="748" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v15" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="v1.6.0: hook_manager の回答で配線先が決まる（冪等）&lt;br&gt;none → core.hooksPath=.githooks&lt;br&gt;husky → .husky/pre-push へ1行追記（core.hooksPath は奪わない）&lt;br&gt;lefthook → lefthook.yml を作成して配線&lt;br&gt;既存の core.hooksPath / lefthook 設定がある場合は上書きせず手順表示のみ" vertex="1">
+        <mxCell id="v15" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="v1.6.0: hook_manager の回答で配線先が決まる（冪等）&lt;br&gt;none → core.hooksPath=.githooks&lt;br&gt;husky → .husky/pre-push へ1行追記（core.hooksPath は奪わない）&lt;br&gt;lefthook → lefthook.yml を作成して配線&lt;br&gt;既存の core.hooksPath / lefthook 設定がある場合は上書きせず手順表示のみ" vertex="1">
           <mxGeometry height="99" width="1220" x="540" y="808" as="geometry" />
         </mxCell>
         <mxCell id="v16" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑤ 展開直後から validate-docs は ERROR 0" vertex="1">
@@ -103,7 +103,7 @@
             <mxPoint x="2010" y="1054" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v19" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;② 要件定義 — RDRA 4レイヤー&lt;/b&gt;" vertex="1">
+        <mxCell id="v19" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;② 要件定義 — RDRA 4レイヤー（P01〜P03）&lt;/b&gt;" vertex="1">
           <mxGeometry height="22" width="200" x="48" y="1042" as="geometry" />
         </mxCell>
         <mxCell id="v20" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑥ Slackで壁打ち（要求・業務フロー・制約）" vertex="1">
@@ -115,7 +115,7 @@
             <mxPoint x="400" y="1134" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v22" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="Slackのやり取りが意思決定の一次ソース。&lt;br&gt;結論だけを ADR-xxxx / rdra 配下へ転記し、&lt;br&gt;spec 本文には Why を書かず ID 参照に留める" vertex="1">
+        <mxCell id="v22" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="Slackのやり取りが意思決定の一次ソース。&lt;br&gt;結論だけを ADR-xxxx / rdra 配下へ転記し、&lt;br&gt;spec 本文には Why を書かず ID 参照に留める" vertex="1">
           <mxGeometry height="65" width="470" x="40" y="1177" as="geometry" />
         </mxCell>
         <mxCell id="v23" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑦ rdra/01-system-value: REQ-xxx・システムコンテキスト図" vertex="1">
@@ -127,7 +127,7 @@
             <mxPoint x="1400" y="1326" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v25" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑧ rdra/03-boundary: UC-xxx / 画面一覧 SCR-xxx を採番" vertex="1">
+        <mxCell id="v25" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑧ rdra/04-system: INFO-xxx 情報モデル・ST-xxx 状態モデル" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="1369" as="geometry" />
         </mxCell>
         <mxCell id="e26" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
@@ -136,287 +136,368 @@
             <mxPoint x="1400" y="1429" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e27" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
+        <mxCell id="v27" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑨ rdra/03-boundary: UC-xxx / 画面一覧 SCR-xxx を採番" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="1472" as="geometry" />
+        </mxCell>
+        <mxCell id="e28" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="1492" as="sourcePoint" />
-            <mxPoint x="2010" y="1492" as="targetPoint" />
+            <mxPoint x="400" y="1532" as="sourcePoint" />
+            <mxPoint x="1400" y="1532" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v28" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;③ デザイン — Figma 往復&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="1480" as="geometry" />
+        <mxCell id="v29" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑩ G1 要件FIX（人の承認ゲート）" vertex="1">
+          <mxGeometry height="56" width="230" x="140" y="1575" as="geometry" />
         </mxCell>
-        <mxCell id="v29" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑨ デザイン方針・客先要望" vertex="1">
-          <mxGeometry height="56" width="230" x="140" y="1512" as="geometry" />
-        </mxCell>
-        <mxCell id="e30" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e30" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="150" y="1572" as="sourcePoint" />
-            <mxPoint x="400" y="1572" as="targetPoint" />
+            <mxPoint x="400" y="1635" as="sourcePoint" />
+            <mxPoint x="150" y="1635" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v31" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑩ HTMLモック＋画面spec から Figma 起こしを指示" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="1615" as="geometry" />
-        </mxCell>
-        <mxCell id="e32" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e31" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="1675" as="sourcePoint" />
-            <mxPoint x="1150" y="1675" as="targetPoint" />
+            <mxPoint x="40" y="1698" as="sourcePoint" />
+            <mxPoint x="2010" y="1698" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v33" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑪ generate_figma_design / use_figma（OAuth）" vertex="1">
-          <mxGeometry height="56" width="230" x="890" y="1718" as="geometry" />
+        <mxCell id="v32" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;③ デザイン — Figma 往復&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="200" x="48" y="1686" as="geometry" />
+        </mxCell>
+        <mxCell id="v33" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑪ デザイン方針・客先要望" vertex="1">
+          <mxGeometry height="56" width="230" x="140" y="1718" as="geometry" />
         </mxCell>
         <mxCell id="e34" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="1778" as="sourcePoint" />
-            <mxPoint x="900" y="1778" as="targetPoint" />
+            <mxPoint x="150" y="1778" as="sourcePoint" />
+            <mxPoint x="400" y="1778" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v35" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑫ 客先レビュー指摘（やり取りは Figma に残す）" vertex="1">
+        <mxCell id="v35" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑫ HTMLモック＋画面spec から Figma 起こしを指示" vertex="1">
           <mxGeometry height="56" width="230" x="390" y="1821" as="geometry" />
         </mxCell>
-        <mxCell id="e36" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e36" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="900" y="1881" as="sourcePoint" />
-            <mxPoint x="400" y="1881" as="targetPoint" />
+            <mxPoint x="400" y="1881" as="sourcePoint" />
+            <mxPoint x="1150" y="1881" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v37" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="design_status: draft → in-review → approved&lt;br&gt;結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記&lt;br&gt;合意後 export.sh(PAT read) で確定PNGを screenshots/ へ&lt;br&gt;※ ③④のフェーズは use_screens / use_figma = true の案件のみ" vertex="1">
-          <mxGeometry height="82" width="720" x="790" y="1924" as="geometry" />
+        <mxCell id="v37" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑬ generate_figma_design / use_figma（OAuth）" vertex="1">
+          <mxGeometry height="56" width="230" x="890" y="1924" as="geometry" />
         </mxCell>
-        <mxCell id="v38" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑬ 確定PNG取り込み・design_status: approved" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="2030" as="geometry" />
-        </mxCell>
-        <mxCell id="e39" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e38" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="2090" as="sourcePoint" />
-            <mxPoint x="1400" y="2090" as="targetPoint" />
+            <mxPoint x="1150" y="1984" as="sourcePoint" />
+            <mxPoint x="900" y="1984" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e40" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
+        <mxCell id="v39" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑭ 客先レビュー指摘（やり取りは Figma に残す）" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2027" as="geometry" />
+        </mxCell>
+        <mxCell id="e40" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="2153" as="sourcePoint" />
-            <mxPoint x="2010" y="2153" as="targetPoint" />
+            <mxPoint x="900" y="2087" as="sourcePoint" />
+            <mxPoint x="400" y="2087" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v41" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;④ 設計書 — specs / traceability / ADR&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="2141" as="geometry" />
+        <mxCell id="v41" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="design_status: draft → in-review → approved&lt;br&gt;結論だけを SCR-xxx「10. デザインレビュー履歴」へ転記&lt;br&gt;合意後 export.sh(PAT read) で確定PNGを screenshots/ へ&lt;br&gt;※ ③④のフェーズは components に screens を含む案件のみ" vertex="1">
+          <mxGeometry height="82" width="720" x="790" y="2130" as="geometry" />
         </mxCell>
-        <mxCell id="v42" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑭ specs/screens/SCR-xxx.md ・ specs/apis/API-xxx.md" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="2173" as="geometry" />
+        <mxCell id="v42" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑮ 確定PNG取り込み・design_status: approved（G3 デザインFIX）" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2236" as="geometry" />
         </mxCell>
         <mxCell id="e43" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="2233" as="sourcePoint" />
-            <mxPoint x="1400" y="2233" as="targetPoint" />
+            <mxPoint x="400" y="2296" as="sourcePoint" />
+            <mxPoint x="1400" y="2296" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v44" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑮ traceability に行追加 ／ Why は ADR-xxxx へ集約" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="2276" as="geometry" />
-        </mxCell>
-        <mxCell id="e45" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e44" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="2336" as="sourcePoint" />
-            <mxPoint x="1400" y="2336" as="targetPoint" />
+            <mxPoint x="40" y="2359" as="sourcePoint" />
+            <mxPoint x="2010" y="2359" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e46" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
+        <mxCell id="v45" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;④ 設計書 — specs / traceability / ADR（P04）&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="200" x="48" y="2347" as="geometry" />
+        </mxCell>
+        <mxCell id="v46" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑯ specs/screens/SCR-xxx.md ・ specs/apis/API-xxx.md" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2379" as="geometry" />
+        </mxCell>
+        <mxCell id="e47" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="2399" as="sourcePoint" />
-            <mxPoint x="2010" y="2399" as="targetPoint" />
+            <mxPoint x="400" y="2439" as="sourcePoint" />
+            <mxPoint x="1400" y="2439" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v47" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑤ 実装 → docs 同期&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="2387" as="geometry" />
-        </mxCell>
-        <mxCell id="v48" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑯ 実装フェーズへ移行を指示" vertex="1">
-          <mxGeometry height="56" width="230" x="140" y="2419" as="geometry" />
+        <mxCell id="v48" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑰ traceability に行追加 ／ Why は ADR-xxxx へ集約" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2482" as="geometry" />
         </mxCell>
         <mxCell id="e49" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="150" y="2479" as="sourcePoint" />
-            <mxPoint x="400" y="2479" as="targetPoint" />
+            <mxPoint x="400" y="2542" as="sourcePoint" />
+            <mxPoint x="1400" y="2542" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v50" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑰ タスク委譲（Orca / Claude Code / Codex）" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="2522" as="geometry" />
-        </mxCell>
-        <mxCell id="e51" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e50" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="2582" as="sourcePoint" />
-            <mxPoint x="1150" y="2582" as="targetPoint" />
+            <mxPoint x="40" y="2605" as="sourcePoint" />
+            <mxPoint x="2010" y="2605" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v52" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑱ DOCS_SOURCE_DIRS のディレクトリを変更（既定: src app lib api server packages）" vertex="1">
-          <mxGeometry height="61" width="230" x="1140" y="2620" as="geometry" />
+        <mxCell id="v51" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑤ ドメインモデリング — RDRA → DDD（P05・v2.1.0 で新設）&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="200" x="48" y="2593" as="geometry" />
+        </mxCell>
+        <mxCell id="v52" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑱ docs/prompts/p05-domain.md の4ステップを実行" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2625" as="geometry" />
         </mxCell>
         <mxCell id="e53" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="2685" as="sourcePoint" />
-            <mxPoint x="1400" y="2685" as="targetPoint" />
+            <mxPoint x="400" y="2685" as="sourcePoint" />
+            <mxPoint x="650" y="2685" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v54" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑲ scripts/docs-sync/sync-docs.sh（DOCS_SYNC_AGENT で起動先を切替）" vertex="1">
-          <mxGeometry height="56" width="230" x="1140" y="2745" as="geometry" />
+        <mxCell id="v54" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="Step1 集約を切る: 状態を持つ INFO が集約ルート、残りはマスタ/VO/イベント記録へ&lt;br&gt;Step2 整合方式: 2つ以上の情報の状態を同時に変える UC を同一Tx／結果整合に振る&lt;br&gt;Step3 状態遷移: 状態モデルの (状態, UC) の組ごとに1行、ガード条件を引く&lt;br&gt;Step4 UseCase 対応: UC → UseCase、実装規約（impl_guide）の命名へ寄せる&lt;br&gt;RDRA に無いのは集約境界だけ。それがこのフェーズの主務" vertex="1">
+          <mxGeometry height="99" width="970" x="540" y="2728" as="geometry" />
         </mxCell>
-        <mxCell id="e55" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="v55" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑲ docs/domain/README.md（集約・整合方式・遷移・UseCase対応）" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2851" as="geometry" />
+        </mxCell>
+        <mxCell id="e56" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="2805" as="sourcePoint" />
-            <mxPoint x="1400" y="2805" as="targetPoint" />
+            <mxPoint x="400" y="2911" as="sourcePoint" />
+            <mxPoint x="1400" y="2911" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v56" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="差分を .docs-scaffold/last-diff.patch に書き出し、プロンプトから参照させる&lt;br&gt;DOCS_SYNC_AGENT: claude -p / codex exec / opencode run / 任意コマンド / none&lt;br&gt;frontmatter の source: が差分に含まれる spec の What/How のみ更新&lt;br&gt;対象 pathspec は DOCS_SOURCE_DIRS から生成（Go: cmd internal / monorepo: apps packages）&lt;br&gt;エージェント未インストール時は差分だけ出して exit 0（ブロックしない）" vertex="1">
-          <mxGeometry height="150" width="470" x="1040" y="2848" as="geometry" />
+        <mxCell id="v57" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑳ ADR: 集約境界 ／ 集約をまたぐ整合方式" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="2954" as="geometry" />
         </mxCell>
-        <mxCell id="e57" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
+        <mxCell id="e58" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="3042" as="sourcePoint" />
-            <mxPoint x="2010" y="3042" as="targetPoint" />
+            <mxPoint x="400" y="3014" as="sourcePoint" />
+            <mxPoint x="1400" y="3014" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v58" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑥ push — docs-validate ゲート&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="3030" as="geometry" />
+        <mxCell id="v59" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="規約の正本は実装側リポジトリ（impl_guide）に置き、&lt;br&gt;テンプレは対応関係と参照先だけを持つ&lt;br&gt;読めない（未設定・404）ときは暫定名＋未決へ上げ、作業は止めない&lt;br&gt;新しい人のゲートは設けない — 完了時にまとめて承認" vertex="1">
+          <mxGeometry height="82" width="470" x="1290" y="3057" as="geometry" />
         </mxCell>
-        <mxCell id="v59" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="⑳ git push（none=.githooks / husky=.husky / lefthook=lefthook から同一スクリプト起動）" vertex="1">
-          <mxGeometry height="61" width="230" x="1140" y="3057" as="geometry" />
+        <mxCell id="v60" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉑ 集約の切り方・整合方式・未決事項をまとめて承認依頼" vertex="1">
+          <mxGeometry height="56" width="230" x="140" y="3163" as="geometry" />
         </mxCell>
-        <mxCell id="e60" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e61" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="3122" as="sourcePoint" />
-            <mxPoint x="1650" y="3122" as="targetPoint" />
+            <mxPoint x="400" y="3223" as="sourcePoint" />
+            <mxPoint x="150" y="3223" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v61" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉑ validate-docs.py: frontmatter / ID参照 / 対応表の双方向突合" vertex="1">
-          <mxGeometry height="56" width="230" x="1390" y="3182" as="geometry" />
-        </mxCell>
-        <mxCell id="e62" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e62" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1650" y="3242" as="sourcePoint" />
-            <mxPoint x="1400" y="3242" as="targetPoint" />
+            <mxPoint x="40" y="3286" as="sourcePoint" />
+            <mxPoint x="2010" y="3286" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v63" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉒ ERROR: dangling ADR-xxxx・対応表と個票の不一致" vertex="1">
-          <mxGeometry height="56" width="230" x="1390" y="3285" as="geometry" />
+        <mxCell id="v63" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑥ 実装 → docs 同期（P06 ハンドオフ）&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="200" x="48" y="3274" as="geometry" />
         </mxCell>
-        <mxCell id="e64" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#b85450;strokeWidth=1.8;" value="">
+        <mxCell id="v64" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉒ 実装フェーズへ移行を指示" vertex="1">
+          <mxGeometry height="56" width="230" x="140" y="3306" as="geometry" />
+        </mxCell>
+        <mxCell id="e65" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1400" y="3345" as="sourcePoint" />
-            <mxPoint x="1650" y="3345" as="targetPoint" />
+            <mxPoint x="150" y="3366" as="sourcePoint" />
+            <mxPoint x="400" y="3366" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v65" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉓ push 中止（exit 1）" vertex="1">
-          <mxGeometry height="56" width="230" x="1140" y="3388" as="geometry" />
+        <mxCell id="v66" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉓ docs/prompts/p06-handoff.md: ロット L1..Ln へ分割" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="3409" as="geometry" />
         </mxCell>
-        <mxCell id="e66" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#b85450;strokeWidth=1.8;" value="">
+        <mxCell id="e67" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1650" y="3448" as="sourcePoint" />
-            <mxPoint x="1150" y="3448" as="targetPoint" />
+            <mxPoint x="400" y="3469" as="sourcePoint" />
+            <mxPoint x="1400" y="3469" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v67" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="ERROR のみブロック。WARN（プレースホルダ・画像リンク切れ・&lt;br&gt;未定義UC）は表示のみ。緊急回避は DOCS_VALIDATE_SOFT=1 git push&lt;br&gt;／ git push --no-verify。python3 のみに依存しエージェント非依存" vertex="1">
-          <mxGeometry height="65" width="1470" x="290" y="3491" as="geometry" />
+        <mxCell id="v68" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="入力に docs/domain/README.md が入る（v2.1.0）&lt;br&gt;ロット＝実装担当へ渡す作業の単位、集約＝整合性を保つ範囲。軸が違う&lt;br&gt;1つの集約が複数ロットにまたがってよい（蔵書は L4・L5・L6）" vertex="1">
+          <mxGeometry height="65" width="1220" x="290" y="3512" as="geometry" />
         </mxCell>
-        <mxCell id="v68" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉔ /validate-docs で ERROR を修正しコミット" vertex="1">
-          <mxGeometry height="56" width="230" x="1140" y="3580" as="geometry" />
+        <mxCell id="v69" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉔ タスク委譲（Orca / Claude Code / Codex）" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="3601" as="geometry" />
         </mxCell>
-        <mxCell id="e69" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e70" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1150" y="3640" as="sourcePoint" />
-            <mxPoint x="1400" y="3640" as="targetPoint" />
+            <mxPoint x="400" y="3661" as="sourcePoint" />
+            <mxPoint x="1150" y="3661" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v70" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉕ ERROR 0 → push 実行" vertex="1">
-          <mxGeometry height="56" width="230" x="1640" y="3683" as="geometry" />
+        <mxCell id="v71" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉕ DOCS_SOURCE_DIRS のディレクトリを変更（既定: src app lib api server packages）" vertex="1">
+          <mxGeometry height="61" width="230" x="1140" y="3699" as="geometry" />
         </mxCell>
-        <mxCell id="e71" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e72" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1650" y="3743" as="sourcePoint" />
-            <mxPoint x="1900" y="3743" as="targetPoint" />
+            <mxPoint x="1150" y="3764" as="sourcePoint" />
+            <mxPoint x="1400" y="3764" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v72" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉖ リモート反映" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="3786" as="geometry" />
+        <mxCell id="v73" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉖ scripts/docs-sync/sync-docs.sh（DOCS_SYNC_AGENT で起動先を切替）" vertex="1">
+          <mxGeometry height="61" width="230" x="1140" y="3819" as="geometry" />
         </mxCell>
-        <mxCell id="e73" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e74" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1900" y="3846" as="sourcePoint" />
-            <mxPoint x="400" y="3846" as="targetPoint" />
+            <mxPoint x="1150" y="3884" as="sourcePoint" />
+            <mxPoint x="1400" y="3884" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v74" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉗ Slackへ完了報告（差分・残WARN）" vertex="1">
-          <mxGeometry height="56" width="230" x="140" y="3889" as="geometry" />
-        </mxCell>
-        <mxCell id="e75" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="3949" as="sourcePoint" />
-            <mxPoint x="150" y="3949" as="targetPoint" />
-          </mxGeometry>
+        <mxCell id="v75" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="差分を .docs-scaffold/last-diff.patch に書き出し、プロンプトから参照させる&lt;br&gt;DOCS_SYNC_AGENT: claude -p / codex exec / opencode run / 任意コマンド / none&lt;br&gt;frontmatter の source: が差分に含まれる spec の What/How のみ更新&lt;br&gt;対象 pathspec は DOCS_SOURCE_DIRS から生成（Go: cmd internal / monorepo: apps packages）&lt;br&gt;エージェント未インストール時は差分だけ出して exit 0（ブロックしない）" vertex="1">
+          <mxGeometry height="150" width="470" x="1040" y="3944" as="geometry" />
         </mxCell>
         <mxCell id="e76" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="4012" as="sourcePoint" />
-            <mxPoint x="2010" y="4012" as="targetPoint" />
+            <mxPoint x="40" y="4138" as="sourcePoint" />
+            <mxPoint x="2010" y="4138" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v77" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑦ テンプレ更新の追従&lt;/b&gt;" vertex="1">
-          <mxGeometry height="22" width="200" x="48" y="4000" as="geometry" />
+        <mxCell id="v77" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑦ push — docs-validate ゲート&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="200" x="48" y="4126" as="geometry" />
         </mxCell>
-        <mxCell id="v78" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=left;spacingLeft=8;verticalAlign=top;" value="テンプレ側を改善し新タグを切る（最新: v1.10.0）&lt;br&gt;v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 use_screens・use_figma ／ v1.9.0 docs_sync_agent ／ v1.10.0 上書き保護の見直し&lt;br&gt;検証: 利用者が書き換えた10ファイルが update 後も保持され衝突0、_template.md とスクリプトは伝播" vertex="1">
-          <mxGeometry height="82" width="640" x="605" y="4032" as="geometry" />
+        <mxCell id="v78" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉗ git push（none=.githooks / husky=.husky / lefthook から同一スクリプト起動）" vertex="1">
+          <mxGeometry height="61" width="230" x="1140" y="4153" as="geometry" />
         </mxCell>
-        <mxCell id="v79" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉘ copier update --trust" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="4138" as="geometry" />
-        </mxCell>
-        <mxCell id="e80" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e79" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="400" y="4198" as="sourcePoint" />
-            <mxPoint x="650" y="4198" as="targetPoint" />
+            <mxPoint x="1150" y="4218" as="sourcePoint" />
+            <mxPoint x="1650" y="4218" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v81" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉙ 伝播するのは scripts / .githooks / _template.md 系のみ" vertex="1">
-          <mxGeometry height="56" width="230" x="640" y="4241" as="geometry" />
+        <mxCell id="v80" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉘ validate-docs.py: frontmatter / ID参照 / 対応表の双方向突合" vertex="1">
+          <mxGeometry height="56" width="230" x="1390" y="4278" as="geometry" />
         </mxCell>
-        <mxCell id="e82" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e81" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="650" y="4301" as="sourcePoint" />
-            <mxPoint x="1400" y="4301" as="targetPoint" />
+            <mxPoint x="1650" y="4338" as="sourcePoint" />
+            <mxPoint x="1400" y="4338" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v83" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉚ validate-docs を再実行して整合を確認" vertex="1">
-          <mxGeometry height="56" width="230" x="390" y="4344" as="geometry" />
+        <mxCell id="v82" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉙ ERROR: dangling ADR-xxxx・対応表と個票の不一致" vertex="1">
+          <mxGeometry height="56" width="230" x="1390" y="4381" as="geometry" />
         </mxCell>
-        <mxCell id="e84" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+        <mxCell id="e83" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#b85450;strokeWidth=1.8;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1400" y="4404" as="sourcePoint" />
-            <mxPoint x="400" y="4404" as="targetPoint" />
+            <mxPoint x="1400" y="4441" as="sourcePoint" />
+            <mxPoint x="1650" y="4441" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v85" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="&lt;b&gt;凡例&lt;/b&gt;" vertex="1">
-          <mxGeometry height="24" width="44" x="30" y="4607" as="geometry" />
+        <mxCell id="v84" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉚ push 中止（exit 1）" vertex="1">
+          <mxGeometry height="56" width="230" x="1140" y="4484" as="geometry" />
         </mxCell>
-        <mxCell id="v86" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
-          <mxGeometry height="18" width="30" x="80" y="4610" as="geometry" />
+        <mxCell id="e85" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#b85450;strokeWidth=1.8;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1650" y="4544" as="sourcePoint" />
+            <mxPoint x="1150" y="4544" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="v87" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="リポジトリ内の実ファイル・実コマンドで確認済み" vertex="1">
-          <mxGeometry height="24" width="299" x="116" y="4607" as="geometry" />
+        <mxCell id="v86" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="ERROR のみブロック。WARN（プレースホルダ・画像リンク切れ・&lt;br&gt;未定義UC）は表示のみ。緊急回避は DOCS_VALIDATE_SOFT=1 git push&lt;br&gt;／ git push --no-verify。python3 のみに依存しエージェント非依存&lt;br&gt;docs/domain/ の表は検査しない（ID の実在と ADR 索引の整合のみ）" vertex="1">
+          <mxGeometry height="82" width="1470" x="290" y="4587" as="geometry" />
         </mxCell>
-        <mxCell id="v88" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
-          <mxGeometry height="18" width="30" x="435" y="4610" as="geometry" />
+        <mxCell id="v87" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉛ /validate-docs で ERROR を修正しコミット" vertex="1">
+          <mxGeometry height="56" width="230" x="1140" y="4693" as="geometry" />
         </mxCell>
-        <mxCell id="v89" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="設定/スクリプト由来（copier.yml・sync-docs.sh）" vertex="1">
-          <mxGeometry height="24" width="455" x="471" y="4607" as="geometry" />
+        <mxCell id="e88" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="4753" as="sourcePoint" />
+            <mxPoint x="1400" y="4753" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="v90" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
-          <mxGeometry height="18" width="30" x="946" y="4610" as="geometry" />
+        <mxCell id="v89" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉜ ERROR 0 → push 実行" vertex="1">
+          <mxGeometry height="56" width="230" x="1640" y="4796" as="geometry" />
         </mxCell>
-        <mxCell id="v91" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="WORKFLOW.md の運用規約（人手の運用）" vertex="1">
-          <mxGeometry height="24" width="312" x="982" y="4607" as="geometry" />
+        <mxCell id="e90" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1650" y="4856" as="sourcePoint" />
+            <mxPoint x="1900" y="4856" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="v92" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
-          <mxGeometry height="18" width="30" x="1314" y="4610" as="geometry" />
+        <mxCell id="v91" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉝ リモート反映" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="4899" as="geometry" />
         </mxCell>
-        <mxCell id="v93" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="検証 ERROR・push ブロック" vertex="1">
-          <mxGeometry height="24" width="234" x="1350" y="4607" as="geometry" />
+        <mxCell id="e92" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1900" y="4959" as="sourcePoint" />
+            <mxPoint x="400" y="4959" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v93" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉞ Slackへ完了報告（差分・残WARN）" vertex="1">
+          <mxGeometry height="56" width="230" x="140" y="5002" as="geometry" />
+        </mxCell>
+        <mxCell id="e94" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="5062" as="sourcePoint" />
+            <mxPoint x="150" y="5062" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e95" edge="1" parent="1" style="endArrow=none;dashed=1;dashPattern=2 3;html=1;strokeColor=#888888;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="5125" as="sourcePoint" />
+            <mxPoint x="2010" y="5125" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v96" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;fontColor=#555555;" value="&lt;b&gt;⑧ テンプレ更新の追従&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="200" x="48" y="5113" as="geometry" />
+        </mxCell>
+        <mxCell id="v97" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;align=center;" value="テンプレ側を改善し新タグを切る（最新: v2.1.0）&lt;br&gt;v1.6.0 hook_manager ／ v1.7.0 source_dirs ／ v1.8.0 components ／ v1.9.0 docs_sync_agent ／ v1.10.0 上書き保護の見直し&lt;br&gt;v2.0.0 フェーズ駆動の指示テンプレ（P01〜P05）／ v2.1.0 P05 ドメインモデリング新設・旧P05→P06 へ改称・impl_guide 追加&lt;br&gt;v2.1.0 の検証: 図書館システムで指示テンプレを14周実走し欠陥0件へ収束" vertex="1">
+          <mxGeometry height="116" width="640" x="605" y="5145" as="geometry" />
+        </mxCell>
+        <mxCell id="v98" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㉟ copier update --trust" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="5285" as="geometry" />
+        </mxCell>
+        <mxCell id="e99" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="5345" as="sourcePoint" />
+            <mxPoint x="650" y="5345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v100" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㊱ 伝播するのは scripts / .githooks / _template.md 系のみ" vertex="1">
+          <mxGeometry height="56" width="230" x="640" y="5388" as="geometry" />
+        </mxCell>
+        <mxCell id="e101" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="650" y="5448" as="sourcePoint" />
+            <mxPoint x="1400" y="5448" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v102" parent="1" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;fillColor=#ffffff;strokeColor=none;fontSize=12;fontFamily=Hiragino Sans;spacing=2;" value="㊲ validate-docs を再実行して整合を確認" vertex="1">
+          <mxGeometry height="56" width="230" x="390" y="5491" as="geometry" />
+        </mxCell>
+        <mxCell id="e103" edge="1" parent="1" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1400" y="5551" as="sourcePoint" />
+            <mxPoint x="400" y="5551" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v104" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="&lt;b&gt;凡例&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="44" x="30" y="5754" as="geometry" />
+        </mxCell>
+        <mxCell id="v105" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
+          <mxGeometry height="18" width="30" x="80" y="5757" as="geometry" />
+        </mxCell>
+        <mxCell id="v106" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="リポジトリ内の実ファイル・実コマンドで確認済み" vertex="1">
+          <mxGeometry height="24" width="299" x="116" y="5754" as="geometry" />
+        </mxCell>
+        <mxCell id="v107" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
+          <mxGeometry height="18" width="30" x="435" y="5757" as="geometry" />
+        </mxCell>
+        <mxCell id="v108" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="設定/スクリプト・指示テンプレ由来（copier.yml・docs/prompts/）" vertex="1">
+          <mxGeometry height="24" width="559" x="471" y="5754" as="geometry" />
+        </mxCell>
+        <mxCell id="v109" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
+          <mxGeometry height="18" width="30" x="1050" y="5757" as="geometry" />
+        </mxCell>
+        <mxCell id="v110" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="WORKFLOW.md の運用規約（人手の運用）" vertex="1">
+          <mxGeometry height="24" width="312" x="1086" y="5754" as="geometry" />
+        </mxCell>
+        <mxCell id="v111" parent="1" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontFamily=Hiragino Sans;spacing=4;" value="" vertex="1">
+          <mxGeometry height="18" width="30" x="1418" y="5757" as="geometry" />
+        </mxCell>
+        <mxCell id="v112" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontFamily=Hiragino Sans;" value="検証 ERROR・push ブロック" vertex="1">
+          <mxGeometry height="24" width="234" x="1454" y="5754" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
