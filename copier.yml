@@ -97,6 +97,11 @@ source_dirs:
   help: 実装ソースのディレクトリ（スペース区切り。docs 未更新警告と docs-sync の対象範囲）
   default: "src app lib api server packages"
 
+impl_guide:
+  type: str
+  help: 実装規約の参照先（リポジトリURL等。P05 ドメインモデリングと P06 ハンドオフが参照する。空なら未設定として扱う）
+  default: ""
+
 docs_sync_agent:
   type: str
   help: docs 自動同期に使うコーディングエージェント

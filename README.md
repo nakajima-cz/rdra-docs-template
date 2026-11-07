@@ -55,9 +55,9 @@ git status   # 追加されたファイルを確認してからコミット
 
 | 選択 | 配られる指示テンプレ | 設計書の置き場 | 対応表 |
 |---|---|---|---|
-| 画面 | `p02-structure` `p03-design` `p04-detail` `p05-handoff` | `docs/specs/screens/` `docs/design/` | `screen-uc-api.md` |
-| API | `p04-detail` `p05-handoff` | `docs/specs/apis/` | `uc-api.md`（画面が無いとき） |
-| バッチ | `p02-structure` `p04-detail` `p05-handoff` | `docs/specs/batches/` | `uc-batch.md` |
+| 画面 | `p02-structure` `p03-design` `p04-detail` `p05-domain` `p06-handoff` | `docs/specs/screens/` `docs/design/` | `screen-uc-api.md` |
+| API | `p04-detail` `p05-domain` `p06-handoff` | `docs/specs/apis/` | `uc-api.md`（画面が無いとき） |
+| バッチ | `p02-structure` `p04-detail` `p05-domain` `p06-handoff` | `docs/specs/batches/` | `uc-batch.md` |
 
 `p01-requirements` と `p01-steps` はどの構成でも配られる。要件定義は構成要素に依存しない。
 
@@ -132,12 +132,14 @@ P03 デザイン ──────→ G3 デザインFIX      ← 人が承認
    ↓
 P04 詳細設計 ──────→ G4 整合             ← 機械のみ
    ↓
-P05 実装ハンドオフ                        ← 人が承認（ゲートではない）
+P05 ドメインモデリング                     ← 人が承認（ゲートではない）
+   ↓
+P06 実装ハンドオフ                        ← 人が承認（ゲートではない）
    ↓
 実装
 ```
 
-**人が止まるのは4地点だけ。** P02・P04 では聞かれない。P03・P05 もフェーズの途中では聞かれず、
+**人が止まるのは5地点だけ。** P02・P04 では聞かれない。P03・P05・P06 もフェーズの途中では聞かれず、
 確認したいことは `docs/p00-brief.md` の「7. 未決事項」に溜まり、フェーズの終わりに1回まとめて提示される。
 
 ### ゲートウェイ
@@ -214,7 +216,8 @@ git add -A && git commit -m "docs: scaffold from rdra-docs-template"
 | P02 基本設計 | `p02-structure.md` | `validate-docs.py` の ERROR 0 と**節構成 WARN 0** |
 | P03 デザイン | `p03-design.md` | モックをブラウザで開いて初期表示を確認（PC 幅 1280px 以上） |
 | P04 詳細設計 | `p04-detail.md` | ERROR 0 と節構成 WARN 0、対応表の未記入0件 |
-| P05 ハンドオフ | `p05-handoff.md` | `docs/handoff/` の完了条件が判定できる形になっているか |
+| P05 ドメインモデリング | `p05-domain.md` | 集約の切り方・整合方式・未決のガード条件（人がまとめて承認） |
+| P06 ハンドオフ | `p06-handoff.md` | `docs/handoff/` の完了条件が判定できる形になっているか |
 
 G2・G4 では人は何もしない。`validate-docs.py` が通れば次へ進む。
 
@@ -223,7 +226,7 @@ G3 では、どの案を採るか・Figma へ起こすか・未決への回答�
 
 ### Step 5　実装へ渡す
 
-P05 を通すと `docs/handoff/` にロットごとの指示ができる。実装担当（人でも AI でも）には
+P06 を通すと `docs/handoff/` にロットごとの指示ができる。実装担当（人でも AI でも）には
 **そのロットのファイル1枚**を渡す。`docs/` 全体を読ませない。
 
 `docs/handoff/README.md` の冒頭に「**全ロットの着手を止める未決**」があれば、
