@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>RDRA と DDD — 概念の対応と、唯一ずれる一点</title>
+<style>
+  :root{
+    --ink:#15171c; --ink2:#3d434e; --mute:#7b8291; --line:#dcdfe6;
+    --bg:#f7f6f3; --card:#ffffff; --accent:#b4432c; --good:#1f6f54; --warn:#9a6b12;
+    --human:#1d4f91; --mach:#6b7280;
+    --jp:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+    --num:"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#2a2c31;font-family:var(--jp);-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+  #deck{width:1920px;height:1080px;transform-origin:center center;position:relative}
+  .s{position:absolute;inset:0;background:var(--bg);color:var(--ink);padding:78px 96px;display:none;flex-direction:column}
+  .s.on{display:flex}
+  .kicker{font-size:22px;letter-spacing:.14em;color:var(--mute);font-weight:600}
+  h1{font-size:88px;line-height:1.1;letter-spacing:-.02em;font-weight:800}
+  h2{font-size:50px;line-height:1.18;letter-spacing:-.015em;font-weight:800}
+  h3{font-size:28px;font-weight:700;line-height:1.3}
+  p,li{font-size:25px;line-height:1.6;color:var(--ink2)}
+  .lead{font-size:33px;line-height:1.5;color:var(--ink)}
+  .rule{height:5px;width:132px;background:var(--accent);margin:24px 0 30px}
+  .foot{position:absolute;left:96px;right:96px;bottom:40px;display:flex;justify-content:space-between;
+        font-size:19px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:30px 32px}
+  .tag{display:inline-block;font-size:18px;font-weight:700;letter-spacing:.06em;padding:6px 13px;border-radius:5px}
+  .t-h{background:#dde7f5;color:var(--human)}
+  .t-m{background:#e8eaed;color:var(--mach)}
+  .t-bad{background:#f6e3df;color:var(--accent)}
+  .t-fix{background:#e2efe9;color:var(--good)}
+  .big{font-family:var(--num);font-weight:800;letter-spacing:-.04em;line-height:.92}
+  ul{padding-left:1.25em} li{margin-bottom:10px}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#eceef2;padding:2px 7px;border-radius:4px}
+  .arrow{font-family:var(--num);font-size:42px;color:var(--mute);align-self:center;text-align:center}
+  table{border-collapse:collapse;width:100%}
+  th,td{text-align:left;padding:15px 12px;border-bottom:1px solid var(--line);font-size:24px}
+  th{font-size:20px;color:var(--mute);letter-spacing:.06em;font-weight:700}
+  td.n{font-family:var(--num);font-weight:700;font-size:29px}
+  .bars{display:flex;align-items:flex-end;gap:30px;height:300px;padding-top:56px}
+  .bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:12px;height:100%}
+  .bcol{width:100%;border-radius:7px 7px 0 0;background:var(--accent);position:relative}
+  .bcol.z{background:var(--good)}
+  .bcol span{position:absolute;top:-48px;left:0;right:0;text-align:center;font-family:var(--num);
+             font-size:34px;font-weight:800;color:var(--ink)}
+  .blab{font-size:20px;color:var(--mute);font-weight:700}
+  .note{font-size:20px;color:var(--mute);line-height:1.5}
+
+  /* フロー図 */
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:30px}
+  .ph{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 16px;text-align:center}
+  .ph .pid{font-family:var(--num);font-size:30px;font-weight:800;color:var(--mute)}
+  .ph .pnm{font-size:23px;font-weight:700;margin-top:4px;line-height:1.25}
+  .ph .pout{font-size:18px;color:var(--mute);margin-top:10px;line-height:1.35}
+  .gate{width:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:0 0 112px}
+  .gbox{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;
+        font-family:var(--num);font-size:30px;font-weight:800;border:4px solid}
+  .g-h{border-color:var(--human);background:#dde7f5;color:var(--human)}
+  .g-m{border-color:var(--line);background:#eef0f3;color:var(--mach)}
+  .glab{font-size:17px;font-weight:700;line-height:1.2;text-align:center}
+  .g-h+.glab{color:var(--human)} .g-m+.glab{color:var(--mute)}
+  .humanbar{display:flex;margin-top:26px;align-items:center}
+  .hslot{background:#dde7f5;border:2px solid var(--human);border-radius:9px;padding:14px 12px;text-align:center;
+         color:var(--human);font-weight:700;font-size:21px;line-height:1.3}
+  .spacer{flex:1}
+  .stepline{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap}
+  .stp{background:#eef0f3;border-radius:6px;padding:7px 13px;font-size:19px;color:var(--ink2);font-weight:600}
+  .stp.h{background:#dde7f5;color:var(--human)}
+  .ask{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--human);border-radius:10px;padding:24px 28px}
+  .ask h3{color:var(--human)}
+  .numq{font-family:var(--num);font-weight:800;color:var(--human);font-size:26px;margin-right:10px}
+</style>
+<style>
+  .layer{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .lcol{background:var(--card);padding:28px 30px}
+  .lcol+.lcol{border-left:1px solid var(--line)}
+  .lhead{font-size:22px;font-weight:800;letter-spacing:.04em;color:var(--mute)}
+  .ltitle{font-size:34px;font-weight:800;margin-top:6px}
+  .chip{display:inline-block;background:#eef0f3;border-radius:6px;padding:6px 12px;font-size:19px;
+        font-weight:700;color:var(--ink2);margin:5px 6px 0 0}
+  .chip.a{background:#f6e3df;color:var(--accent)}
+  .chip.g{background:#e2efe9;color:var(--good)}
+  .hub{display:grid;grid-template-columns:1fr 300px 1fr;gap:20px;align-items:center;margin-top:16px}
+  .hubbox{background:var(--accent);color:#fff;border-radius:14px;padding:30px 20px;text-align:center}
+  .hubbox .hn{font-size:40px;font-weight:800}
+  .hubbox .hs{font-size:21px;opacity:.86;margin-top:8px}
+  .ucrow{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 16px;
+         font-size:21px;margin-bottom:9px;line-height:1.35}
+  .ucrow b{font-family:var(--num);color:var(--accent);margin-right:10px}
+  .lots{display:flex;gap:9px;margin-top:7px}
+  .lot{width:74px;text-align:center;padding:9px 0;border-radius:7px;font-family:var(--num);
+       font-weight:800;font-size:22px;background:#eef0f3;color:#b9bec7;border:1px solid var(--line)}
+  .lot.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .before{opacity:.5}
+  .holebox{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--accent);
+           border-radius:10px;padding:22px 26px}
+  .holebox h3{color:var(--accent)}
+  .stepnum{font-family:var(--num);font-size:30px;font-weight:800;color:var(--mute);line-height:1}
+</style>
+
+<style>
+  .qt2{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--human);
+       border-radius:10px;padding:20px 26px;margin-bottom:13px}
+  h2 + .qt2{margin-top:28px}
+  .qt2 .tx{font-size:23px;line-height:1.5;color:var(--ink)}
+  .qt2 .sr{font-size:18px;color:var(--mute);margin-top:9px}
+  .qt2.g{border-left-color:var(--good)} .qt2.a{border-left-color:var(--accent)}
+  .pair{display:grid;grid-template-columns:1fr 76px 1fr;gap:14px 16px;align-items:center;margin-top:10px}
+  .pc{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 20px;font-size:23px;line-height:1.35}
+  .pa{font-family:var(--num);font-size:26px;color:var(--mute);text-align:center}
+  .ph2{font-size:19px;color:var(--mute);font-weight:700;letter-spacing:.06em;padding-left:4px}
+  .pc.warn{background:#fdf6e7;border-color:#e2cf9c}
+  .hubfig{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:24px}
+  .hubcol{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 30px}
+  .hubcol h3{font-size:25px}
+  .hcenter{background:var(--accent);color:#fff;border-radius:10px;padding:14px 18px;text-align:center;
+           font-weight:800;font-size:23px;margin:14px 0}
+  .hitem{background:#eef0f3;border-radius:7px;padding:10px 14px;font-size:20px;margin-bottom:8px;color:var(--ink2)}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:12px;
+      overflow:hidden;margin-top:24px}
+  .vcol{background:var(--card);padding:28px 32px}
+  .vcol+.vcol{border-left:1px solid var(--line)}
+  .vcol .vh{font-size:21px;font-weight:800;letter-spacing:.05em;color:var(--mute)}
+  .vcol .vt{font-size:31px;font-weight:800;margin-top:6px;line-height:1.25}
+  .vcol .vb{font-size:22px;line-height:1.55;color:var(--ink2);margin-top:14px}
+  .ring{display:flex;gap:14px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .rnode{background:#eef0f3;border:1px solid var(--line);border-radius:999px;padding:10px 20px;font-size:21px;font-weight:600}
+  .rnode.on{background:#f6e3df;border-color:var(--accent);color:var(--accent);font-weight:800}
+  .rline{flex:0 0 26px;height:2px;background:var(--line)}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck">
+
+<section class="s">
+  <div class="kicker">補足資料 / rdra-docs-template</div>
+  <h1>RDRA と DDD は<br>同じものを<br>別の名前で呼んでいる</h1>
+  <div class="rule" style="width:200px;margin:34px 0 28px"></div>
+  <p class="lead">両者は競合しない。<strong>業務の言葉で構造を作る</strong>という前提を共有し、<br>
+  語彙も検証の仕方もほぼ重なる。ずれるのは一点だけ。</p>
+  <p class="note" style="margin-top:36px">出典: RDRA 公式（rdra.jp）／ RDRA2.0 ハンドブック読解記事 ／
+  DDD Alliance! RDRA Night!（2017-04-12）／ TRACERY Lab. の RDRA 解説 ／ 図書館システムの実データ</p>
+  <div class="foot"><span>概念の対応</span><span>1 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">共有している前提</div><div class="rule"></div>
+  <h2>どちらも「実装の都合で名前を変えるな」と言っている</h2>
+  <div class="qt2"><div class="tx">人がビジネスを駆動するために使っている用語を整理する。<strong>HOW を書いてはいけません</strong>。
+  ER図のような詳細なモデルは記載しないこと</div><div class="sr">RDRA 情報モデルの指針</div></div>
+  <div class="qt2"><div class="tx">システムの状態を<strong>ビジネス上使われている用語で表すこと</strong>。システムの内部状態は表現しない</div>
+  <div class="sr">RDRA 状態モデルの指針</div></div>
+  <div class="qt2 g"><div class="tx">ドメインエキスパートと開発者が<strong>同じ言葉を使う</strong>。
+  言葉がモデルであり、モデルが言葉である</div><div class="sr">DDD ユビキタス言語</div></div>
+  <p class="note" style="margin-top:20px">※ 言い回しは違うが、禁じていることが同じ —
+  <strong>実装の構造を業務の語彙へ持ち込まない</strong>。この一致があるので、RDRA の成果物はそのまま DDD の材料になる。</p>
+  <div class="foot"><span>ユビキタス言語</span><span>2 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">語彙の対応</div><div class="rule"></div>
+  <h2>RDRA の要素は、ほぼそのまま DDD の語に写る</h2>
+  <div class="pair">
+    <div class="ph2">RDRA</div><div></div><div class="ph2">DDD</div>
+    <div class="pc">情報（INFO）</div><div class="pa">≒</div><div class="pc">エンティティ / 値オブジェクト</div>
+    <div class="pc">状態モデル（ST）</div><div class="pa">≒</div><div class="pc">ライフサイクルと不変条件</div>
+    <div class="pc">ユースケース（UC）</div><div class="pa">≒</div><div class="pc">アプリケーションサービス（UseCase）</div>
+    <div class="pc">業務 / ビジネスユースケース</div><div class="pa">≒</div><div class="pc">サブドメイン</div>
+    <div class="pc">バリエーション・条件</div><div class="pa">≒</div><div class="pc">区分の値オブジェクト・ビジネスルール</div>
+    <div class="pc warn">コンテキスト<br><span style="font-size:18px;color:var(--mute)">（情報・状態・条件をまとめる単位）</span></div>
+    <div class="pa" style="color:#9a6b12">≠</div>
+    <div class="pc warn">境界づけられたコンテキスト<br><span style="font-size:18px;color:var(--mute)">（同じ語が別の意味を持つ境界）</span></div>
+  </div>
+  <p class="note" style="margin-top:22px">※ RDRA 2.0 にも「コンテキスト」はあるが、<strong>要素のグルーピング</strong>であって
+  言語の境界ではない。近い使い方はできるが同一視しない。</p>
+  <div class="foot"><span>ほぼ1対1</span><span>3 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">構造の作り方</div><div class="rule"></div>
+  <h2>どちらも「ハブ」を置いて全体の整合を取る</h2>
+  <div class="hubfig">
+    <div class="hubcol"><h3>RDRA — 情報と状態がハブ</h3>
+      <div class="hitem">要求モデル</div><div class="hitem">ビジネスユースケース</div>
+      <div class="hcenter">情報モデル / 状態モデル</div>
+      <div class="hitem">UC複合図</div><div class="hitem">画面・イベント</div>
+      <p class="note" style="margin-top:12px">レイヤーを跨いでアイコンが繋がり、依存関係が決まる</p></div>
+    <div class="hubcol"><h3>DDD — 集約がハブ</h3>
+      <div class="hitem">ドメインイベント</div><div class="hitem">アプリケーションサービス</div>
+      <div class="hcenter">集約（整合性の範囲）</div>
+      <div class="hitem">リポジトリ</div><div class="hitem">ファクトリ</div>
+      <p class="note" style="margin-top:12px">集約の内側は常に整合、外側は結果整合で繋ぐ</p></div>
+  </div>
+  <p class="note" style="margin-top:22px">※ 設計の進め方も同じ — 片方を直したらもう片方を見直す。RDRA は「行ったり来たりしながらモデリングを磨く」と明言している。</p>
+  <div class="foot"><span>ハブ中心</span><span>4 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">検証の仕方</div><div class="rule"></div>
+  <h2>網羅性のチェック方法まで一致している</h2>
+  <div class="qt2"><div class="tx">状態モデルはユースケース横断で、システムが実現すべき状態を表しています。
+  <strong>全ての「状態」を遷移させる「ユースケース」が揃っていれば</strong>、システム化に必要な重要な「ユースケース」が出揃っていることになります</div>
+  <div class="sr">RDRA2.0 ハンドブック</div></div>
+  <div class="qt2 g"><div class="tx">対象内の状態が全件、4 節の「遷移先」列に現れる（<strong>未到達の状態が 0 件</strong>）</div>
+  <div class="sr">P05 Step3 の判定項目（この一文はハンドブックの検査をそのまま機械判定にしたもの）</div></div>
+  <div class="card" style="margin-top:22px">
+    <h3>実データでも成立した</h3>
+    <p style="margin-top:10px">図書館システム（INFO 16・ST 26・UC 24）で、状態 26 件すべてが遷移先に現れ、未到達 0 件。
+    <strong>RDRA 側の整合が取れていれば、DDD の状態遷移表は機械的に埋まる</strong>。14周すべてで ○ だった。</p>
+  </div>
+  <div class="foot"><span>同じ検査</span><span>5 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">ずれる一点</div><div class="rule"></div>
+  <h2>RDRA は「繋がっている」まで。「どこまで一緒に守るか」は持たない</h2>
+  <div class="vs">
+    <div class="vcol"><div class="vh">RDRA の情報モデル</div>
+      <div class="vt">情報どうしの関連</div>
+      <div class="ring"><div class="rnode">会員</div><div class="rline"></div><div class="rnode">貸出</div><div class="rline"></div><div class="rnode">蔵書</div></div>
+      <div class="vb">線は「関係がある」ことを示す。<strong>線の太さに意味は無い</strong>。
+      どこで切っても RDRA の整合性は壊れない。</div></div>
+    <div class="vcol" style="background:#fdf6e7"><div class="vh">DDD の集約</div>
+      <div class="vt">1回の変更で守る範囲</div>
+      <div class="ring"><div class="rnode on">会員</div><div class="rline"></div><div class="rnode on">貸出</div><div class="rline"></div><div class="rnode">蔵書</div></div>
+      <div class="vb">どこで切るかで<strong>トランザクション境界と実装工数が変わる</strong>。
+      切り方を変えると、同じ要件から別のシステムができる。</div></div>
+  </div>
+  <p class="note" style="margin-top:24px">※ RDRA に「集約」に当たる概念は無い。情報モデルは
+  <strong>どこで切っても成立してしまう</strong>ので、切り方の判断材料が要件定義の成果物に残らない。</p>
+  <div class="foot"><span>集約境界</span><span>6 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">なぜ機械的に変換できないか</div><div class="rule"></div>
+  <h2>目的にしている時間の長さが違う</h2>
+  <div class="vs">
+    <div class="vcol"><div class="vh">RDRA</div><div class="vt">合意のための図</div>
+      <div class="vb">その場で議論しながら決める。グラフィカルに表現し、ステークホルダーと認識を合わせる。
+      <strong>要件が固まった時点で役目の大半を終える</strong>。</div>
+      <div style="margin-top:16px"><span class="chip">議論の道具</span><span class="chip">短期</span><span class="chip">広く浅く</span></div></div>
+    <div class="vcol"><div class="vh">DDD</div><div class="vt">変更に耐えるための構造</div>
+      <div class="vb">実装が何年も育つ前提で、業務の変化を受け止められる形を作る。
+      <strong>作った後のほうが長く効く</strong>。</div>
+      <div style="margin-top:16px"><span class="chip">実装の骨格</span><span class="chip">長期</span><span class="chip">狭く深く</span></div></div>
+  </div>
+  <div class="card" style="margin-top:26px;border-left:5px solid var(--accent)">
+    <p style="font-size:26px"><strong>同じ語彙を使うが、込めている判断が違う</strong>。
+    だから RDRA → DDD は翻訳ではなく、<strong>足りない判断を1つ足す工程</strong>になる。それが P05。</p>
+  </div>
+  <div class="foot"><span>翻訳ではない</span><span>7 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">外形的な裏付け</div><div class="rule"></div>
+  <h2>両者の考案者が、同じ場で繋ぎ方を語っている</h2>
+  <div class="qt2"><div class="tx"><strong>RDRA for DDD</strong>「開発をリズミカルに回すための安定した要件出し」<br>
+  今回は RDRA を <strong>ICONIX、DDD へとスムーズにつないでいくカスタマイズバージョン</strong>を説明します</div>
+  <div class="sr">神崎善司 氏（RDRA 考案者）／ DDD Alliance! RDRA Night! 2017-04-12</div></div>
+  <div class="qt2"><div class="tx">ドメイン駆動設計を実践していくに辺り、要件分析をする際に活用すると
+  <strong>効果を発揮する RDRA</strong></div><div class="sr">同イベント 告知文（増田亨 氏が同席）</div></div>
+  <div class="qt2 g"><div class="tx">フロントエンドのサービス開発、バックエンドのシステム開発を、
+  <strong>RDRA ☓ DDD ☓ agile の統合運用</strong>によって事業成長に適した形で実現する</div>
+  <div class="sr">越境アジャイル（神崎・増田・市谷 各氏）</div></div>
+  <div class="card" style="margin-top:20px;border-left:5px solid var(--accent)">
+    <p><strong>ただし変換規則そのものは公開されていない。</strong>
+    「繋がる」「相性が良い」までは語られているが、どの情報を集約ルートにするかの手順は見つからなかった。
+    P05 はそこを埋めている。</p></div>
+  <div class="foot"><span>二次情報</span><span>8 / 9</span></div>
+</section>
+
+<section class="s">
+  <div class="kicker">まとめ</div><div class="rule"></div>
+  <h2>材料は揃っている。決まっていないのは1つだけだった</h2>
+  <div class="grid3">
+    <div class="card" style="border-left:5px solid var(--good)"><h3 style="color:var(--good)">そのまま使えるもの</h3>
+      <ul style="margin-top:12px">
+        <li>情報 → エンティティ / VO</li>
+        <li>状態 → ライフサイクル</li>
+        <li>UC → UseCase</li>
+        <li>業務の語彙そのもの</li>
+        <li>網羅性の検査方法</li>
+      </ul></div>
+    <div class="card" style="border-left:5px solid var(--warn)"><h3 style="color:var(--warn)">読み替えが要るもの</h3>
+      <ul style="margin-top:12px">
+        <li>コンテキスト（グルーピング ≠ 言語境界）</li>
+        <li>情報の関連（線の意味が違う）</li>
+        <li>条件・バリエーション（RDRA では空のことがある）</li>
+      </ul></div>
+    <div class="card" style="border-left:5px solid var(--accent)"><h3 style="color:var(--accent)">足すしかないもの</h3>
+      <ul style="margin-top:12px">
+        <li><strong>集約の境界</strong></li>
+        <li>集約をまたぐときの整合方式</li>
+      </ul>
+      <p class="note" style="margin-top:12px">この2つは業務側の判断を要するので、P05 の完了時に人が承認する</p></div>
+  </div>
+  <div class="card" style="margin-top:26px;border-left:5px solid var(--human)">
+    <p style="font-size:26px">「RDRA は DDD に<strong>不足している</strong>」より、
+    「<strong>材料は揃っているのに変換規則が決まっていない</strong>」のほうが実態に近い。</p>
+  </div>
+  <div class="foot"><span>P05 の存在理由</span><span>9 / 9</span></div>
+</section>
+
+</div></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.s')];
+  let i=parseInt(location.hash.replace('#',''))||1;
+  if(isNaN(i)||i<1||i>slides.length)i=1;
+  function show(n){i=Math.max(1,Math.min(slides.length,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i-1));}
+  function fit(){const d=document.getElementById('deck');
+    const s=Math.min(innerWidth/1920,innerHeight/1080);
+    d.style.transform='scale('+s+')';}
+  addEventListener('resize',fit);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key))show(i+1);
+    if(['ArrowLeft','PageUp'].includes(e.key))show(i-1);
+    if(e.key==='Home')show(1); if(e.key==='End')show(slides.length);});
+  window.__show=show; window.__n=slides.length;
+  fit();show(i);
+</script>
+</body>
+</html>
