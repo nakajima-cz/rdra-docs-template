@@ -287,8 +287,9 @@ python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
 ```
 - **ERROR**（構造の破綻・push をブロック）: frontmatter 必須キー欠落 / `design_status` 不正値 / `ADR-`・`SCR-`・`API-` の dangling 参照 / 対応表と個票の双方向不一致 / ADR 本体と `docs/adr/README.md` 一覧の双方向不一致・ステータス食い違い
 - **WARN**（表示のみ）: プレースホルダ未置換（`YYYY-MM-DD` 等） / 画像リンク切れ / `docs/rdra/` に定義の無い `UC-` 参照
-- pre-push から自動実行される。一時回避は `DOCS_VALIDATE_SOFT=1 git push` または `git push --no-verify`
-- 依存は python3 のみ。pre-push は `python3`、`/usr/bin/python3`、`/opt/homebrew/bin/python3`、`python` の順に実走確認し、使えるインタプリタへフォールバックする。どれも実行できない場合は検査をスキップして push を通す
+- pre-push から自動実行される。一時回避の `DOCS_VALIDATE_SOFT=1 git push`（または `git push --no-verify`）の挙動は従来どおり
+- 依存は Python のみ。pre-push は `python3`、`/usr/bin/python3`、`/opt/homebrew/bin/python3`、`python` の順に候補を実際に実行し、使えるインタプリタへフォールバックする。`command -v` だけでは asdf / pyenv の実行不能なシムにも一致するため、存在確認だけでは採用しない
+- 候補が見つからない場合と、見つかった候補がすべて実行不能な場合は、理由を区別したメッセージを表示して検査をスキップする。どちらも exit 0 で push を通し、依存の問題だけでブロックしない
 
 ## リポジトリ構成
 - `template/` … 利用者へ展開される本体（copier の `_subdirectory`）
