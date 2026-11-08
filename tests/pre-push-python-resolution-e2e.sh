@@ -8,6 +8,17 @@ test_repo="$work_root/repo"
 remote="$work_root/remote.git"
 normal_path="/opt/homebrew/bin:$HOME/.local/bin:$PATH"
 git_bin=$(PATH="$normal_path" command -v git)
+hook="$repo_root/template/.githooks/pre-push"
+
+# 解決失敗時の理由を、未検出と実行不能で区別して案内する。
+if ! grep -q 'python3 未検出のため検査をスキップしました' "$hook"; then
+  echo "FAIL messages: missing not-found skip wording" >&2
+  exit 1
+fi
+if ! grep -q 'python3 は見つかりましたが実行できないため検査をスキップしました' "$hook"; then
+  echo "FAIL messages: missing unusable skip wording" >&2
+  exit 1
+fi
 
 mkdir -p "$test_repo" "$remote" "$work_root/no-python" "$work_root/shim"
 "$git_bin" -C "$remote" init --bare -q
@@ -110,7 +121,7 @@ EOF
 run_push CASE3B_ALL_UNUSABLE "$work_root/shim" /usr/bin/env BASH_ENV="$work_root/disable-python-candidates.sh"
 rc=$?
 if [ "$rc" -ne 0 ]; then exit 1; fi
-if ! grep -q 'python3 が実行できないため検査をスキップしました' "$work_root/CASE3B_ALL_UNUSABLE.log"; then
+if ! grep -q 'python3 は見つかりましたが実行できないため検査をスキップしました' "$work_root/CASE3B_ALL_UNUSABLE.log"; then
   echo "FAIL CASE3B: skip message not found" >&2
   exit 1
 fi

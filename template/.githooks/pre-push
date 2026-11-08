@@ -45,19 +45,32 @@ validator="scripts/docs-validate/validate-docs.py"
 
 # command -v だけでは、実行不能な asdf / pyenv シムを判別できない。
 resolve_python() {
-  local cand
+  local cand found=0
   for cand in python3 /usr/bin/python3 /opt/homebrew/bin/python3 python; do
-    if command -v "$cand" >/dev/null 2>&1 && "$cand" -c 'pass' >/dev/null 2>&1; then
-      printf '%s' "$cand"
-      return 0
+    if command -v "$cand" >/dev/null 2>&1; then
+      found=1
+      if "$cand" -c 'pass' >/dev/null 2>&1; then
+        printf '%s' "$cand"
+        return 0
+      fi
     fi
   done
+  if [ "$found" -eq 1 ]; then
+    return 2
+  fi
   return 1
 }
 
 if [ -f "$validator" ] && [ -d docs ]; then
-  if ! python_bin=$(resolve_python); then
-    echo "docs-validate: python3 が実行できないため検査をスキップしました"
+  if python_bin=$(resolve_python); then
+    :
+  else
+    python_status=$?
+    if [ "$python_status" -eq 1 ]; then
+      echo "docs-validate: python3 未検出のため検査をスキップしました"
+    else
+      echo "docs-validate: python3 は見つかりましたが実行できないため検査をスキップしました"
+    fi
     exit 0
   fi
   echo "docs-validate: docs/ の構造を検査します..."
