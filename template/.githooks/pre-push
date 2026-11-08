@@ -42,13 +42,26 @@ fi
 # WARN  = 埋め忘れ（プレースホルダ / 画像リンク切れ）→ 表示のみ
 # 回避: DOCS_VALIDATE_SOFT=1 git push  または  git push --no-verify
 validator="scripts/docs-validate/validate-docs.py"
+
+# command -v だけでは、実行不能な asdf / pyenv シムを判別できない。
+resolve_python() {
+  local cand
+  for cand in python3 /usr/bin/python3 /opt/homebrew/bin/python3 python; do
+    if command -v "$cand" >/dev/null 2>&1 && "$cand" -c 'pass' >/dev/null 2>&1; then
+      printf '%s' "$cand"
+      return 0
+    fi
+  done
+  return 1
+}
+
 if [ -f "$validator" ] && [ -d docs ]; then
-  if ! command -v python3 >/dev/null 2>&1; then
-    echo "docs-validate: python3 未検出のため検査をスキップしました"
+  if ! python_bin=$(resolve_python); then
+    echo "docs-validate: python3 が実行できないため検査をスキップしました"
     exit 0
   fi
   echo "docs-validate: docs/ の構造を検査します..."
-  if ! python3 "$validator"; then
+  if ! "$python_bin" "$validator"; then
     if [ "${DOCS_VALIDATE_SOFT:-0}" = "1" ]; then
       echo "docs-validate: ERROR がありますが DOCS_VALIDATE_SOFT=1 のため push を継続します"
       exit 0

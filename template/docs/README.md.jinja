@@ -19,6 +19,7 @@
 ## 整合性チェック
 `python3 scripts/docs-validate/validate-docs.py` で docs/ の構造を検査する（`--json` / `--strict` あり）。
 pre-push で自動実行され、ERROR があれば push がブロックされる（回避: `DOCS_VALIDATE_SOFT=1 git push`）。
+python3 は実走できることを確認してから使う。PATH 上の `python3` が実行不能ならシステムの Python へフォールバックし、候補がすべて実行できない場合だけ検査をスキップして push を通す。
 - ERROR: frontmatter 必須キー欠落 / design_status 不正 / ID の dangling 参照 / 対応表と個票の不一致 / **同じ ID の名称が文書間で食い違う**
 - WARN: プレースホルダ未置換 / 画像リンク切れ / 未定義 UC 参照
 

@@ -288,7 +288,7 @@ python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
 - **ERROR**（構造の破綻・push をブロック）: frontmatter 必須キー欠落 / `design_status` 不正値 / `ADR-`・`SCR-`・`API-` の dangling 参照 / 対応表と個票の双方向不一致 / ADR 本体と `docs/adr/README.md` 一覧の双方向不一致・ステータス食い違い
 - **WARN**（表示のみ）: プレースホルダ未置換（`YYYY-MM-DD` 等） / 画像リンク切れ / `docs/rdra/` に定義の無い `UC-` 参照
 - pre-push から自動実行される。一時回避は `DOCS_VALIDATE_SOFT=1 git push` または `git push --no-verify`
-- 依存は python3 のみ（未検出なら検査をスキップして push を通す）
+- 依存は python3 のみ。pre-push は `python3`、`/usr/bin/python3`、`/opt/homebrew/bin/python3`、`python` の順に実走確認し、使えるインタプリタへフォールバックする。どれも実行できない場合は検査をスキップして push を通す
 
 ## リポジトリ構成
 - `template/` … 利用者へ展開される本体（copier の `_subdirectory`）
