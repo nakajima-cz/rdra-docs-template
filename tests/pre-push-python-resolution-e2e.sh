@@ -110,12 +110,27 @@ EOF
 run_push CASE3B_ALL_UNUSABLE "$work_root/shim" /usr/bin/env BASH_ENV="$work_root/disable-python-candidates.sh"
 rc=$?
 if [ "$rc" -ne 0 ]; then exit 1; fi
-if ! grep -q 'python3 が実行できないため検査をスキップしました' "$work_root/CASE3B_ALL_UNUSABLE.log"; then
-  echo "FAIL CASE3B: skip message not found" >&2
+if ! grep -q 'python3 は見つかりましたが実行できないため検査をスキップしました' "$work_root/CASE3B_ALL_UNUSABLE.log"; then
+  echo "FAIL CASE3B: found-but-unusable skip message not found" >&2
   exit 1
 fi
 if grep -q 'ERROR のため push を中止しました' "$work_root/CASE3B_ALL_UNUSABLE.log"; then
   echo "FAIL CASE3B: dependency failure was treated as validator error" >&2
+  exit 1
+fi
+
+cp .githooks/pre-push "$work_root/pre-push.clean"
+sed 's/python3 \/usr\/bin\/python3 \/opt\/homebrew\/bin\/python3 python/missing-python3 missing-python/' \
+  "$work_root/pre-push.clean" > .githooks/pre-push
+chmod +x .githooks/pre-push
+printf '\ncase3c\n' >> README.md
+"$git_bin" add README.md
+"$git_bin" -c user.email=t@t -c user.name=t commit -qm case3c
+run_push CASE3C_NOT_FOUND "$normal_path" /usr/bin/env
+rc=$?
+if [ "$rc" -ne 0 ]; then exit 1; fi
+if ! grep -q 'python3 が見つからないため検査をスキップしました' "$work_root/CASE3C_NOT_FOUND.log"; then
+  echo "FAIL CASE3C: not-found skip message not found" >&2
   exit 1
 fi
 
