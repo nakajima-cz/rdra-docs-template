@@ -207,7 +207,10 @@ Step1 のパターン定義へ但し書きを足し、何を足したかを報�
     （雛形の 9 節の書式に従う）
   - 「10. デザインレビュー履歴」に、**雛形の列構成のまま**レビュー前の行が1行ある
     （列を足さない。足したくなったら報告する）
-  - `design_status` が全件 `in-review`
+  - **今回 9・10 節を新規に埋めた、またはモックを更新した個票は `design_status: in-review`**。
+    **それ以外の既存個票（今回変更していないもの）の `design_status` は変更しない**
+    （既に `approved` の画面を、この再実行で `in-review` へ戻さない。
+    戻すと G3 の確定結果を消すことになる）
   - `python3 scripts/docs-validate/validate-docs.py` が **ERROR 0**
 - **やらない**: 1〜8 節に触らない。`approved` にしない（人の承認前）
 - **出力先**: `docs/specs/screens/`
@@ -216,8 +219,10 @@ Step1 のパターン定義へ但し書きを足し、何を足したかを報�
 # 今回のステップ
 
 docs/prompts/p03-design.md の「Step4 画面設計書へ反映する」を実行する。
-全個票の 9 節にモックへのリンクと主要操作の流れを書き、10 節にレビュー前の行を1行足す。
-design_status を in-review にする。1〜8 節には触らない。最後に validator を ERROR 0 にする。
+今回 9 節を新規に書いた、またはモックを更新した画面にだけ、10 節へレビュー前の行を1行足し、
+design_status を in-review にする。1〜8 節には触らない。
+既に approved の画面で今回変更していないものは design_status をそのまま残す。
+最後に validator を ERROR 0 にする。
 ```
 
 ---
@@ -228,7 +233,9 @@ design_status を in-review にする。1〜8 節には触らない。最後に 
 
 - `validate-docs.py` が ERROR 0
 - 全 `SCR-xxx` にモックが存在
-- `design_status` が全件 `in-review`
+- `design_status` が `in-review` 以上（`in-review` / `approved`）で、
+  **かつ今回 9・10 節を新規に埋めた、またはモックを更新した個票は `in-review`**
+  （今回変更していない既存個票が `approved` のままでも、それを理由に差し戻す必要はない）
 
 **人が見ること**
 

@@ -148,7 +148,10 @@ docs/rdra/03-boundary/README.md の「画面ID対応」の表を埋める。
 - **判定**:
   - 採番した全 `SCR-xxx` に、命名規約どおりのファイルが `docs/specs/screens/` に存在する
   - frontmatter に `source` / `updated` / `source_commit` / `design_status` がある
-  - `design_status` は全件 `draft`（P03 でモックを作ってから `in-review` へ進む）
+  - `design_status` は、**今回新規作成した個票は** `draft`。**既存個票
+    （前回以前から存在するもの）の `design_status` は変更しない**
+    （P03・G3 で `in-review` / `approved` まで進んだ値を、この再実行で `draft` へ
+    戻さない。戻すと P03 の確定結果を消すことになる）
   - `##` の節構成が `docs/specs/screens/_template.md` と一致している
     （ `validate-docs.py` の「雛形にある節がありません / 雛形に無い節があります」WARN が 0 件）
   - 「1. 基本情報」の全9行が埋まっており（行の追加・削除をしていない）、
@@ -312,7 +315,11 @@ docs/traceability/uc-batch.md に全 BATCH の行を作り、UC 列と起動契�
 - `python3 scripts/docs-validate/validate-docs.py` が **ERROR 0**
 - 節構成の WARN（「雛形にある節がありません」「雛形に無い節があります」）が **0 件**
 - Step1〜3 の判定項目がすべて ○
-- `design_status` が全件 `draft`
+- `design_status` が `draft` 以上（`draft` / `in-review` / `approved` のいずれか）で、
+  **かつ今回の P02 実行で新規作成した個票は `draft`**
+  （新規作成が 0 件の再実行では後半の条件は対象が無く、自動的に満たされる。
+  既存個票が P03 以降で `in-review` / `approved` へ進んでいても、それを理由に
+  差し戻す必要はない）
 
 **それ以外の WARN は残ってよい。** 個票の `source` / `source_commit` は実装が始まるまで埋まらない。
 ここで WARN 0 を求めると、AI が存在しない実装パスを創作する。
