@@ -2,6 +2,7 @@
 # docs-scaffold: pre-push
 #  1) 実装変更に対し docs 未更新を警告（ブロックしない）
 #  2) docs/ の構造整合を検査（ERROR があればブロック）
+#  3) P01 ゲート検査（4節↔REQ注記。既定では警告のみ）
 set -uo pipefail
 
 range="origin/HEAD..HEAD"
@@ -37,12 +38,7 @@ if [ -n "$changed" ]; then
   fi
 fi
 
-# --- 2) docs 構造整合の検査 -------------------------------------------------
-# ERROR = 構造の破綻（ID の dangling / 対応表の不一致 / frontmatter 欠落）→ ブロック
-# WARN  = 埋め忘れ（プレースホルダ / 画像リンク切れ）→ 表示のみ
-# 回避: DOCS_VALIDATE_SOFT=1 git push  または  git push --no-verify
-validator="scripts/docs-validate/validate-docs.py"
-
+# --- python 解決 -------------------------------------------------------------
 # command -v だけでは、実行不能な asdf / pyenv シムを判別できない。
 resolve_python() {
   local cand found=0
@@ -61,7 +57,8 @@ resolve_python() {
   return 1
 }
 
-if [ -f "$validator" ] && [ -d docs ]; then
+python_bin=""
+if [ -d docs ]; then
   if python_bin=$(resolve_python); then
     :
   else
@@ -71,20 +68,53 @@ if [ -f "$validator" ] && [ -d docs ]; then
     else
       echo "docs-validate: python3 は見つかりましたが実行できないため検査をスキップしました"
     fi
-    exit 0
+    python_bin=""
   fi
+fi
+
+exit_code=0
+
+# --- 2) docs 構造整合の検査 -------------------------------------------------
+# ERROR = 構造の破綻（ID の dangling / 対応表の不一致 / frontmatter 欠落）→ ブロック
+# WARN  = 埋め忘れ（プレースホルダ / 画像リンク切れ）→ 表示のみ
+# 回避: DOCS_VALIDATE_SOFT=1 git push  または  git push --no-verify
+validator="scripts/docs-validate/validate-docs.py"
+if [ -n "$python_bin" ] && [ -f "$validator" ] && [ -d docs ]; then
   echo "docs-validate: docs/ の構造を検査します..."
   if ! "$python_bin" "$validator"; then
     if [ "${DOCS_VALIDATE_SOFT:-0}" = "1" ]; then
       echo "docs-validate: ERROR がありますが DOCS_VALIDATE_SOFT=1 のため push を継続します"
-      exit 0
+    else
+      echo "──────────────────────────────────────────────"
+      echo "docs-validate: ERROR のため push を中止しました"
+      echo "  修正するか、DOCS_VALIDATE_SOFT=1 git push で一時的に回避できます"
+      echo "──────────────────────────────────────────────"
+      exit_code=1
     fi
-    echo "──────────────────────────────────────────────"
-    echo "docs-validate: ERROR のため push を中止しました"
-    echo "  修正するか、DOCS_VALIDATE_SOFT=1 git push で一時的に回避できます"
-    echo "──────────────────────────────────────────────"
-    exit 1
   fi
 fi
 
-exit 0
+# --- 3) P01 ゲート検査（4節↔REQ注記） ---------------------------------------
+# docs/p00-brief.md「4. 確定していること」の各行に（REQ-xxx）か
+# （要求ではない: 理由）が付いているかを検査する。
+# 既存プロジェクトには、この検査を導入する前から注記の無い行が大量に残っている
+# 可能性があるため、既定では警告のみで push をブロックしない。
+# チームで注記の運用が定着したら DOCS_P01_GATE_STRICT=1 でブロックへ格上げできる。
+gate_checker="scripts/docs-validate/check-p01-gates.py"
+if [ -n "$python_bin" ] && [ -f "$gate_checker" ] && [ -f docs/p00-brief.md ]; then
+  gate_output=$("$python_bin" "$gate_checker" 2>&1)
+  gate_rc=$?
+  if [ "$gate_rc" -ne 0 ]; then
+    echo "──────────────────────────────────────────────"
+    echo "$gate_output"
+    if [ "${DOCS_P01_GATE_STRICT:-0}" = "1" ]; then
+      echo "docs-validate: check-p01-gates の ERROR のため push を中止しました (DOCS_P01_GATE_STRICT=1)"
+      exit_code=1
+    else
+      echo "docs-validate: check-p01-gates WARNING（このpushはブロックしていません。DOCS_P01_GATE_STRICT=1 で必須化できます）"
+    fi
+    echo "──────────────────────────────────────────────"
+  fi
+fi
+
+exit "$exit_code"

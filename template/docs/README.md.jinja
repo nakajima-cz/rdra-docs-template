@@ -24,6 +24,11 @@ pre-push は Python の候補を実際に実行し、使えることを確認し
 - ERROR: frontmatter 必須キー欠落 / design_status 不正 / ID の dangling 参照 / 対応表と個票の不一致 / **同じ ID の名称が文書間で食い違う**
 - WARN: プレースホルダ未置換 / 画像リンク切れ / 未定義 UC 参照
 
+`python3 scripts/docs-validate/check-p01-gates.py` は `p00-brief.md`「4. 確定していること」の
+各行に `（REQ-xxx）` か `（要求ではない: 理由）` の注記があるかを検査する。pre-push から自動実行
+されるが既定では警告のみ（push をブロックしない）。`DOCS_P01_GATE_STRICT=1` で ERROR 扱いへ
+格上げできる。
+
 ## 読み方
 1. `rdra/` で要件（What）を掴む
 2. {% if use_screens %}`specs/screens` `specs/apis`{% else %}`specs/apis`{% endif %} で設計（How）を見る

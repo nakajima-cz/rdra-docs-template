@@ -291,6 +291,24 @@ python3 scripts/docs-validate/validate-docs.py --strict # WARN も失敗扱い
 - 依存は Python のみ。pre-push は `python3`、`/usr/bin/python3`、`/opt/homebrew/bin/python3`、`python` の順に候補を実際に実行し、使えるインタプリタへフォールバックする。`command -v` だけでは asdf / pyenv の実行不能なシムにも一致するため、存在確認だけでは採用しない
 - 候補が見つからない場合と、見つかった候補がすべて実行不能な場合は、理由を区別したメッセージを表示して検査をスキップする。どちらも exit 0 で push を通し、依存の問題だけでブロックしない
 
+## P01 ゲート検査（check-p01-gates）
+`python3 scripts/docs-validate/check-p01-gates.py` が `docs/p00-brief.md`「4. 確定していること」の
+各行に `（REQ-xxx）` か `（要求ではない: 理由）` の注記が付いているかを検査する。
+- pre-push から自動実行されるが、**既定では警告のみで push をブロックしない**。既存プロジェクトには
+  この検査を導入する前から注記の無い行が大量に残っている可能性があり（実運用の実測で98件）、
+  いきなりブロックすると既存リポジトリが push できなくなるため
+- チームで注記の運用が定着したら `DOCS_P01_GATE_STRICT=1`（`.docs-scaffold/config.sh` 等で export）で
+  ERROR 扱いへ格上げできる。格上げ後は `validate-docs.py` と同様にブロックする
+- `docs/p00-brief.md` が無い（または `check-p01-gates.py` が無い）リポジトリでは検査自体をスキップする
+
+## 撤回された確定事項の書き方
+`docs/p00-brief.md`「4. 確定していること」の決定が後から撤回されたら、行を削除せず
+取り消し線で残し、置き換え先を**同じ1行の中**に書く（行を分けると、取り消し線を引いた行だけが
+注記なしのまま残り、機械検査が誤ってブロック対象として検出する）:
+```
+- ~~Web アプリとして作る（要求ではない: 技術選定）~~ → **撤回済み**。「Electron デスクトップアプリとして作る」に置き換わった（REQ-016）
+```
+
 ## リポジトリ構成
 - `template/` … 利用者へ展開される本体（copier の `_subdirectory`）
 - `copier.yml` … 質問・`_tasks`・上書き保護の定義
